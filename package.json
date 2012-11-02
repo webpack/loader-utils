@@ -1,0 +1,16 @@
+{
+	"name": "loader-utils",
+	"version": "0.1.0",
+	"author": "Tobias Koppers @sokra",
+	"description": "utils for webpack loaders",
+	"dependencies": {
+		"json5": "0.1.x"
+	},
+	"licenses": [
+		{
+			"type": "MIT",
+			"url": "http://www.opensource.org/licenses/mit-license.php"
+		}
+	],
+	"license": "MIT"
+}
