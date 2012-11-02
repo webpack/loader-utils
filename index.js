@@ -1,3 +1,4 @@
+var JSON5 = require("json5");
 exports.parseQuery = function parseQuery(query) {
 	if(!query) return {};
 	if(typeof query !== "string")
