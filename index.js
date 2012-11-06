@@ -10,7 +10,7 @@ exports.parseQuery = function parseQuery(query) {
 	if(query.substr(0, 1) === "{" && query.substr(-1) === "}") {
 		return JSON5.parse(query);
 	}
-	var queryArgs = query.split(/,\&/g);
+	var queryArgs = query.split(/[,\&]/g);
 	var result = {};
 	queryArgs.forEach(function(arg) {
 		var idx = arg.indexOf("=");
