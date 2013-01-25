@@ -39,9 +39,6 @@ exports.parseQuery = function parseQuery(query) {
 }
 
 exports.getRemainingRequest = function(loaderContext) {
-	if(loaderContext.loaderType == "loader") {
-		return loaderContext.currentLoaders.slice(loaderContext.loaderIndex+1).join("!") +
-		"!" +
-		(loaderContext.filenames.length > 0 ? loaderContext.filenames[0] : "");
-	} else throw new Error("getRemainingRequest do not work for pre or post loaders");
+	var request = loaderContext.loaders.slice(loaderContext.loaderIndex+1).concat([loaderContext.resource]);
+	return request.join("!");
 }
