@@ -36,9 +36,18 @@ exports.parseQuery = function parseQuery(query) {
 		}
 	});
 	return result;
+};
+
+function dotRequest(obj) {
+	return obj.request;
 }
 
 exports.getRemainingRequest = function(loaderContext) {
-	var request = loaderContext.loaders.slice(loaderContext.loaderIndex+1).concat([loaderContext.resource]);
+	var request = loaderContext.loaders.slice(loaderContext.loaderIndex+1).map(dotRequest).concat([loaderContext.resource]);
 	return request.join("!");
-}
+};
+
+exports.getCurrentRequest = function(loaderContext) {
+	var request = loaderContext.loaders.slice(loaderContext.loaderIndex).map(dotRequest).concat([loaderContext.resource]);
+	return request.join("!");
+};
