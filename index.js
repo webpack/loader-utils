@@ -51,3 +51,37 @@ exports.getCurrentRequest = function(loaderContext) {
 	var request = loaderContext.loaders.slice(loaderContext.loaderIndex).map(dotRequest).concat([loaderContext.resource]);
 	return request.join("!");
 };
+
+exports.isUrlRequest = function(url, root) {
+	// An URL is not an request if
+	// 1. it's a Data Url
+	// 2. it's an absolute url or and protocol-relative
+	// 3. it's some kind of url for a template
+	if(/^data:|^(https?:)?\/\/|^[\{\}\[\]#*;,'§\$%&\(=?`´\^°<>]/.test(url)) return false;
+	// 4. It's also not an request if root isn't set and it's a root-relative url
+	if((root === undefined || root === false) && /^\//.test(url)) return false;
+	return true;
+};
+
+exports.urlToRequest = function(url, root) {
+	if(/^[^?]*~/.test(url)) {
+		// A `~` makes the url an module
+		return url.replace(/^[^?]*~/, "");
+	} else if(root !== undefined && root !== false && /^\//.test(url)) {
+		// if root is set and the url is root-relative
+		switch(typeof root) {
+		// 1. root is a string: root is prefixed to the url
+		case "string": return root + url;
+		// 2. root is `true`: absolute paths are allowed
+		//    *nix only, windows-style absolute paths are always allowed as they doesn't start with a `/`
+		case "boolean": return url;
+		}
+	} else if(/^\.\.?\//.test(url)) {
+		// A relative url stays
+		return url;
+	} else {
+		// every other url is threaded like a relative url
+		return "./"+url;
+	}
+	throw new Error("Unexpected parameters to loader-utils 'urlToRequest': url = " + url + ", root = " + root + ".");
+};
