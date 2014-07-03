@@ -11,5 +11,9 @@
 			"type": "MIT",
 			"url": "http://www.opensource.org/licenses/mit-license.php"
 		}
-	]
+	],
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/webpack/loader-utils.git"
+	}
 }
