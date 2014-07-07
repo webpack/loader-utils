@@ -85,3 +85,14 @@ exports.urlToRequest = function(url, root) {
 	}
 	throw new Error("Unexpected parameters to loader-utils 'urlToRequest': url = " + url + ", root = " + root + ".");
 };
+
+exports.parseString = function parseString(str) {
+	if(str[0] === '"') return JSON.parse(str);
+	if(str[0] === "'") {
+		return parseString(str.replace(/\\.|"/g, function(x) {
+			if(x === '"') return '\\"';
+			return x;
+		}).replace(/^'|'$/g, '"'));
+	}
+	return JSON.parse('"' + str + '"');
+};
