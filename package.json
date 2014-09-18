@@ -6,6 +6,9 @@
 	"dependencies": {
 		"json5": "0.1.x"
 	},
+	"scripts": {
+		"test": "mocha test index.js"
+	},
 	"licenses": [
 		{
 			"type": "MIT",
@@ -15,5 +18,8 @@
 	"repository": {
 		"type": "git",
 		"url": "git://github.com/webpack/loader-utils.git"
+	},
+	"devDependencies": {
+		"mocha": "^1.21.4"
 	}
 }
