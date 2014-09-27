@@ -18,9 +18,11 @@ function encodeBufferToBase(buffer, base, length) {
 
 	var readLength = buffer.length;
 
-	var b = require('bignum')(0);
+	var Big = require('big.js');
+	Big.RM = Big.DP = 0;
+	var b = new Big(0);
 	for (var i = readLength - 1; i >= 0; i--) {
-		b = b.mul(256).add(buffer[i]);
+		b = b.times(256).plus(buffer[i]);
 	}
 
 	var output = "";
