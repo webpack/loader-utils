@@ -149,10 +149,25 @@ exports.parseString = function parseString(str) {
 	return JSON.parse('"' + str + '"');
 };
 
-exports.interpolateName = function interpolateName(loaderContext, content) {
-	var query = exports.parseQuery(loaderContext.query);
-	var filename = query.name || "[hash].[ext]";
-	var context = query.context || loaderContext.options.context;
+exports.getHashDigest = function getHashDigest(buffer, hashType, digestType, maxLength) {
+	hashType = hashType || "md5";
+	maxLength = maxLength || 9999;
+	var hash = new (require("crypto").Hash)(hashType);
+	hash.update(buffer);
+	if (digestType === "base26" || digestType === "base32" || digestType === "base36" ||
+	    digestType === "base49" || digestType === "base52" || digestType === "base58" ||
+	    digestType === "base62" || digestType === "base64") {
+		return encodeBufferToBase(hash.digest(), digestType.substr(4), maxLength).substr(0, maxLength);
+	} else {
+		return hash.digest(digestType || "hex").substr(0, maxLength);
+	}
+};
+
+exports.interpolateName = function interpolateName(loaderContext, name, options) {
+	var filename = name || "[hash].[ext]";
+	var context = options.context;
+	var content = options.content;
+	var regExp = options.regExp;
 	var ext = "bin";
 	var basename = "file";
 	var directory = "";
@@ -176,18 +191,9 @@ exports.interpolateName = function interpolateName(loaderContext, content) {
 	}
 	var url = filename;
 	if(content) {
-		url = url.replace(/\[hash\]/ig, function() {
-			var digest = query.hash || "md5";
-			var digestSize = query.size || 9999;
-			hash = new (require("crypto").Hash)(digest);
-			hash.update(content);
-			if (query.digest === "base26" || query.digest === "base32" || query.digest === "base36" ||
-			    query.digest === "base49" || query.digest === "base52" || query.digest === "base58" ||
-			    query.digest === "base62" || query.digest === "base64") {
-				return encodeBufferToBase(hash.digest(), query.digest.substr(4), digestSize).substr(0, digestSize);
-			} else {
-				return hash.digest(query.digest || "hex").substr(0, digestSize);
-			}
+		// Match hash template
+		url = url.replace(/\[(?:(\w+):)?hash(?::([a-z]+\d*))?(?::(\d+))?\]/ig, function() {
+			return exports.getHashDigest(content, arguments[1], arguments[2], arguments[3]);
 		})		
 	}
 	url = url.replace(/\[ext\]/ig, function() {
@@ -197,9 +203,9 @@ exports.interpolateName = function interpolateName(loaderContext, content) {
 	}).replace(/\[path\]/ig, function() {
 		return directory;
 	});
-	if(query.regExp && loaderContext.resourcePath) {
-		var re = new RegExp(query.regExp);
-		var match = loaderContext.resourcePath.match(query.regExp);
+	if(regExp && loaderContext.resourcePath) {
+		var re = new RegExp(regExp);
+		var match = loaderContext.resourcePath.match(regExp);
 		if(match) {
 			for (var i = 1; i < match.length; i++) {
 				var re = new RegExp("\\[" + i + "\\]", "ig");
@@ -208,4 +214,4 @@ exports.interpolateName = function interpolateName(loaderContext, content) {
 		}
 	}
 	return url;
-}
+};
