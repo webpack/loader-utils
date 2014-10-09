@@ -193,7 +193,7 @@ exports.interpolateName = function interpolateName(loaderContext, name, options)
 	if(content) {
 		// Match hash template
 		url = url.replace(/\[(?:(\w+):)?hash(?::([a-z]+\d*))?(?::(\d+))?\]/ig, function() {
-			return exports.getHashDigest(content, arguments[1], arguments[2], arguments[3]);
+			return exports.getHashDigest(content, arguments[1], arguments[2], parseInt(arguments[3], 10));
 		})		
 	}
 	url = url.replace(/\[ext\]/ig, function() {
