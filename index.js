@@ -31,6 +31,9 @@ function encodeBufferToBase(buffer, base, length) {
 		b = b.div(base);
 	}
 
+	Big.DP = 20;
+	Big.RM = 1;
+
 	return output;
 }
 
