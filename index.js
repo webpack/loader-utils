@@ -188,8 +188,13 @@ exports.interpolateName = function interpolateName(loaderContext, name, options)
 			basename = resourcePath.substr(p+1);
 			resourcePath = resourcePath.substr(0, p+1);
 		}
-		directory = path.relative(context, resourcePath + "_").replace(/\\/g, "/").replace(/\.\.(\/)?/g, "_$1");
-		directory = directory.substr(0, directory.length-1);
+		if (typeof context !== 'undefined') {
+			directory = path.relative(context, resourcePath + "_").replace(/\\/g, "/").replace(/\.\.(\/)?/g, "_$1");
+			directory = directory.substr(0, directory.length-1);
+		}
+		else {
+			directory = resourcePath.replace(/\\/g, "/").replace(/\.\.(\/)?/g, "_$1");
+		}
 		if(directory.length === 1) directory = "";
 	}
 	var url = filename;
