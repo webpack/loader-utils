@@ -64,63 +64,65 @@ Interpolates a filename template using multiple placeholders and/or a regular ex
 The template and regular expresion are set as query params called `name` and `regExp` on the current loader's context.
 
 ```javascript
-var name = loaderUtils.interpolateName(loaderContext, [content]);
+var interpolatedName = loaderUtils.interpolateName(loaderContext, name, options);
 ```
 
-You can configure a custom filename template for your file (query param `name`).
+The following tokens are replaced in the `name` parameter:
 
 * `[ext]` the extension of the resource
 * `[name]` the basename of the resource
 * `[path]` the path of the resource relative to the `context` query parameter or option.
-* `[hash]` the hash of the content, usefull when the optional `content` argument is passed to the function
-  * query param `hash` allows to choose a algorithm (default `md5`)
-  * query param `digest` allows to choose the type of digest (default `hex`)
-  * query param `size` allows to choose the length of the hash in chars
-* `[N]` the N-th match obtained from matching the current file name against the `regExp` query param
+* `[hash]` the hash of `options.content` (Buffer) (by default it's the hex digest of the md5 hash)
+* `[<hashType>:hash:<digestType>:<length>]` optionally one can configure
+  * other `hashType`s, i. e. `sha1`, `md5`, `sha256`, `sha512`
+  * other `digestType`s, i. e. `hex`, `base26`, `base32`, `base36`, `base49`, `base52`, `base58`, `base62`, `base64`
+  * and `length` the length in chars
+* `[N]` the N-th match obtained from matching the current file name against `options.regExp`
 
 Examples
 
 ``` javascript
 // loaderContext.resourcePath = "/app/js/javascript.js"
-// loaderContext.query.name = "js/[hash].script.[ext]"
-loaderUtils.interpolateName(loaderContext, content);
+loaderUtils.interpolateName(loaderContext, "js/[hash].script.[ext]", { content: ... });
 // => js/0dcbbaa701328a3c262cfd45869e351f.script.js
 
 // loaderContext.resourcePath = "/app/page.html"
-// loaderContext.query.name = "html-[hash].html"
-// loaderContext.query.size = 6
-loaderUtils.interpolateName(loaderContext, content);
+loaderUtils.interpolateName(loaderContext, "html-[hash:6].html", { content: ... });
 // => html-109fa8.html
 
 // loaderContext.resourcePath = "/app/flash.txt"
-// loaderContext.query.name = "[hash]"
-loaderUtils.interpolateName(loaderContext, content);
+loaderUtils.interpolateName(loaderContext, "[hash]", { content: ... });
 // => c31e9820c001c9c4a86bce33ce43b679
 
 // loaderContext.resourcePath = "/app/img/image.png"
-// loaderContext.query.hash = 'sha512'
-// loaderContext.query.size = 7
-// loaderContext.query.digest = 'base64'
-loaderUtils.interpolateName(loaderContext, content);
+loaderUtils.interpolateName(loaderContext, "[sha512:hash:base64:7]", { content: ... });
 // => gdyb21L.png
 // use sha512 hash instead of md5 and with only 7 chars of base64
 
 // loaderContext.resourcePath = "/app/img/myself.png"
-// loaderContext.query.name = "picture.png"
-loaderUtils.interpolateName(loaderContext);
+// loaderContext.query.name =
+loaderUtils.interpolateName(loaderContext, "picture.png");
 // => picture.png
 
 // loaderContext.resourcePath = "/app/dir/file.png"
-// loaderContext.query.name = "[path][name].[ext]?[hash]"
-loaderUtils.interpolateName(loaderContext, content);
+loaderUtils.interpolateName(loaderContext, "[path][name].[ext]?[hash]", { content: ... });
 // => dir/file.png?e43b20c069c4a01867c31e98cbce33c9
 
 // loaderContext.resourcePath = "/app/js/page-home.js"
-// loaderContext.query.name = "script-[1].[ext]"
-// loaderContext.query.regExp = "page-(.*)\\.js"
-loaderUtils.interpolateName(loaderContext, content);
+loaderUtils.interpolateName(loaderContext, "script-[1].[ext]", { regExp: "page-(.*)\\.js", content: ... });
 // => script-home.js
 ```
+
+### `getHashDigest`
+
+``` javascript
+var digestString = loaderUtils.getHashDigest(buffer, hashType, digestType, maxLength);
+```
+
+* `buffer` the content that should be hashed
+* `hashType` one of `sha1`, `md5`, `sha256`, `sha512` or any other node.js supported hash type
+* `digestType` one of `hex`, `base26`, `base32`, `base36`, `base49`, `base52`, `base58`, `base62`, `base64`
+* `maxLength` the maximum length in chars
 
 ## License
 
