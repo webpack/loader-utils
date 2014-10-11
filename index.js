@@ -1,4 +1,42 @@
 var JSON5 = require("json5");
+var path = require("path");
+
+var baseEncodeTables = {
+	26: "abcdefghijklmnopqrstuvwxyz",
+	32: "123456789abcdefghjkmnpqrstuvwxyz", // no 0lio
+	36: "0123456789abcdefghijklmnopqrstuvwxyz",
+	49: "abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ", // no lIO
+	52: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
+	58: "123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ", // no 0lIO
+	62: "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
+	64: "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_"
+};
+
+function encodeBufferToBase(buffer, base, length) {
+	var encodeTable = baseEncodeTables[base];
+	if (!encodeTable) throw new Error("Enknown encoding base" + base);
+
+	var readLength = buffer.length;
+
+	var Big = require('big.js');
+	Big.RM = Big.DP = 0;
+	var b = new Big(0);
+	for (var i = readLength - 1; i >= 0; i--) {
+		b = b.times(256).plus(buffer[i]);
+	}
+
+	var output = "";
+	while (b.gt(0)) {
+		output = encodeTable[b.mod(base)] + output;
+		b = b.div(base);
+	}
+
+	Big.DP = 20;
+	Big.RM = 1;
+
+	return output;
+}
+
 exports.parseQuery = function parseQuery(query) {
 	if(!query) return {};
 	if(typeof query !== "string")
@@ -112,4 +150,76 @@ exports.parseString = function parseString(str) {
 		}).replace(/^'|'$/g, '"'));
 	}
 	return JSON.parse('"' + str + '"');
+};
+
+exports.getHashDigest = function getHashDigest(buffer, hashType, digestType, maxLength) {
+	hashType = hashType || "md5";
+	maxLength = maxLength || 9999;
+	var hash = new (require("crypto").Hash)(hashType);
+	hash.update(buffer);
+	if (digestType === "base26" || digestType === "base32" || digestType === "base36" ||
+	    digestType === "base49" || digestType === "base52" || digestType === "base58" ||
+	    digestType === "base62" || digestType === "base64") {
+		return encodeBufferToBase(hash.digest(), digestType.substr(4), maxLength).substr(0, maxLength);
+	} else {
+		return hash.digest(digestType || "hex").substr(0, maxLength);
+	}
+};
+
+exports.interpolateName = function interpolateName(loaderContext, name, options) {
+	var filename = name || "[hash].[ext]";
+	var context = options.context;
+	var content = options.content;
+	var regExp = options.regExp;
+	var ext = "bin";
+	var basename = "file";
+	var directory = "";
+	if(loaderContext.resourcePath) {
+		var resourcePath = loaderContext.resourcePath;
+		var idx = resourcePath.lastIndexOf(".");
+		var i = resourcePath.lastIndexOf("\\");
+		var j = resourcePath.lastIndexOf("/");
+		var p = i < 0 ? j : j < 0 ? i : i < j ? i : j;
+		if(idx >= 0) {
+			ext = resourcePath.substr(idx+1);
+			resourcePath = resourcePath.substr(0, idx);
+		}
+		if(p >= 0) {
+			basename = resourcePath.substr(p+1);
+			resourcePath = resourcePath.substr(0, p+1);
+		}
+		if (typeof context !== 'undefined') {
+			directory = path.relative(context, resourcePath + "_").replace(/\\/g, "/").replace(/\.\.(\/)?/g, "_$1");
+			directory = directory.substr(0, directory.length-1);
+		}
+		else {
+			directory = resourcePath.replace(/\\/g, "/").replace(/\.\.(\/)?/g, "_$1");
+		}
+		if(directory.length === 1) directory = "";
+	}
+	var url = filename;
+	if(content) {
+		// Match hash template
+		url = url.replace(/\[(?:(\w+):)?hash(?::([a-z]+\d*))?(?::(\d+))?\]/ig, function() {
+			return exports.getHashDigest(content, arguments[1], arguments[2], parseInt(arguments[3], 10));
+		})		
+	}
+	url = url.replace(/\[ext\]/ig, function() {
+		return ext;
+	}).replace(/\[name\]/ig, function() {
+		return basename;
+	}).replace(/\[path\]/ig, function() {
+		return directory;
+	});
+	if(regExp && loaderContext.resourcePath) {
+		var re = new RegExp(regExp);
+		var match = loaderContext.resourcePath.match(regExp);
+		if(match) {
+			for (var i = 1; i < match.length; i++) {
+				var re = new RegExp("\\[" + i + "\\]", "ig");
+				url = url.replace(re, match[i]);
+			}			
+		}
+	}
+	return url;
 };
