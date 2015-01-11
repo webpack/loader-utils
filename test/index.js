@@ -44,4 +44,19 @@ describe("loader-utils", function() {
 			});
 		});
 	});
+
+	describe("#parseString", function() {
+		[
+			["test string", "test string"],
+			[JSON.stringify("!\"§$%&/()=?'*#+,.-;öäü:_test"), "!\"§$%&/()=?'*#+,.-;öäü:_test"],
+			["'escaped with single \"'", 'escaped with single "'],
+			["invalid \"' string", "invalid \"' string"],
+			["\'inconsistent start and end\"", "\'inconsistent start and end\""]
+		].forEach(function(test) {
+			it("should parse " + test[0], function() {
+				var parsed = loaderUtils.parseString(test[0]);
+				assert.equal(parsed, test[1]);
+			});
+		});
+	});
 });

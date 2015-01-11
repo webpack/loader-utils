@@ -142,14 +142,18 @@ exports.urlToRequest = function(url, root) {
 };
 
 exports.parseString = function parseString(str) {
-	if(str[0] === '"') return JSON.parse(str);
-	if(str[0] === "'") {
-		return parseString(str.replace(/\\.|"/g, function(x) {
-			if(x === '"') return '\\"';
-			return x;
-		}).replace(/^'|'$/g, '"'));
+	try {
+		if(str[0] === '"') return JSON.parse(str);
+		if(str[0] === "'" && str.substr(str.length - 1) === "'") {
+			return parseString(str.replace(/\\.|"/g, function(x) {
+				if(x === '"') return '\\"';
+				return x;
+			}).replace(/^'|'$/g, '"'));
+		}
+		return JSON.parse('"' + str + '"');
+	} catch(e) {
+		return str;
 	}
-	return JSON.parse('"' + str + '"');
 };
 
 exports.getHashDigest = function getHashDigest(buffer, hashType, digestType, maxLength) {
@@ -202,7 +206,7 @@ exports.interpolateName = function interpolateName(loaderContext, name, options)
 		// Match hash template
 		url = url.replace(/\[(?:(\w+):)?hash(?::([a-z]+\d*))?(?::(\d+))?\]/ig, function() {
 			return exports.getHashDigest(content, arguments[1], arguments[2], parseInt(arguments[3], 10));
-		})		
+		});
 	}
 	url = url.replace(/\[ext\]/ig, function() {
 		return ext;
@@ -218,7 +222,7 @@ exports.interpolateName = function interpolateName(loaderContext, name, options)
 			for (var i = 1; i < match.length; i++) {
 				var re = new RegExp("\\[" + i + "\\]", "ig");
 				url = url.replace(re, match[i]);
-			}			
+			}
 		}
 	}
 	return url;
