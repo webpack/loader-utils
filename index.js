@@ -76,6 +76,16 @@ exports.parseQuery = function parseQuery(query) {
 	return result;
 };
 
+exports.stringifyRequest = function(loaderContext, request) {
+	var splitted = request.split("!");
+	var context = loaderContext.context;
+	return JSON.stringify(splitted.map(function(part) {
+		if(/^\/|^[A-Z]:/i.test(part))
+			return "./" + path.relative(context, part).replace(/\\/g, "/");
+		return part;
+	}).join("!"));
+};
+
 function dotRequest(obj) {
 	return obj.request;
 }

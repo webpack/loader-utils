@@ -26,7 +26,19 @@ null                   -> {}
 ?{json:5,data:{a:1}}   -> { json: 5, data: { a: 1 } }
 ```
 
+### `stringifyRequest`
+
+Makes a request pretty and stringifies it. Absolute paths are replaced with relative ones.
+
+Use it instead of `JSON.stringify(...)` to build code of a `require(...)` call in a loader.
+
+``` javascript
+loaderUtils.stringifyRequest(this, require.resolve("./test"));
+// = "../node_modules/some-loader/lib/test.js"
+```
+
 ### `urlToRequest`
+
 Converts some resource URL to a webpack module request.
 
 ```javascript
@@ -35,6 +47,7 @@ var request = loaderUtils.urlToRequest(url); // "./path/to/module.js"
 ```
 
 #### Module URLs
+
 Any URL containing a `~` will be interpreted as a module request. Anything after the `~` will be considered the request path.
 
 ```javascript
@@ -43,6 +56,7 @@ var request = loaderUtils.urlToRequest(url); // "path/to/module.js"
 ```
 
 #### Root-relative URLs
+
 URLs that are root-relative (start with `/`) can be resolved relative to some arbitrary path by using the `root` parameter:
 
 ```javascript
@@ -60,6 +74,7 @@ var request = loaderUtils.urlToRequest(url, root); // "path/to/module.js"
 ```
 
 ### `interpolateName`
+
 Interpolates a filename template using multiple placeholders and/or a regular expression.
 The template and regular expresion are set as query params called `name` and `regExp` on the current loader's context.
 
