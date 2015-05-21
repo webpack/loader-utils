@@ -38,6 +38,11 @@ function encodeBufferToBase(buffer, base, length) {
 }
 
 exports.parseQuery = function parseQuery(query) {
+	var specialValues = {
+		'null': null,
+		'true': true,
+		'false': false
+	};
 	if(!query) return {};
 	if(typeof query !== "string")
 		throw new Error("parseQuery should get a string as first argument");
@@ -55,6 +60,9 @@ exports.parseQuery = function parseQuery(query) {
 		if(idx >= 0) {
 			var name = arg.substr(0, idx);
 			var value = decodeURIComponent(arg.substr(idx+1));
+			if (specialValues.hasOwnProperty(value)) {
+				value = specialValues[value];
+			}
 			if(name.substr(-2) === "[]") {
 				name = decodeURIComponent(name.substr(0, name.length-2));
 				if(!Array.isArray(result[name]))

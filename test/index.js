@@ -59,4 +59,18 @@ describe("loader-utils", function() {
 			});
 		});
 	});
+
+	describe("#parseQuery", function() {
+		[
+			[
+				"?sweet=true&name=cheesecake&slices=8&delicious&warm=false",
+				{"sweet":true,"name":"cheesecake","slices":"8","delicious":true,"warm": false}
+			]
+		].forEach(function(test) {
+			it("should parse " + test[0], function() {
+				var parsed = loaderUtils.parseQuery(test[0]);
+				assert.deepEqual(parsed, test[1]);
+			});
+		});
+	});
 });
