@@ -8,7 +8,10 @@
     "big.js": "~2.5.1"
   },
   "scripts": {
-    "test": "mocha test index.js"
+    "test": "mocha",
+    "travis": "npm run cover -- --report lcovonly",
+    "cover": "istanbul cover -x *.runtime.js node_modules/mocha/bin/_mocha",
+    "publish-patch": "mocha && npm version patch && git push && git push --tags && npm publish"
   },
   "license": "MIT",
   "repository": {
@@ -16,6 +19,8 @@
     "url": "git://github.com/webpack/loader-utils.git"
   },
   "devDependencies": {
+    "coveralls": "^2.11.2",
+    "istanbul": "^0.3.14",
     "mocha": "^1.21.4"
   }
 }
