@@ -4,8 +4,8 @@
   "author": "Tobias Koppers @sokra",
   "description": "utils for webpack loaders",
   "dependencies": {
-    "json5": "0.1.x",
-    "big.js": "~2.5.1"
+    "big.js": "~3.0.2",
+    "json5": "0.1.x"
   },
   "scripts": {
     "test": "mocha test index.js"
@@ -17,5 +17,6 @@
   },
   "devDependencies": {
     "mocha": "^1.21.4"
-  }
+  },
+  "files": ["index.js"]
 }
