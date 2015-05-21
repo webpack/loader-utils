@@ -10,12 +10,7 @@
   "scripts": {
     "test": "mocha test index.js"
   },
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "http://www.opensource.org/licenses/mit-license.php"
-    }
-  ],
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git://github.com/webpack/loader-utils.git"
