@@ -87,6 +87,7 @@ The following tokens are replaced in the `name` parameter:
 * `[ext]` the extension of the resource
 * `[name]` the basename of the resource
 * `[path]` the path of the resource relative to the `context` query parameter or option.
+* `[folder]` the name of the folder in which the resource is located
 * `[hash]` the hash of `options.content` (Buffer) (by default it's the hex digest of the md5 hash)
 * `[<hashType>:hash:<digestType>:<length>]` optionally one can configure
   * other `hashType`s, i. e. `sha1`, `md5`, `sha256`, `sha512`
