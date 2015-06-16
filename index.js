@@ -88,7 +88,7 @@ exports.stringifyRequest = function(loaderContext, request) {
 	var splitted = request.split("!");
 	var context = loaderContext.context;
 	return JSON.stringify(splitted.map(function(part) {
-		if(/^\/|^[A-Z]:/i.test(part))
+		if(/^\/|^[A-Z]:/i.test(part) && context)
 			return "./" + path.relative(context, part).replace(/\\/g, "/");
 		return part;
 	}).join("!"));
