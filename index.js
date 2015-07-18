@@ -86,7 +86,7 @@ exports.parseQuery = function parseQuery(query) {
 
 exports.stringifyRequest = function(loaderContext, request) {
 	var splitted = request.split("!");
-	var context = loaderContext.context;
+	var context = loaderContext.context || (loaderContext.options && loaderContext.options.context);
 	return JSON.stringify(splitted.map(function(part) {
 		if(/^\/|^[A-Z]:/i.test(part) && context)
 			return "./" + path.relative(context, part).replace(/\\/g, "/");
