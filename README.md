@@ -76,7 +76,7 @@ var request = loaderUtils.urlToRequest(url, root); // "path/to/module.js"
 ### `interpolateName`
 
 Interpolates a filename template using multiple placeholders and/or a regular expression.
-The template and regular expresion are set as query params called `name` and `regExp` on the current loader's context.
+The template and regular expression are set as query params called `name` and `regExp` on the current loader's context.
 
 ```javascript
 var interpolatedName = loaderUtils.interpolateName(loaderContext, name, options);
