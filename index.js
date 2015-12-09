@@ -243,7 +243,7 @@ exports.interpolateName = function interpolateName(loaderContext, name, options)
 		var re = new RegExp(regExp);
 		var match = loaderContext.resourcePath.match(regExp);
 		if(match) {
-			for (var i = 1; i < match.length; i++) {
+			for (var i = 0; i < match.length; i++) {
 				var re = new RegExp("\\[" + i + "\\]", "ig");
 				url = url.replace(re, match[i]);
 			}
