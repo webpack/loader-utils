@@ -129,7 +129,7 @@ exports.urlToRequest = function(url, root) {
 	var moduleRequestRegex = /^[^?]*~/;
 	var request;
 
-	if(root !== undefined && root !== false && /^\//.test(url)) {
+	if(root !== undefined && root !== false && /^(\/|[a-zA-Z]:|\\\\)/.test(url)) {
 		// if root is set and the url is root-relative
 		switch(typeof root) {
 			// 1. root is a string: root is prefixed to the url
