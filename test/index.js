@@ -74,6 +74,26 @@ describe("loader-utils", function() {
 		});
 	});
 
+	describe("#getLoaderConfig", function() {
+		it("should merge loaderContext.query and loaderContext.options.testLoader", function () {
+			var config = loaderUtils.getLoaderConfig({query:"?name=cheesecake",options:{testLoader:{slices:8}}}, "testLoader");
+			assert.deepEqual(config, {name:"cheesecake",slices:8});
+		});
+		it("should allow to specify a config property name via loaderContext.query.config", function () {
+			var config = loaderUtils.getLoaderConfig({query:"?name=cheesecake&config=otherConfig",options:{otherConfig:{slices:8}}}, "testLoader");
+			assert.deepEqual(config, {name:"cheesecake",slices:8});
+		});
+		it("should prefer loaderContext.query.slices over loaderContext.options.slices", function () {
+			var config = loaderUtils.getLoaderConfig({query:"?slices=8",options:{testLoader:{slices:4}}}, "testLoader");
+			assert.deepEqual(config, {slices:8});
+		});
+		it("should throw an error if the default config key is missing", function () {
+		    assert.throws(function () {
+				loaderUtils.getLoaderConfig({});
+			}, "Default config key missing")
+		});
+	});
+
 	describe("#getHashDigest", function() {
 		[
 			["test string", "md5", "hex", undefined, "6f8db599de986fab7a21625b7916589c"],
