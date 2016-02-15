@@ -29,7 +29,7 @@ cheesecakeLoader: {
 }
 ```
 
-It is recommended that you use your camelCased npm name as your default config property name.
+It is recommended that you use the camelCased loader name as your default config property name.
 
 ### `parseQuery`
 
