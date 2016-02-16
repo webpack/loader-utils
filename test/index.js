@@ -88,7 +88,7 @@ describe("loader-utils", function() {
 			assert.deepEqual(config, {slices:8});
 		});
 		it("should throw an error if the default config key is missing", function () {
-		    assert.throws(function () {
+			assert.throws(function () {
 				loaderUtils.getLoaderConfig({});
 			}, "Default config key missing")
 		});
