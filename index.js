@@ -1,5 +1,6 @@
 var JSON5 = require("json5");
 var path = require("path");
+var baseEmoji = require("base-emoji");
 
 var baseEncodeTables = {
 	26: "abcdefghijklmnopqrstuvwxyz",
@@ -189,6 +190,8 @@ exports.getHashDigest = function getHashDigest(buffer, hashType, digestType, max
 	    digestType === "base49" || digestType === "base52" || digestType === "base58" ||
 	    digestType === "base62" || digestType === "base64") {
 		return encodeBufferToBase(hash.digest(), digestType.substr(4), maxLength).substr(0, maxLength);
+	} else if (digestType === "emoji") {
+		return baseEmoji.toUnicode(hash.digest()).substr(0, maxLength * 2);
 	} else {
 		return hash.digest(digestType || "hex").substr(0, maxLength);
 	}

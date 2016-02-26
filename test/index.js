@@ -45,6 +45,17 @@ describe("loader-utils", function() {
 		});
 	});
 
+	describe("#interpolateName", function() {
+		[
+			["/app/style.css", "[sha512:hash:emoji:4].[ext]", "test content", "💢🐩🎄⛅️.css"]
+		].forEach(function(test) {
+			it("should interpolate " + test[0] + " " + test[1], function() {
+				var interpolatedName = loaderUtils.interpolateName({ resourcePath: test[0] }, test[1], { content: test[2] });
+				assert.equal(interpolatedName, test[3]);
+			});
+		});
+	});
+
 	describe("#parseString", function() {
 		[
 			["test string", "test string"],
@@ -82,7 +93,10 @@ describe("loader-utils", function() {
 			["test string", "md5", "base52", undefined, "dJnldHSAutqUacjgfBQGLQx"],
 			["test string", "md5", "base26", 6, "bhtsgu"],
 			["test string", "sha512", "base64", undefined, "2IS-kbfIPnVflXb9CzgoNESGCkvkb0urMmucPD9z8q6HuYz8RShY1-tzSUpm5-Ivx_u4H1MEzPgAhyhaZ7RKog"],
-			["test_string", "md5", "hex", undefined, "3474851a3410906697ec77337df7aae4"]
+			["test_string", "md5", "hex", undefined, "3474851a3410906697ec77337df7aae4"],
+			["test string", "md5", "emoji", undefined, "🔦🐨🐖💰❄️🔬🔦👐🌐🐻💫🔮🎁👶🐄🐁"],
+			["test string", "md5", "emoji", 16, "🔦🐨🐖💰❄️🔬🔦👐🌐🐻💫🔮🎁👶🐄🐁"],
+			["test string", "md5", "emoji", 8, "🔦🐨🐖💰❄️🔬🔦👐"]
 		].forEach(function(test) {
 			it("should getHashDigest " + test[0] + " " + test[1] + " " + test[2] + " " + test[3], function() {
 				var hashDigest = loaderUtils.getHashDigest(test[0], test[1], test[2], test[3]);
