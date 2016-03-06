@@ -125,11 +125,6 @@ exports.isUrlRequest = function(url, root) {
 	return true;
 };
 
-// URL is a Windows path only if it contains backslashes and no slashes
-exports.isWindowsPath = function(url) {
-	return url.indexOf('/') === -1 && url.indexOf('\\') >= 0;
-};
-
 exports.urlToRequest = function(url, root) {
 	var moduleRequestRegex = /^[^?]*~/;
 	var request;
@@ -154,12 +149,12 @@ exports.urlToRequest = function(url, root) {
 			default:
 				throw new Error("Unexpected parameters to loader-utils 'urlToRequest': url = " + url + ", root = " + root + ".");
 		}
-	} else if(/^\.\.?(\/|\\)/.test(url)) {
+	} else if(/^\.\.?\//.test(url)) {
 		// A relative url stays
 		request = url;
 	} else {
 		// every other url is threaded like a relative url
-		request = (exports.isWindowsPath(url) ? ".\\" : "./") + url;
+		request = "./" + url;
 	}
 
 	// A `~` makes the url an module

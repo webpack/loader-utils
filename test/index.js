@@ -7,31 +7,6 @@ ExpectedError.prototype.matches = function (err) {
 };
 
 describe("loader-utils", function() {
-	describe("#isWindowsPath", function() {
-		[
-			[["/unix/absolute/path"], false, "should identify absolute UNIX path not being a Windows path"],
-			[["unix/relative/path"], false, "should identify relative UNIX path not being a Windows path"],
-			[["http://example.com/"], false, "should identify URL not being a Windows path"],
-			[["windows\\relative\\path"], true, "should identify relative Windows path"],
-			[["C:\\windows\\absolute\\path"], true, "should identify absolute Windows path"],
-			[["\\\\?\\UNC\\ComputerName\\absolute\\path"], true, "should identify absolute Windows path"]
-		].forEach(function(test) {
-			it(test[2], function() {
-				var expected = test[1];
-				try {
-					var request = loaderUtils.isWindowsPath.apply(loaderUtils, test[0]);
-					assert.equal(request, expected);
-				} catch (e) {
-					if (expected instanceof ExpectedError) {
-						assert.ok(expected.matches(e));
-					} else {
-						assert.ok(false, "should not have thrown an error: " + e.message);
-					}
-				}
-			});
-		});
-	});
-
 	describe("#urlToRequest()", function() {
 		[
 			// without root
@@ -40,21 +15,13 @@ describe("loader-utils", function() {
 			[["~path/to/thing"], "path/to/thing", "should handle module urls (with ~)"],
 			[["some/other/stuff/and/then~path/to/thing"], "path/to/thing", "should handle module urls with path prefix"],
 			[["./some/other/stuff/and/then~path/to/thing"], "path/to/thing", "should handle module urls with relative path prefix"],
-			// without root on Windows
-			[["path\\to\\thing"], ".\\path\\to\\thing", "should handle implicit Windows relative urls"],
-			[[".\\path\\to\\thing"], ".\\path\\to\\thing", "should handle explicit Windows relative urls"],
 			// with root (normal path)
 			[["path/to/thing", "root/dir"], "./path/to/thing", "should do nothing with root if implicit relative url"],
 			[["./path/to/thing", "root/dir"], "./path/to/thing", "should do nothing with root if explicit relative url"],
 			[["/path/to/thing", "root/dir"], "root/dir/path/to/thing", "should include root if root-relative url"],
-			// with root (normal path) on Windows
-			[["path\\to\\thing", "root\\dir"], ".\\path\\to\\thing", "should do nothing with root if implicit relative Windows url"],
-			[[".\\path\\to\\thing", "root\\dir"], ".\\path\\to\\thing", "should do nothing with root if explicit relative Windows url"],
-			[["\\path\\to\\thing", "root\\dir"], "root\\dir\\path\\to\\thing", "should include root if root-relative Windows url"],
 			// with root (boolean)
 			[["/path/to/thing", true], "/path/to/thing", "should allow root-relative to exist as-is if root = `true`"],
 			// with root (boolean) on Windows
-			[["\\path\\to\\thing", true], "\\path\\to\\thing", "should handle Windows absolute paths without drive letter"],
 			[["C:\\path\\to\\thing", true], "C:\\path\\to\\thing", "should handle Windows absolute paths with drive letter"],
 			[["\\\\?\\UNC\\ComputerName\\path\\to\\thing", true], "\\\\?\\UNC\\ComputerName\\path\\to\\thing", "should handle Windows absolute UNC paths"],
 			// with root (module)
