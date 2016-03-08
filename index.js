@@ -14,7 +14,7 @@ var baseEncodeTables = {
 
 function encodeBufferToBase(buffer, base, length) {
 	var encodeTable = baseEncodeTables[base];
-	if (!encodeTable) throw new Error("Enknown encoding base" + base);
+	if (!encodeTable) throw new Error("Unknown encoding base" + base);
 
 	var readLength = buffer.length;
 
