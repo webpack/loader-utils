@@ -1,6 +1,9 @@
 var JSON5 = require("json5");
 var path = require("path");
-var emojiList = require("emojis-list");
+var emojiRegex = /[\uD800-\uDFFF]./;
+var emojiList = require("emojis-list").filter(function(emoji) {
+	return emojiRegex.test(emoji)
+});
 
 var baseEncodeTables = {
 	26: "abcdefghijklmnopqrstuvwxyz",

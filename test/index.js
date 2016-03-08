@@ -119,16 +119,15 @@ describe("loader-utils", function() {
 			[
 				[{}, "[emoji]", { content: "test" }],
 				function(result) {
-					assert.ok(emojiRegex.test(result));
+					assert.ok(emojiRegex.test(result), result);
 				},
 				"should interpolate [emoji]"
 			],
 			[
 				[{}, "[emoji:3]", { content: "string" }],
 				function(result) {
-					assert.ok(emojiRegex.test(result));
-					// there's no reliable method to assert on the length of the string due to unicode implementation weirdness
-					assert.ok(result.length > 2);
+					assert.ok(emojiRegex.test(result), result);
+					assert.ok(result.length, 6);
 				},
 				"should interpolate [emoji:3]"
 			],
