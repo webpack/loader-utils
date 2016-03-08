@@ -183,7 +183,7 @@ exports.parseString = function parseString(str) {
 exports.getHashDigest = function getHashDigest(buffer, hashType, digestType, maxLength) {
 	hashType = hashType || "md5";
 	maxLength = maxLength || 9999;
-	var hash = new (require("crypto").Hash)(hashType);
+	var hash = require("crypto").createHash(hashType);
 	hash.update(buffer);
 	if (digestType === "base26" || digestType === "base32" || digestType === "base36" ||
 	    digestType === "base49" || digestType === "base52" || digestType === "base58" ||
