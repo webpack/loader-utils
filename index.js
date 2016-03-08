@@ -1,5 +1,6 @@
 var JSON5 = require("json5");
 var path = require("path");
+var emojiList = require("emojis-list");
 
 var baseEncodeTables = {
 	26: "abcdefghijklmnopqrstuvwxyz",
@@ -11,6 +12,21 @@ var baseEncodeTables = {
 	62: "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
 	64: "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_"
 };
+var emojiCache = {};
+
+function encodeStringToEmoji(content, length) {
+	if (emojiCache[content]) return emojiCache[content];
+	length = length || 1;
+	var emojis = [];
+	do {
+		var index = Math.floor(Math.random() * emojiList.length);
+		emojis.push(emojiList[index]);
+		emojiList.splice(index, 1);
+	} while (--length > 0);
+	var emojiEncoding = emojis.join('');
+	emojiCache[content] = emojiEncoding;
+	return emojiEncoding;
+}
 
 function encodeBufferToBase(buffer, base) {
 	var encodeTable = baseEncodeTables[base];
@@ -230,6 +246,8 @@ exports.interpolateName = function interpolateName(loaderContext, name, options)
 		// Match hash template
 		url = url.replace(/\[(?:(\w+):)?hash(?::([a-z]+\d*))?(?::(\d+))?\]/ig, function() {
 			return exports.getHashDigest(content, arguments[1], arguments[2], parseInt(arguments[3], 10));
+		}).replace(/\[emoji(?::(\d+))?\]/ig, function() {
+			return encodeStringToEmoji(content, arguments[1]);
 		});
 	}
 	url = url.replace(/\[ext\]/ig, function() {
