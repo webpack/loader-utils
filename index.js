@@ -221,6 +221,7 @@ exports.interpolateName = function interpolateName(loaderContext, name, options)
 	var ext = "bin";
 	var basename = "file";
 	var directory = "";
+	var folder = "";
 	if(loaderContext.resourcePath) {
 		var resourcePath = loaderContext.resourcePath;
 		var idx = resourcePath.lastIndexOf(".");
@@ -242,7 +243,11 @@ exports.interpolateName = function interpolateName(loaderContext, name, options)
 		else {
 			directory = resourcePath.replace(/\\/g, "/").replace(/\.\.(\/)?/g, "_$1");
 		}
-		if(directory.length === 1) directory = "";
+		if (directory.length === 1) {
+			directory = "";
+		} else if (directory.length > 1) {
+			folder = path.basename(directory);
+		}
 	}
 	var url = filename;
 	if(content) {
@@ -259,6 +264,8 @@ exports.interpolateName = function interpolateName(loaderContext, name, options)
 		return basename;
 	}).replace(/\[path\]/ig, function() {
 		return directory;
+	}).replace(/\[folder\]/ig, function() {
+		return folder;
 	});
 	if(regExp && loaderContext.resourcePath) {
 		var re = new RegExp(regExp);
