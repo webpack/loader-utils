@@ -12,7 +12,7 @@ var baseEncodeTables = {
 	64: "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_"
 };
 
-function encodeBufferToBase(buffer, base, length) {
+function encodeBufferToBase(buffer, base) {
 	var encodeTable = baseEncodeTables[base];
 	if (!encodeTable) throw new Error("Unknown encoding base" + base);
 
@@ -188,7 +188,7 @@ exports.getHashDigest = function getHashDigest(buffer, hashType, digestType, max
 	if (digestType === "base26" || digestType === "base32" || digestType === "base36" ||
 	    digestType === "base49" || digestType === "base52" || digestType === "base58" ||
 	    digestType === "base62" || digestType === "base64") {
-		return encodeBufferToBase(hash.digest(), digestType.substr(4), maxLength).substr(0, maxLength);
+		return encodeBufferToBase(hash.digest(), digestType.substr(4)).substr(0, maxLength);
 	} else {
 		return hash.digest(digestType || "hex").substr(0, maxLength);
 	}
