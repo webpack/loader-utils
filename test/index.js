@@ -139,12 +139,15 @@ describe("loader-utils", function() {
 			assert.equal(result1, result2);
 		});
 
+		// 
+
 		context("no loader context", function() {
 			var loaderContext = {};
 			run([
 				[[loaderContext, "[ext]", {}], "bin", "should interpolate [ext] token"],
 				[[loaderContext, "[name]", {}], "file", "should interpolate [name] token"],
-				[[loaderContext, "[path]", {}], "", "should interpolate [path] token"]
+				[[loaderContext, "[path]", {}], "", "should interpolate [path] token"],
+				[[loaderContext, "[folder]", {}], "", "should interpolate [folder] token"]
 			]);
 		});
 
@@ -153,7 +156,8 @@ describe("loader-utils", function() {
 			run([
 				[[loaderContext, "[ext]", {}], "exe", "should interpolate [ext] token"],
 				[[loaderContext, "[name]", {}], "file", "should interpolate [name] token"],
-				[[loaderContext, "[path]", {}], "/path/to/", "should interpolate [path] token"]
+				[[loaderContext, "[path]", {}], "/path/to/", "should interpolate [path] token"],
+				[[loaderContext, "[folder]", {}], "to", "should interpolate [folder] token"]
 			]);
 		});
 	});
