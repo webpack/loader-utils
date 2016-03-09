@@ -139,8 +139,6 @@ describe("loader-utils", function() {
 			assert.equal(result1, result2);
 		});
 
-		// 
-
 		context("no loader context", function() {
 			var loaderContext = {};
 			run([
