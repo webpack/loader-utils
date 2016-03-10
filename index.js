@@ -226,18 +226,16 @@ exports.interpolateName = function interpolateName(loaderContext, name, options)
 		if(directory.length === 1) directory = "";
 	}
 	var url = filename;
-	if(content) {
-		// Match hash template
-		url = url.replace(/\[(?:(\w+):)?hash(?::(binary|hex|base\d\d))?(?::(\d+))?(?::(.+))?\]/ig, function(fullMatch, hashType, digestType, length, sourcePattern) {
-			if (sourcePattern) {
-				content = exports.interpolateName(loaderContext, sourcePattern, options);
-			}
-			if (!content) {
-				return fullMatch; // don't replace
-			}
-			return exports.getHashDigest(content, hashType, digestType, parseInt(length, 10));
-		});
-	}
+	// Match hash template
+	url = url.replace(/\[(?:(\w+):)?hash(?::(binary|hex|base\d\d))?(?::(\d+))?(?::(.+))?\]/ig, function(fullMatch, hashType, digestType, length, sourcePattern) {
+		if (sourcePattern) {
+			content = exports.interpolateName(loaderContext, sourcePattern, options);
+		}
+		if (!content) {
+			return fullMatch; // don't replace
+		}
+		return exports.getHashDigest(content, hashType, digestType, parseInt(length, 10));
+	});
 	url = url.replace(/\[ext\]/ig, function() {
 		return ext;
 	}).replace(/\[name\]/ig, function() {
