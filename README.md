@@ -88,10 +88,11 @@ The following tokens are replaced in the `name` parameter:
 * `[name]` the basename of the resource
 * `[path]` the path of the resource relative to the `context` query parameter or option.
 * `[hash]` the hash of `options.content` (Buffer) (by default it's the hex digest of the md5 hash)
-* `[<hashType>:hash:<digestType>:<length>]` optionally one can configure
+* `[<hashType>:hash:<digestType>:<length>:<sourcePattern>]` optionally one can configure
   * other `hashType`s, i. e. `sha1`, `md5`, `sha256`, `sha512`
   * other `digestType`s, i. e. `hex`, `base26`, `base32`, `base36`, `base49`, `base52`, `base58`, `base62`, `base64`
-  * and `length` the length in chars
+  * `length` the length in chars
+  * `sourcePattern` a string that is interpolated (using `interpolateName`) to determine what to hash, instead of the `options.content` (defaults to `options.content`)
 * `[N]` the N-th match obtained from matching the current file name against `options.regExp`
 
 Examples
