@@ -202,12 +202,14 @@ exports.interpolateName = function interpolateName(loaderContext, name, options)
 	var ext = "bin";
 	var basename = "file";
 	var directory = "";
+	var ctxFolder = "";
 	if(loaderContext.resourcePath) {
 		var resourcePath = loaderContext.resourcePath;
 		var idx = resourcePath.lastIndexOf(".");
 		var i = resourcePath.lastIndexOf("\\");
 		var j = resourcePath.lastIndexOf("/");
 		var p = i < 0 ? j : j < 0 ? i : i < j ? i : j;
+		var folders;
 		if(idx >= 0) {
 			ext = resourcePath.substr(idx+1);
 			resourcePath = resourcePath.substr(0, idx);
@@ -219,11 +221,18 @@ exports.interpolateName = function interpolateName(loaderContext, name, options)
 		if (typeof context !== 'undefined') {
 			directory = path.relative(context, resourcePath + "_").replace(/\\/g, "/").replace(/\.\.(\/)?/g, "_$1");
 			directory = directory.substr(0, directory.length-1);
+			folders = directory.split('/');
+			ctxFolder = folders[folders.length - 2];
 		}
 		else {
 			directory = resourcePath.replace(/\\/g, "/").replace(/\.\.(\/)?/g, "_$1");
+			folders =  directory.split('/');
+			ctxFolder = folders[folders.length - 2];
 		}
-		if(directory.length === 1) directory = "";
+		if(directory.length === 1) {
+			directory = "";
+			ctxFolder = "";
+		}
 	}
 	var url = filename;
 	if(content) {
@@ -238,6 +247,8 @@ exports.interpolateName = function interpolateName(loaderContext, name, options)
 		return basename;
 	}).replace(/\[path\]/ig, function() {
 		return directory;
+	}).replace(/\[folder\]/ig, function() {
+		return ctxFolder;
 	});
 	if(regExp && loaderContext.resourcePath) {
 		var re = new RegExp(regExp);
