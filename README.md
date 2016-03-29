@@ -90,7 +90,7 @@ The following tokens are replaced in the `name` parameter:
 * `[hash]` the hash of `options.content` (Buffer) (by default it's the hex digest of the md5 hash)
 * `[<hashType>:hash:<digestType>:<length>]` optionally one can configure
   * other `hashType`s, i. e. `sha1`, `md5`, `sha256`, `sha512`
-  * other `digestType`s, i. e. `hex`, `base26`, `base32`, `base36`, `base49`, `base52`, `base58`, `base62`, `base64`
+  * other `digestType`s, i. e. `hex`, `base26`, `base32`, `base36`, `base49`, `base52`, `base58`, `base62`, `base64`, `emoji`
   * and `length` the length in chars
 * `[N]` the N-th match obtained from matching the current file name against `options.regExp`
 
@@ -126,6 +126,10 @@ loaderUtils.interpolateName(loaderContext, "[path][name].[ext]?[hash]", { conten
 // loaderContext.resourcePath = "/app/js/page-home.js"
 loaderUtils.interpolateName(loaderContext, "script-[1].[ext]", { regExp: "page-(.*)\\.js", content: ... });
 // => script-home.js
+
+// loaderContext.resourcePath = "/app/style.css"
+loaderUtils.interpolateName(loaderContext, "[sha512:hash:emoji:4].[ext]", { content: ... });
+// => 💢🐩🎄⛅️.css
 ```
 
 ### `getHashDigest`
@@ -136,7 +140,7 @@ var digestString = loaderUtils.getHashDigest(buffer, hashType, digestType, maxLe
 
 * `buffer` the content that should be hashed
 * `hashType` one of `sha1`, `md5`, `sha256`, `sha512` or any other node.js supported hash type
-* `digestType` one of `hex`, `base26`, `base32`, `base36`, `base49`, `base52`, `base58`, `base62`, `base64`
+* `digestType` one of `hex`, `base26`, `base32`, `base36`, `base49`, `base52`, `base58`, `base62`, `base64`, `emoji`
 * `maxLength` the maximum length in chars
 
 ## License

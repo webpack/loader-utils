@@ -4,6 +4,7 @@
   "author": "Tobias Koppers @sokra",
   "description": "utils for webpack loaders",
   "dependencies": {
+    "base-emoji": "2.0.1",
     "big.js": "^3.0.2",
     "json5": "^0.4.0"
   },
