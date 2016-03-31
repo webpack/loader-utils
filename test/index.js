@@ -90,4 +90,17 @@ describe("loader-utils", function() {
 			});
 		});
 	});
+
+	describe("#interpolateName", function() {
+		[
+			["txt.resource./path/to/", {resourcePath: "/path/to/resource.txt"}, "[ext].[name].[path]", {content: ''}],
+			["!d93591!", {resourcePath: "/path/to/resource.txt"}, "![hash:6]!", {content: '4321'}],
+			["50e040", {resourcePath: "/path/to/resource.txt"}, "[hash:6:[name]4321]", {content: 'xyz'}],
+		].forEach(function(test) {
+			it("should interpolate " + test[2], function() {
+				var name = loaderUtils.interpolateName.apply(null, test.slice(1));
+				assert.equal(name, test[0]);
+			});
+		});
+	});
 });

@@ -183,7 +183,7 @@ exports.parseString = function parseString(str) {
 exports.getHashDigest = function getHashDigest(buffer, hashType, digestType, maxLength) {
 	hashType = hashType || "md5";
 	maxLength = maxLength || 9999;
-	var hash = new (require("crypto").Hash)(hashType);
+	var hash = require("crypto").createHash(hashType);
 	hash.update(buffer);
 	if (digestType === "base26" || digestType === "base32" || digestType === "base36" ||
 	    digestType === "base49" || digestType === "base52" || digestType === "base58" ||
@@ -226,12 +226,16 @@ exports.interpolateName = function interpolateName(loaderContext, name, options)
 		if(directory.length === 1) directory = "";
 	}
 	var url = filename;
-	if(content) {
-		// Match hash template
-		url = url.replace(/\[(?:(\w+):)?hash(?::([a-z]+\d*))?(?::(\d+))?\]/ig, function() {
-			return exports.getHashDigest(content, arguments[1], arguments[2], parseInt(arguments[3], 10));
-		});
-	}
+	// Match hash template
+	url = url.replace(/\[(?:(\w+):)?hash(?::(binary|hex|base\d\d))?(?::(\d+))?(?::(.+))?\]/ig, function(fullMatch, hashType, digestType, length, sourcePattern) {
+		if (sourcePattern) {
+			content = exports.interpolateName(loaderContext, sourcePattern, options);
+		}
+		if (!content) {
+			return fullMatch; // don't replace
+		}
+		return exports.getHashDigest(content, hashType, digestType, parseInt(length, 10));
+	});
 	url = url.replace(/\[ext\]/ig, function() {
 		return ext;
 	}).replace(/\[name\]/ig, function() {
