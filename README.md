@@ -131,11 +131,11 @@ Examples
 ``` javascript
 // loaderContext.resourcePath = "/app/js/javascript.js"
 loaderUtils.interpolateName(loaderContext, "js/[hash].script.[ext]", { content: ... });
-// => js/0dcbbaa701328a3c262cfd45869e351f.script.js
+// => js/9473fdd0d880a43c21b7778d34872157.script.js
 
 // loaderContext.resourcePath = "/app/page.html"
 loaderUtils.interpolateName(loaderContext, "html-[hash:6].html", { content: ... });
-// => html-109fa8.html
+// => html-9473fd.html
 
 // loaderContext.resourcePath = "/app/flash.txt"
 loaderUtils.interpolateName(loaderContext, "[hash]", { content: ... });
@@ -150,8 +150,8 @@ loaderUtils.interpolateName(loaderContext, "[emoji:4]", { content: ... });
 // => 🙍🏢📤🐝
 
 // loaderContext.resourcePath = "/app/img/image.png"
-loaderUtils.interpolateName(loaderContext, "[sha512:hash:base64:7]", { content: ... });
-// => gdyb21L.png
+loaderUtils.interpolateName(loaderContext, "[sha512:hash:base64:7].[ext]", { content: ... });
+// => 2BKDTjl.png
 // use sha512 hash instead of md5 and with only 7 chars of base64
 
 // loaderContext.resourcePath = "/app/img/myself.png"
@@ -161,7 +161,7 @@ loaderUtils.interpolateName(loaderContext, "picture.png");
 
 // loaderContext.resourcePath = "/app/dir/file.png"
 loaderUtils.interpolateName(loaderContext, "[path][name].[ext]?[hash]", { content: ... });
-// => dir/file.png?e43b20c069c4a01867c31e98cbce33c9
+// => /app/dir/file.png?9473fdd0d880a43c21b7778d34872157
 
 // loaderContext.resourcePath = "/app/js/page-home.js"
 loaderUtils.interpolateName(loaderContext, "script-[1].[ext]", { regExp: "page-(.*)\\.js", content: ... });

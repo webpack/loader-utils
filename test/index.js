@@ -50,6 +50,21 @@ describe("loader-utils", function() {
 		});
 	});
 
+	describe("#interpolateName", function() {
+		[
+			["/app/js/javascript.js", "js/[hash].script.[ext]", "test content", "js/9473fdd0d880a43c21b7778d34872157.script.js"],
+			["/app/page.html", "html-[hash:6].html", "test content", "html-9473fd.html"],
+			["/app/flash.txt", "[hash]", "test content", "9473fdd0d880a43c21b7778d34872157"],
+			["/app/img/image.png", "[sha512:hash:base64:7].[ext]", "test content", "2BKDTjl.png"],
+			["/app/dir/file.png", "[path][name].[ext]?[hash]", "test content", "/app/dir/file.png?9473fdd0d880a43c21b7778d34872157"]
+		].forEach(function(test) {
+			it("should interpolate " + test[0] + " " + test[1], function() {
+				var interpolatedName = loaderUtils.interpolateName({ resourcePath: test[0] }, test[1], { content: test[2] });
+				assert.equal(interpolatedName, test[3]);
+			});
+		});
+	});
+
 	describe("#parseString", function() {
 		[
 			["test string", "test string"],
