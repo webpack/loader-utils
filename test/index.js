@@ -90,4 +90,73 @@ describe("loader-utils", function() {
 			});
 		});
 	});
+
+	describe("#interpolateName", function() {
+		function run(tests) {
+			tests.forEach(function(test) {
+				var args = test[0];
+				var expected = test[1];
+				var message = test[2];
+				it(message, function() {
+					var result = loaderUtils.interpolateName.apply(loaderUtils, args);
+					if (typeof expected === "function") {
+						expected(result);
+					} else {
+						assert.equal(result, expected);
+					}
+				});
+			});
+		}
+
+		run([
+			[[{}, "", { content: "test string" }], "6f8db599de986fab7a21625b7916589c.bin", "should interpolate default tokens"],
+			[[{}, "[hash:base64]", { content: "test string" }], "2sm1pVmS8xuGJLCdWpJoRL", "should interpolate [hash] token with options"],
+			[[{}, "[unrecognized]", { content: "test string" }], "[unrecognized]", "should not interpolate unrecognized token"],
+		]);
+
+		var emojiRegex = /[\uD800-\uDFFF]./;
+		run([
+			[
+				[{}, "[emoji]", { content: "test" }],
+				function(result) {
+					assert.ok(emojiRegex.test(result), result);
+				},
+				"should interpolate [emoji]"
+			],
+			[
+				[{}, "[emoji:3]", { content: "string" }],
+				function(result) {
+					assert.ok(emojiRegex.test(result), result);
+					assert.ok(result.length, 6);
+				},
+				"should interpolate [emoji:3]"
+			],
+		]);
+		it("should return the same emoji for the same string", function() {
+			var args = [{}, "[emoji:5]", { content: "same_emoji" }];
+			var result1 = loaderUtils.interpolateName.apply(loaderUtils, args);
+			var result2 = loaderUtils.interpolateName.apply(loaderUtils, args);
+			assert.equal(result1, result2);
+		});
+
+		context("no loader context", function() {
+			var loaderContext = {};
+			run([
+				[[loaderContext, "[ext]", {}], "bin", "should interpolate [ext] token"],
+				[[loaderContext, "[name]", {}], "file", "should interpolate [name] token"],
+				[[loaderContext, "[path]", {}], "", "should interpolate [path] token"],
+				[[loaderContext, "[folder]", {}], "", "should interpolate [folder] token"]
+			]);
+		});
+
+		context("with loader context", function() {
+			var loaderContext = { resourcePath: "/path/to/file.exe" };
+			run([
+				[[loaderContext, "[ext]", {}], "exe", "should interpolate [ext] token"],
+				[[loaderContext, "[name]", {}], "file", "should interpolate [name] token"],
+				[[loaderContext, "[path]", {}], "/path/to/", "should interpolate [path] token"],
+				[[loaderContext, "[folder]", {}], "to", "should interpolate [folder] token"]
+			]);
+		});
+	});
 });

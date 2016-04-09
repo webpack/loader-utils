@@ -87,6 +87,9 @@ The following tokens are replaced in the `name` parameter:
 * `[ext]` the extension of the resource
 * `[name]` the basename of the resource
 * `[path]` the path of the resource relative to the `context` query parameter or option.
+* `[folder]` the folder of the resource is in.
+* `[emoji]` a random emoji representation of `options.content`
+* `[emoji:<length>]` same as above, but with a customizable number of emojis
 * `[hash]` the hash of `options.content` (Buffer) (by default it's the hex digest of the md5 hash)
 * `[<hashType>:hash:<digestType>:<length>]` optionally one can configure
   * other `hashType`s, i. e. `sha1`, `md5`, `sha256`, `sha512`
@@ -108,6 +111,14 @@ loaderUtils.interpolateName(loaderContext, "html-[hash:6].html", { content: ... 
 // loaderContext.resourcePath = "/app/flash.txt"
 loaderUtils.interpolateName(loaderContext, "[hash]", { content: ... });
 // => c31e9820c001c9c4a86bce33ce43b679
+
+// loaderContext.resourcePath = "/app/img/image.gif"
+loaderUtils.interpolateName(loaderContext, "[emoji]", { content: ... });
+// => 👍
+
+// loaderContext.resourcePath = "/app/img/image.gif"
+loaderUtils.interpolateName(loaderContext, "[emoji:4]", { content: ... });
+// => 🙍🏢📤🐝
 
 // loaderContext.resourcePath = "/app/img/image.png"
 loaderUtils.interpolateName(loaderContext, "[sha512:hash:base64:7]", { content: ... });

@@ -1,5 +1,9 @@
 var JSON5 = require("json5");
 var path = require("path");
+var emojiRegex = /[\uD800-\uDFFF]./;
+var emojiList = require("emojis-list").filter(function(emoji) {
+	return emojiRegex.test(emoji)
+});
 
 var baseEncodeTables = {
 	26: "abcdefghijklmnopqrstuvwxyz",
@@ -11,10 +15,25 @@ var baseEncodeTables = {
 	62: "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
 	64: "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_"
 };
+var emojiCache = {};
 
-function encodeBufferToBase(buffer, base, length) {
+function encodeStringToEmoji(content, length) {
+	if (emojiCache[content]) return emojiCache[content];
+	length = length || 1;
+	var emojis = [];
+	do {
+		var index = Math.floor(Math.random() * emojiList.length);
+		emojis.push(emojiList[index]);
+		emojiList.splice(index, 1);
+	} while (--length > 0);
+	var emojiEncoding = emojis.join('');
+	emojiCache[content] = emojiEncoding;
+	return emojiEncoding;
+}
+
+function encodeBufferToBase(buffer, base) {
 	var encodeTable = baseEncodeTables[base];
-	if (!encodeTable) throw new Error("Enknown encoding base" + base);
+	if (!encodeTable) throw new Error("Unknown encoding base" + base);
 
 	var readLength = buffer.length;
 
@@ -183,12 +202,12 @@ exports.parseString = function parseString(str) {
 exports.getHashDigest = function getHashDigest(buffer, hashType, digestType, maxLength) {
 	hashType = hashType || "md5";
 	maxLength = maxLength || 9999;
-	var hash = new (require("crypto").Hash)(hashType);
+	var hash = require("crypto").createHash(hashType);
 	hash.update(buffer);
 	if (digestType === "base26" || digestType === "base32" || digestType === "base36" ||
 	    digestType === "base49" || digestType === "base52" || digestType === "base58" ||
 	    digestType === "base62" || digestType === "base64") {
-		return encodeBufferToBase(hash.digest(), digestType.substr(4), maxLength).substr(0, maxLength);
+		return encodeBufferToBase(hash.digest(), digestType.substr(4)).substr(0, maxLength);
 	} else {
 		return hash.digest(digestType || "hex").substr(0, maxLength);
 	}
@@ -202,6 +221,7 @@ exports.interpolateName = function interpolateName(loaderContext, name, options)
 	var ext = "bin";
 	var basename = "file";
 	var directory = "";
+	var folder = "";
 	if(loaderContext.resourcePath) {
 		var resourcePath = loaderContext.resourcePath;
 		var idx = resourcePath.lastIndexOf(".");
@@ -223,13 +243,19 @@ exports.interpolateName = function interpolateName(loaderContext, name, options)
 		else {
 			directory = resourcePath.replace(/\\/g, "/").replace(/\.\.(\/)?/g, "_$1");
 		}
-		if(directory.length === 1) directory = "";
+		if (directory.length === 1) {
+			directory = "";
+		} else if (directory.length > 1) {
+			folder = path.basename(directory);
+		}
 	}
 	var url = filename;
 	if(content) {
 		// Match hash template
 		url = url.replace(/\[(?:(\w+):)?hash(?::([a-z]+\d*))?(?::(\d+))?\]/ig, function() {
 			return exports.getHashDigest(content, arguments[1], arguments[2], parseInt(arguments[3], 10));
+		}).replace(/\[emoji(?::(\d+))?\]/ig, function() {
+			return encodeStringToEmoji(content, arguments[1]);
 		});
 	}
 	url = url.replace(/\[ext\]/ig, function() {
@@ -238,6 +264,8 @@ exports.interpolateName = function interpolateName(loaderContext, name, options)
 		return basename;
 	}).replace(/\[path\]/ig, function() {
 		return directory;
+	}).replace(/\[folder\]/ig, function() {
+		return folder;
 	});
 	if(regExp && loaderContext.resourcePath) {
 		var re = new RegExp(regExp);
