@@ -21,6 +21,9 @@ describe("loader-utils", function() {
 			[["/path/to/thing", "root/dir"], "root/dir/path/to/thing", "should include root if root-relative url"],
 			// with root (boolean)
 			[["/path/to/thing", true], "/path/to/thing", "should allow root-relative to exist as-is if root = `true`"],
+			// with root (boolean) on Windows
+			[["C:\\path\\to\\thing", true], "C:\\path\\to\\thing", "should handle Windows absolute paths with drive letter"],
+			[["\\\\?\\UNC\\ComputerName\\path\\to\\thing", true], "\\\\?\\UNC\\ComputerName\\path\\to\\thing", "should handle Windows absolute UNC paths"],
 			// with root (module)
 			[["/path/to/thing", "~"], "path/to/thing", "should convert to module url if root = ~"],
 			// with root (module path)
