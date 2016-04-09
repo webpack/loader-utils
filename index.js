@@ -67,7 +67,7 @@ exports.parseQuery = function parseQuery(query) {
 	if(typeof query !== "string")
 		throw new Error("parseQuery should get a string as first argument");
 	if(query.substr(0, 1) !== "?")
-		throw new Error("a vaild query string passed to parseQuery should begin with '?'");
+		throw new Error("a valid query string passed to parseQuery should begin with '?'");
 	query = query.substr(1);
 	var queryLength = query.length;
 	if(query.substr(0, 1) === "{" && query.substr(-1) === "}") {
