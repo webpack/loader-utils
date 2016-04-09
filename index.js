@@ -89,15 +89,16 @@ exports.parseQuery = function parseQuery(query) {
 					result[name] = [];
 				result[name].push(value);
 			} else {
+				name = decodeURIComponent(name);
 				result[name] = value;
 			}
 		} else {
 			if(arg.substr(0, 1) === "-") {
-				result[arg.substr(1)] = false;
+				result[decodeURIComponent(arg.substr(1))] = false;
 			} else if(arg.substr(0, 1) === "+") {
-				result[arg.substr(1)] = true;
+				result[decodeURIComponent(arg.substr(1))] = true;
 			} else {
-				result[arg] = true;
+				result[decodeURIComponent(arg)] = true;
 			}
 		}
 	});

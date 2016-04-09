@@ -85,6 +85,22 @@ describe("loader-utils", function() {
 			[
 				"?sweet=true&name=cheesecake&slices=8&delicious&warm=false",
 				{"sweet":true,"name":"cheesecake","slices":"8","delicious":true,"warm": false}
+			],
+			[
+				"?%3d",
+				{"=": true}
+			],
+			[
+				"?+%3d",
+				{"=": true}
+			],
+			[
+				"?-%3d",
+				{"=": false}
+			],
+			[
+				"?%3d=%3D",
+				{"=": "="}
 			]
 		].forEach(function(test) {
 			it("should parse " + test[0], function() {
