@@ -2,6 +2,35 @@
 
 ## Methods
 
+### `getLoaderConfig`
+
+Recommended way to retrieve the loader config:
+
+```javascript
+// inside your loader
+config = loaderUtils.getLoaderConfig(this, "myLoader");
+```
+
+Tries to read the loader config from the `webpack.config.js` under the given property name (`"myLoader"` in this case) and merges the result with the loader query. For example, if your `webpack.config.js` had this property...
+
+```javascript
+cheesecakeLoader: {
+	type: "delicious",
+	slices: 4
+}
+```
+
+...and your loader was called with `?slices=8`, `getLoaderConfig(this, "cheesecakeLoader")` would return
+
+```javascript
+{
+	type: "delicious",
+	slices: 8
+}
+```
+
+It is recommended that you use the camelCased loader name as your default config property name.
+
 ### `parseQuery`
 
 ``` javascript

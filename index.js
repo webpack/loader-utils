@@ -1,5 +1,6 @@
 var JSON5 = require("json5");
 var path = require("path");
+var assign = require("object-assign");
 var emojiRegex = /[\uD800-\uDFFF]./;
 var emojiList = require("emojis-list").filter(function(emoji) {
 	return emojiRegex.test(emoji)
@@ -101,6 +102,19 @@ exports.parseQuery = function parseQuery(query) {
 		}
 	});
 	return result;
+};
+
+exports.getLoaderConfig = function(loaderContext, defaultConfigKey) {
+	if (!defaultConfigKey) {
+		throw new Error("Default config key missing");
+	}
+	var query = exports.parseQuery(loaderContext.query);
+	var configKey = query.config || defaultConfigKey;
+	var config = loaderContext.options[configKey] || {};
+
+	delete query.config;
+
+	return assign({}, config, query);
 };
 
 exports.stringifyRequest = function(loaderContext, request) {
