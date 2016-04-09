@@ -183,5 +183,18 @@ describe("loader-utils", function() {
 				[[loaderContext, "[folder]", {}], "to", "should interpolate [folder] token"]
 			]);
 		});
+
+		run([
+			[[{
+				resourcePath: "/xyz",
+				options: {
+					customInterpolateName: function(str, name, options) {
+						return str + "-" + name + "-" + options.special;
+					}
+				}
+			}, "[name]", {
+				special: "special"
+			}], "xyz-[name]-special", "should provide a custom interpolateName function in options"],
+		]);
 	});
 });
