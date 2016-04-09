@@ -22,15 +22,17 @@ describe("loader-utils", function() {
 			// with root (boolean)
 			[["/path/to/thing", true], "/path/to/thing", "should allow root-relative to exist as-is if root = `true`"],
 			// with root (boolean) on Windows
-			[["C:\\path\\to\\thing", true], "C:\\path\\to\\thing", "should handle Windows absolute paths with drive letter"],
-			[["\\\\?\\UNC\\ComputerName\\path\\to\\thing", true], "\\\\?\\UNC\\ComputerName\\path\\to\\thing", "should handle Windows absolute UNC paths"],
+			[["C:\\path\\to\\thing"], "C:\\path\\to\\thing", "should handle Windows absolute paths with drive letter"],
+			[["\\\\?\\UNC\\ComputerName\\path\\to\\thing"], "\\\\?\\UNC\\ComputerName\\path\\to\\thing", "should handle Windows absolute UNC paths"],
 			// with root (module)
 			[["/path/to/thing", "~"], "path/to/thing", "should convert to module url if root = ~"],
 			// with root (module path)
 			[["/path/to/thing", "~module"], "module/path/to/thing", "should allow module prefixes when root starts with ~"],
 			[["/path/to/thing", "~module/"], "module/path/to/thing", "should allow module prefixes (with trailing slash) when root starts with ~"],
 			// error cases
-			[["/path/to/thing", 1], new ExpectedError(/unexpected parameters/i), "should throw an error on invalid root"]
+			[["/path/to/thing", 1], new ExpectedError(/unexpected parameters/i), "should throw an error on invalid root"],
+			// difficult cases
+			[["a:b-not-\\window-path"], "./a:b-not-\\window-path", "should not incorrectly detect windows paths"]
 		].forEach(function(test) {
 			it(test[2], function() {
 				var expected = test[1];
