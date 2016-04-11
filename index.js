@@ -1,6 +1,7 @@
 var JSON5 = require("json5");
 var path = require("path");
 var assign = require("object-assign");
+var slice = Array.prototype.slice;
 var emojiRegex = /[\uD800-\uDFFF]./;
 var emojiList = require("emojis-list").filter(function(emoji) {
 	return emojiRegex.test(emoji)
@@ -105,13 +106,16 @@ exports.parseQuery = function parseQuery(query) {
 	return result;
 };
 
-exports.getLoaderConfig = function(loaderContext, defaultConfigKey) {
-	if (!defaultConfigKey) {
-		throw new Error("Default config key missing");
-	}
+exports.getLoaderConfig = function(loaderContext /*, ...defaultConfigKeys */) {
+	var options = loaderContext.options;
 	var query = exports.parseQuery(loaderContext.query);
-	var configKey = query.config || defaultConfigKey;
-	var config = loaderContext.options[configKey] || {};
+
+	var configKeyArray = query.config ? [query.config] : slice.call(arguments, 1);
+	var configKey = configKeyArray.filter(function(key) {
+		return key in options;
+	})[0];
+
+	var config = configKey ? options[configKey] : {};
 
 	delete query.config;
 
