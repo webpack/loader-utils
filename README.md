@@ -29,6 +29,25 @@ cheesecakeLoader: {
 }
 ```
 
+#### Default config properties
+
+An arbitrary number of default config property names can be passed. Pass multiple default config properties like so:
+
+```javascript
+config = loaderUtils.getLoaderConfig(this, "some", "someLoader");
+```
+
+The above example will first look for the `some` property in `webpack.config.js`. If that doesn't exist, it will
+look for the `someLoader` property. If that doesn't exist, it will use an empty object.
+
+You may also pass the loader context alone without any default config properties, like so:
+
+```javascript
+config = loaderUtils.getLoaderConfig(this);
+```
+
+The above example will return the equivalent of `loaderUtils.parseQuery(this.query)`.
+
 It is recommended that you use the camelCased loader name as your default config property name.
 
 ### `parseQuery`

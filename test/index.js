@@ -111,23 +111,69 @@ describe("loader-utils", function() {
 	});
 
 	describe("#getLoaderConfig", function() {
-		it("should merge loaderContext.query and loaderContext.options.testLoader", function () {
-			var config = loaderUtils.getLoaderConfig({query:"?name=cheesecake",options:{testLoader:{slices:8}}}, "testLoader");
-			assert.deepEqual(config, {name:"cheesecake",slices:8});
+		describe("no default config keys", function() {
+			it("should allow custom config property via loaderContext.query.config", function() {
+				var config = loaderUtils.getLoaderConfig({
+					query:"?name=cheesecake&config=otherConfig",
+					options:{otherConfig:{slices:8}}
+				});
+				assert.deepEqual(config, {name:"cheesecake",slices:8});
+			});
+			it("should return parseQuery(loaderContext.query) if no loaderContext.query.config", function() {
+				var config = loaderUtils.getLoaderConfig({
+					query:"?name=cheesecake"
+				});
+				assert.deepEqual(config, {name:"cheesecake"});
+			});
 		});
-		it("should allow to specify a config property name via loaderContext.query.config", function () {
-			var config = loaderUtils.getLoaderConfig({query:"?name=cheesecake&config=otherConfig",options:{otherConfig:{slices:8}}}, "testLoader");
-			assert.deepEqual(config, {name:"cheesecake",slices:8});
+
+		describe("one default config key", function() {
+			it("should merge loaderContext.query and loaderContext.options.testLoader", function () {
+				var config = loaderUtils.getLoaderConfig({
+					query:"?name=cheesecake",
+					options:{testLoader:{slices:8}}
+				}, "testLoader");
+				assert.deepEqual(config, {name:"cheesecake",slices:8});
+			});
+			it("should allow to specify a config property name via loaderContext.query.config", function () {
+				var config = loaderUtils.getLoaderConfig({
+					query:"?name=cheesecake&config=otherConfig",
+					options:{otherConfig:{slices:8}}
+				}, "testLoader");
+				assert.deepEqual(config, {name:"cheesecake",slices:8});
+			});
+			it("should prefer loaderContext.query.slices over loaderContext.options.slices", function () {
+				var config = loaderUtils.getLoaderConfig({
+					query:"?slices=8",
+					options:{testLoader:{slices:4}}
+				}, "testLoader");
+				assert.deepEqual(config, {slices:8});
+			});
 		});
-		it("should prefer loaderContext.query.slices over loaderContext.options.slices", function () {
-			var config = loaderUtils.getLoaderConfig({query:"?slices=8",options:{testLoader:{slices:4}}}, "testLoader");
-			assert.deepEqual(config, {slices:8});
-		});
-		it("should throw an error if the default config key is missing", function () {
-			assert.throws(function () {
-				loaderUtils.getLoaderConfig({});
-			}, "Default config key missing")
-		});
+
+		describe("multiple default config keys", function() {
+			it("should accept multiple default config keys", function() {
+				var config = loaderUtils.getLoaderConfig({
+					query: "?name=cheesecake",
+					options: {test: {slices: 8}}
+				}, "testLoader", "test");
+				assert.deepEqual(config, {name: "cheesecake", slices: 8});
+			});
+			it("should use the first config key present on loaderContext.options", function() {
+				var config = loaderUtils.getLoaderConfig({
+					query: "?name=cheesecake",
+					options: {testLoader: {slices: 8}, test: {mices: 8}}
+				}, "testLoader", "test");
+				assert.deepEqual(config, {name: "cheesecake", slices: 8});
+			});
+			it("should ignore if loaderContext.query.config is specified", function() {
+				var config = loaderUtils.getLoaderConfig({
+					query: "?name=cheesecake&config=otherConfig",
+					options: {testLoader: {lices: 8}, test: {mices: 8}, otherConfig: {slices: 8}}
+				}, "testLoader", "test");
+				assert.deepEqual(config, {name: "cheesecake", slices: 8});
+			});
+	  });
 	});
 
 	describe("#getHashDigest", function() {
