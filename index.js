@@ -287,7 +287,7 @@ exports.interpolateName = function interpolateName(loaderContext, name, options)
 	});
 	if(regExp && loaderContext.resourcePath) {
 		var re = new RegExp(regExp);
-		var match = loaderContext.resourcePath.match(re);
+		var match = loaderContext.resourcePath.replace(/\\/g, "/").match(re);
 		if(match) {
 			for (var i = 0; i < match.length; i++) {
 				var re = new RegExp("\\[" + i + "\\]", "ig");
