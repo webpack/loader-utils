@@ -101,6 +101,10 @@ describe("loader-utils", function() {
 			[
 				"?%3d=%3D",
 				{"=": "="}
+			],
+			[
+				{ obj: "test" },
+				{ obj: "test" }
 			]
 		].forEach(function(test) {
 			it("should parse " + test[0], function() {
@@ -123,10 +127,9 @@ describe("loader-utils", function() {
 			var config = loaderUtils.getLoaderConfig({query:"?slices=8",options:{testLoader:{slices:4}}}, "testLoader");
 			assert.deepEqual(config, {slices:8});
 		});
-		it("should throw an error if the default config key is missing", function () {
-			assert.throws(function () {
-				loaderUtils.getLoaderConfig({});
-			}, "Default config key missing")
+		it("should allow no default key", function () {
+			var config = loaderUtils.getLoaderConfig({query:"?slices=8",options:{}});
+			assert.deepEqual(config, {slices:8});
 		});
 	});
 
