@@ -280,8 +280,8 @@ exports.interpolateName = function interpolateName(loaderContext, name, options)
 		});
 	}
 	url = url.replace(/\[callback\:(\S+)?\]/ig, function() {
-    return global[arguments[1]](loaderContext, url, options);
-  }).replace(/\[ext\]/ig, function() {
+		return global[arguments[1]](loaderContext, url, options);
+	}).replace(/\[ext\]/ig, function() {
 		return ext;
 	}).replace(/\[name\]/ig, function() {
 		return basename;
