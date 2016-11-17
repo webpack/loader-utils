@@ -6,6 +6,10 @@ ExpectedError.prototype.matches = function (err) {
 	return this.regex.test(err.message);
 };
 
+global.interpolateNameCallback = function(loaderContext, name, options) {
+	return 'A CUSTOM CALLBACK STRING';
+}
+
 describe("loader-utils", function() {
 	describe("#urlToRequest()", function() {
 		[
@@ -56,7 +60,8 @@ describe("loader-utils", function() {
 			["/app/page.html", "html-[hash:6].html", "test content", "html-9473fd.html"],
 			["/app/flash.txt", "[hash]", "test content", "9473fdd0d880a43c21b7778d34872157"],
 			["/app/img/image.png", "[sha512:hash:base64:7].[ext]", "test content", "2BKDTjl.png"],
-			["/app/dir/file.png", "[path][name].[ext]?[hash]", "test content", "/app/dir/file.png?9473fdd0d880a43c21b7778d34872157"]
+			["/app/dir/file.png", "[path][name].[ext]?[hash]", "test content", "/app/dir/file.png?9473fdd0d880a43c21b7778d34872157"],
+			["/app/css/app.css", "[name][callback:interpolateNameCallback]", ".MyClass{ color: blue; }", "appA CUSTOM CALLBACK STRING"]
 		].forEach(function(test) {
 			it("should interpolate " + test[0] + " " + test[1], function() {
 				var interpolatedName = loaderUtils.interpolateName({ resourcePath: test[0] }, test[1], { content: test[2] });
