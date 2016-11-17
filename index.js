@@ -273,12 +273,12 @@ exports.interpolateName = function interpolateName(loaderContext, name, options)
 	var url = filename;
 	if(content) {
 		// Match hash template
-		url = url.replace(/\[(?:(\w+):)?hash(?::([a-z]+\d*))?(?::(\d+))?\]/ig, function() {
+		url = url.replace(/\[callback\:(\S+)?\]/ig, function() {
+			return global[arguments[1]](loaderContext, url, options);
+		}).replace(/\[(?:(\w+):)?hash(?::([a-z]+\d*))?(?::(\d+))?\]/ig, function() {
 			return exports.getHashDigest(content, arguments[1], arguments[2], parseInt(arguments[3], 10));
 		}).replace(/\[emoji(?::(\d+))?\]/ig, function() {
 			return encodeStringToEmoji(content, arguments[1]);
-		}).replace(/\[callback\:(\S+)?\]/ig, function() {
-			return global[arguments[1]](loaderContext, name, options);
 		});
 	}
 	url = url.replace(/\[ext\]/ig, function() {
