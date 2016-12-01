@@ -141,7 +141,12 @@ describe("loader-utils", function() {
 			["test string", "md5", "base52", undefined, "dJnldHSAutqUacjgfBQGLQx"],
 			["test string", "md5", "base26", 6, "bhtsgu"],
 			["test string", "sha512", "base64", undefined, "2IS-kbfIPnVflXb9CzgoNESGCkvkb0urMmucPD9z8q6HuYz8RShY1-tzSUpm5-Ivx_u4H1MEzPgAhyhaZ7RKog"],
-			["test_string", "md5", "hex", undefined, "3474851a3410906697ec77337df7aae4"]
+			["test_string", "md5", "hex", undefined, "3474851a3410906697ec77337df7aae4"],
+			["test string", "crc32", "base10", undefined, "323425605"],
+			["test string", "crc32", "hex", undefined, "13471545"],
+			["test string", "crc32", "base16", undefined, "13471545"],
+			["test string", "crc32", "base16", 4, "1347"],
+			["test string", "crc32", "base36", undefined, "5ck4sl"]
 		].forEach(function(test) {
 			it("should getHashDigest " + test[0] + " " + test[1] + " " + test[2] + " " + test[3], function() {
 				var hashDigest = loaderUtils.getHashDigest(test[0], test[1], test[2], test[3]);

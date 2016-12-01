@@ -223,6 +223,12 @@ exports.parseString = function parseString(str) {
 exports.getHashDigest = function getHashDigest(buffer, hashType, digestType, maxLength) {
 	hashType = hashType || "md5";
 	maxLength = maxLength || 9999;
+
+	if (hashType.match(/^crc(?:1|8|16|24|32)$/)){
+		var base = digestType && digestType.match(/^base\d{1,2}/) ? parseInt(digestType.match(/\d+/)[0]) : 16;
+		return require("crc")[hashType](buffer).toString(base).substr(0, maxLength);
+	}
+
 	var hash = require("crypto").createHash(hashType);
 	hash.update(buffer);
 	if (digestType === "base26" || digestType === "base32" || digestType === "base36" ||
