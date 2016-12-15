@@ -280,11 +280,11 @@ exports.interpolateName = function interpolateName(loaderContext, name, options)
 		});
 	}
 	url = url.replace(/\[fn\:(\S+)?\]/ig, function() {
-    var file = path.resolve(directory, arguments[1]);
-    var fn = require(file);
+		var file = path.resolve(directory, arguments[1]);
+		var fn = require(file);
 
-    return fn(loaderContext, url, options);
-  }).replace(/\[ext\]/ig, function() {
+		return fn(loaderContext, url, options);
+	}).replace(/\[ext\]/ig, function() {
 		return ext;
 	}).replace(/\[name\]/ig, function() {
 		return basename;
