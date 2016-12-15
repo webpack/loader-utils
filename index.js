@@ -279,8 +279,11 @@ exports.interpolateName = function interpolateName(loaderContext, name, options)
 			return encodeStringToEmoji(content, arguments[1]);
 		});
 	}
-	url = url.replace(/\[alias\:(\S+)?\]/ig, function() {
-    return loaderContext.options.resolveLoader.alias[arguments[1]](loaderContext, url, options);
+	url = url.replace(/\[fn\:(\S+)?\]/ig, function() {
+    var file = path.resolve(directory, arguments[1]);
+    var fn = require(file);
+
+    return fn(loaderContext, url, options);
   }).replace(/\[ext\]/ig, function() {
 		return ext;
 	}).replace(/\[name\]/ig, function() {

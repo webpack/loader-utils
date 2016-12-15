@@ -125,7 +125,7 @@ The following tokens are replaced in the `name` parameter:
   * other `digestType`s, i. e. `hex`, `base26`, `base32`, `base36`, `base49`, `base52`, `base58`, `base62`, `base64`
   * and `length` the length in chars
 * `[N]` the N-th match obtained from matching the current file name against `options.regExp`
-* `[callback:<global function name>]` Passes the interpolateName arguments to a custom callback (specified as a resolvedLoader alias) for custom string processing
+* `[fn:<path to function file>]` Passes the interpolateName arguments to a custom callback function exported from the `<path to function file>`. The path is relative to the input files path.
 
 Examples
 
@@ -168,20 +168,12 @@ loaderUtils.interpolateName(loaderContext, "[path][name].[ext]?[hash]", { conten
 loaderUtils.interpolateName(loaderContext, "script-[1].[ext]", { regExp: "page-(.*)\\.js", content: ... });
 // => script-home.js
 
-// loaderContext.resourcePath = "/app/css/app.css"
-// in webpack.config.js:
-module.exports = {
-  //...webpack config...
-  resolveLoader: {
-    alias: {
-      CSSClassHandler(loaderContext, name, options) {
-        return '.MyClass{color:blue}';
-      },
-    }
-  },
-  //...webpack config...
-}
-loaderUtils.interpolateName(loaderContext, "[alias:CSSClassHandler]", { content: ... });
+// loaderContext.resourcePath = "app/css/app.css"
+module.exports = function(loaderContext, name, options) { // <- in file: 'app/js/CSSClassHandler.js'
+  return '.MyClass{color:blue}';
+};
+//
+loaderUtils.interpolateName(loaderContext, "[fn:../js/CSSClassHandler.js]", { content: ... });
 // => .MyClass{color:blue}
 ```
 
