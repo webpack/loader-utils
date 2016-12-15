@@ -125,7 +125,7 @@ The following tokens are replaced in the `name` parameter:
   * other `digestType`s, i. e. `hex`, `base26`, `base32`, `base36`, `base49`, `base52`, `base58`, `base62`, `base64`
   * and `length` the length in chars
 * `[N]` the N-th match obtained from matching the current file name against `options.regExp`
-* `[callback:<global function name>]` Passes the interpolateName arguments to a custom callback for custom string processing
+* `[callback:<global function name>]` Passes the interpolateName arguments to a custom callback (specified as a resolvedLoader alias) for custom string processing
 
 Examples
 
@@ -169,10 +169,19 @@ loaderUtils.interpolateName(loaderContext, "script-[1].[ext]", { regExp: "page-(
 // => script-home.js
 
 // loaderContext.resourcePath = "/app/css/app.css"
-global.CSSClassHandler = function(loaderContext, name, options) {
-  return '.MyClass{color:blue}';
+// in webpack.config.js:
+module.exports = {
+  //...webpack config...
+  resolveLoader: {
+    alias: {
+      CSSClassHandler(loaderContext, name, options) {
+        return '.MyClass{color:blue}';
+      },
+    }
+  },
+  //...webpack config...
 }
-loaderUtils.interpolateName(loaderContext, "[callback:CSSClassHandler]", { content: ... });
+loaderUtils.interpolateName(loaderContext, "[alias:CSSClassHandler]", { content: ... });
 // => .MyClass{color:blue}
 ```
 
