@@ -1,12 +1,9 @@
-var JSON5 = require("json5");
-var path = require("path");
-var assign = require("object-assign");
-var emojiRegex = /[\uD800-\uDFFF]./;
-var emojiList = require("emojis-list").filter(function(emoji) {
-	return emojiRegex.test(emoji)
-});
+const JSON5 = require("json5");
+const path = require("path");
+const emojiRegex = /[\uD800-\uDFFF]./;
+const emojiList = require("emojis-list").filter(emoji => emojiRegex.test(emoji));
 
-var baseEncodeTables = {
+const baseEncodeTables = {
 	26: "abcdefghijklmnopqrstuvwxyz",
 	32: "123456789abcdefghjkmnpqrstuvwxyz", // no 0lio
 	36: "0123456789abcdefghijklmnopqrstuvwxyz",
@@ -16,36 +13,36 @@ var baseEncodeTables = {
 	62: "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
 	64: "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_"
 };
-var emojiCache = {};
+const emojiCache = {};
 
 function encodeStringToEmoji(content, length) {
 	if (emojiCache[content]) return emojiCache[content];
 	length = length || 1;
-	var emojis = [];
+	const emojis = [];
 	do {
-		var index = Math.floor(Math.random() * emojiList.length);
+		const index = Math.floor(Math.random() * emojiList.length);
 		emojis.push(emojiList[index]);
 		emojiList.splice(index, 1);
 	} while (--length > 0);
-	var emojiEncoding = emojis.join('');
+	const emojiEncoding = emojis.join('');
 	emojiCache[content] = emojiEncoding;
 	return emojiEncoding;
 }
 
 function encodeBufferToBase(buffer, base) {
-	var encodeTable = baseEncodeTables[base];
+	const encodeTable = baseEncodeTables[base];
 	if (!encodeTable) throw new Error("Unknown encoding base" + base);
 
-	var readLength = buffer.length;
+	const readLength = buffer.length;
 
-	var Big = require('big.js');
+	const Big = require('big.js');
 	Big.RM = Big.DP = 0;
-	var b = new Big(0);
-	for (var i = readLength - 1; i >= 0; i--) {
+	let b = new Big(0);
+	for (let i = readLength - 1; i >= 0; i--) {
 		b = b.times(256).plus(buffer[i]);
 	}
 
-	var output = "";
+	let output = "";
 	while (b.gt(0)) {
 		output = encodeTable[b.mod(base)] + output;
 		b = b.div(base);
@@ -58,7 +55,7 @@ function encodeBufferToBase(buffer, base) {
 }
 
 exports.parseQuery = function parseQuery(query) {
-	var specialValues = {
+	const specialValues = {
 		'null': null,
 		'true': true,
 		'false': false
@@ -69,17 +66,17 @@ exports.parseQuery = function parseQuery(query) {
 	if(query.substr(0, 1) !== "?")
 		throw new Error("a valid query string passed to parseQuery should begin with '?'");
 	query = query.substr(1);
-	var queryLength = query.length;
+	const queryLength = query.length;
 	if(query.substr(0, 1) === "{" && query.substr(-1) === "}") {
 		return JSON5.parse(query);
 	}
-	var queryArgs = query.split(/[,\&]/g);
-	var result = {};
+	const queryArgs = query.split(/[,\&]/g);
+	const result = {};
 	queryArgs.forEach(function(arg) {
-		var idx = arg.indexOf("=");
+		const idx = arg.indexOf("=");
 		if(idx >= 0) {
-			var name = arg.substr(0, idx);
-			var value = decodeURIComponent(arg.substr(idx+1));
+			let name = arg.substr(0, idx);
+			let value = decodeURIComponent(arg.substr(idx+1));
 			if (specialValues.hasOwnProperty(value)) {
 				value = specialValues[value];
 			}
@@ -106,48 +103,42 @@ exports.parseQuery = function parseQuery(query) {
 };
 
 exports.getLoaderConfig = function(loaderContext, defaultConfigKey) {
-	var query = exports.parseQuery(loaderContext.query);
-	var configKey = query.config || defaultConfigKey;
+	const query = exports.parseQuery(loaderContext.query);
+	const configKey = query.config || defaultConfigKey;
 	if (configKey) {
-		var config = loaderContext.options[configKey] || {};
+		const config = loaderContext.options[configKey] || {};
 		delete query.config;
-		return assign({}, config, query);
+		return Object.assign({}, config, query);
 	}
 
 	return query;
 };
 
 exports.stringifyRequest = function(loaderContext, request) {
-	var splitted = request.split("!");
-	var context = loaderContext.context || (loaderContext.options && loaderContext.options.context);
-	return JSON.stringify(splitted.map(function(part) {
+	const splitted = request.split("!");
+	const context = loaderContext.context || (loaderContext.options && loaderContext.options.context);
+	return JSON.stringify(splitted.map(part => {
 		if(/^\/|^[A-Z]:/i.test(part) && context) {
 			part = path.relative(context, part);
-			if(/^[A-Z]:/i.test(part)) {
-				return part;
-			} else {
-				return "./" + part.replace(/\\/g, "/");
-			}
+			return /^[A-Z]:/i.test(part) ? part : `./${part.replace(/\\/g, "/")}`;
 		}
 		return part;
 	}).join("!"));
 };
 
-function dotRequest(obj) {
-	return obj.request;
-}
+const dotRequest = obj => obj.request;
 
 exports.getRemainingRequest = function(loaderContext) {
 	if(loaderContext.remainingRequest)
 		return loaderContext.remainingRequest;
-	var request = loaderContext.loaders.slice(loaderContext.loaderIndex+1).map(dotRequest).concat([loaderContext.resource]);
+	const request = loaderContext.loaders.slice(loaderContext.loaderIndex+1).map(dotRequest).concat([loaderContext.resource]);
 	return request.join("!");
 };
 
 exports.getCurrentRequest = function(loaderContext) {
 	if(loaderContext.currentRequest)
 		return loaderContext.currentRequest;
-	var request = loaderContext.loaders.slice(loaderContext.loaderIndex).map(dotRequest).concat([loaderContext.resource]);
+	const request = loaderContext.loaders.slice(loaderContext.loaderIndex).map(dotRequest).concat([loaderContext.resource]);
 	return request.join("!");
 };
 
@@ -163,8 +154,8 @@ exports.isUrlRequest = function(url, root) {
 };
 
 exports.urlToRequest = function(url, root) {
-	var moduleRequestRegex = /^[^?]*~/;
-	var request;
+	const moduleRequestRegex = /^[^?]*~/;
+	let request;
 
 	if(/^[a-zA-Z]:\\|^\\\\/.test(url)) {
 		// absolute windows path, keep it
@@ -175,11 +166,7 @@ exports.urlToRequest = function(url, root) {
 			// 1. root is a string: root is prefixed to the url
 			case "string":
 				// special case: `~` roots convert to module request
-				if (moduleRequestRegex.test(root)) {
-					request = root.replace(/([^~\/])$/, "$1/") + url.slice(1);
-				} else {
-					request = root + url;
-				}
+				request = moduleRequestRegex.test(root) ? root.replace(/([^~\/])$/, "$1/") + url.slice(1) : root + url;
 				break;
 			// 2. root is `true`: absolute paths are allowed
 			//    *nix only, windows-style absolute paths are always allowed as they doesn't start with a `/`
@@ -187,14 +174,14 @@ exports.urlToRequest = function(url, root) {
 				request = url;
 				break;
 			default:
-				throw new Error("Unexpected parameters to loader-utils 'urlToRequest': url = " + url + ", root = " + root + ".");
+				throw new Error(`Unexpected parameters to loader-utils 'urlToRequest': url = ${url}, root = ${root}.`);
 		}
 	} else if(/^\.\.?\//.test(url)) {
 		// A relative url stays
 		request = url;
 	} else {
 		// every other url is threaded like a relative url
-		request = "./" + url;
+		request = `./${url}`;
 	}
 
 	// A `~` makes the url an module
@@ -209,10 +196,7 @@ exports.parseString = function parseString(str) {
 	try {
 		if(str[0] === '"') return JSON.parse(str);
 		if(str[0] === "'" && str.substr(str.length - 1) === "'") {
-			return parseString(str.replace(/\\.|"/g, function(x) {
-				if(x === '"') return '\\"';
-				return x;
-			}).replace(/^'|'$/g, '"'));
+			return parseString(str.replace(/\\.|"/g, x => (x === '"') ? '\\"' : x).replace(/^'|'$/g, '"'));
 		}
 		return JSON.parse('"' + str + '"');
 	} catch(e) {
@@ -223,7 +207,7 @@ exports.parseString = function parseString(str) {
 exports.getHashDigest = function getHashDigest(buffer, hashType, digestType, maxLength) {
 	hashType = hashType || "md5";
 	maxLength = maxLength || 9999;
-	var hash = require("crypto").createHash(hashType);
+	const hash = require("crypto").createHash(hashType);
 	hash.update(buffer);
 	if (digestType === "base26" || digestType === "base32" || digestType === "base36" ||
 	    digestType === "base49" || digestType === "base52" || digestType === "base58" ||
@@ -235,20 +219,20 @@ exports.getHashDigest = function getHashDigest(buffer, hashType, digestType, max
 };
 
 exports.interpolateName = function interpolateName(loaderContext, name, options) {
-	var filename = name || "[hash].[ext]";
-	var context = options.context;
-	var content = options.content;
-	var regExp = options.regExp;
-	var ext = "bin";
-	var basename = "file";
-	var directory = "";
-	var folder = "";
+	const filename = name || "[hash].[ext]";
+	const context = options.context;
+	const content = options.content;
+	const regExp = options.regExp;
+	let ext = "bin";
+	let basename = "file";
+	let directory = "";
+	let folder = "";
 	if(loaderContext.resourcePath) {
-		var resourcePath = loaderContext.resourcePath;
-		var idx = resourcePath.lastIndexOf(".");
-		var i = resourcePath.lastIndexOf("\\");
-		var j = resourcePath.lastIndexOf("/");
-		var p = i < 0 ? j : j < 0 ? i : i < j ? i : j;
+		let resourcePath = loaderContext.resourcePath;
+		const idx = resourcePath.lastIndexOf(".");
+		const i = resourcePath.lastIndexOf("\\");
+		const j = resourcePath.lastIndexOf("/");
+		const p = i < 0 ? j : j < 0 ? i : i < j ? i : j;
 		if(idx >= 0) {
 			ext = resourcePath.substr(idx+1);
 			resourcePath = resourcePath.substr(0, idx);
@@ -258,7 +242,7 @@ exports.interpolateName = function interpolateName(loaderContext, name, options)
 			resourcePath = resourcePath.substr(0, p+1);
 		}
 		if (typeof context !== 'undefined') {
-			directory = path.relative(context, resourcePath + "_").replace(/\\/g, "/").replace(/\.\.(\/)?/g, "_$1");
+			directory = path.relative(context, `${resourcePath}_`).replace(/\\/g, "/").replace(/\.\.(\/)?/g, "_$1");
 			directory = directory.substr(0, directory.length-1);
 		}
 		else {
@@ -270,30 +254,25 @@ exports.interpolateName = function interpolateName(loaderContext, name, options)
 			folder = path.basename(directory);
 		}
 	}
-	var url = filename;
+	let url = filename;
 	if(content) {
 		// Match hash template
 		url = url.replace(/\[(?:(\w+):)?hash(?::([a-z]+\d*))?(?::(\d+))?\]/ig, function() {
 			return exports.getHashDigest(content, arguments[1], arguments[2], parseInt(arguments[3], 10));
-		}).replace(/\[emoji(?::(\d+))?\]/ig, function() {
-			return encodeStringToEmoji(content, arguments[1]);
-		});
+		})
+		.replace(/\[emoji(?::(\d+))?\]/ig, encodeStringToEmoji(content, arguments[1]));
 	}
-	url = url.replace(/\[ext\]/ig, function() {
-		return ext;
-	}).replace(/\[name\]/ig, function() {
-		return basename;
-	}).replace(/\[path\]/ig, function() {
-		return directory;
-	}).replace(/\[folder\]/ig, function() {
-		return folder;
-	});
+	url = url
+		.replace(/\[ext\]/ig, ext)
+		.replace(/\[name\]/ig, basename)
+		.replace(/\[path\]/ig, directory)
+		.replace(/\[folder\]/ig, folder);
 	if(regExp && loaderContext.resourcePath) {
-		var re = new RegExp(regExp);
-		var match = loaderContext.resourcePath.match(re);
+		let re = new RegExp(regExp);
+		const match = loaderContext.resourcePath.match(re);
 		if(match) {
 			for (var i = 0; i < match.length; i++) {
-				var re = new RegExp("\\[" + i + "\\]", "ig");
+				let re = new RegExp("\\[" + i + "\\]", "ig");
 				url = url.replace(re, match[i]);
 			}
 		}
