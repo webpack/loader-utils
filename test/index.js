@@ -7,6 +7,7 @@ ExpectedError.prototype.matches = function (err) {
 };
 
 describe("loader-utils", function() {
+
 	describe("#urlToRequest()", function() {
 		[
 			// without root
@@ -230,5 +231,20 @@ describe("loader-utils", function() {
 				special: "special"
 			}], "xyz-[name]-special", "should provide a custom interpolateName function in options"],
 		]);
+	});
+
+	// request with relative path args
+	describe("#stringifyRequest", function() {
+		var pathArgsString = "path=../../thing/file";
+		var pathArgsObjString = JSON.stringify( { "path-to-file": "../../thing/file" } );
+		[
+			["/path/to/thing", "/path/to/thing/file!/path/to/thing/file?" + pathArgsString, JSON.stringify("./file!./file?" + pathArgsString)],
+			["/path/to/thing", "/path/to/thing/file!/path/to/thing/file?" + pathArgsObjString, JSON.stringify("./file!./file?" + pathArgsObjString)]
+		].forEach(function(test) {
+			it("should stringify " + test[1] + " " + test[2], function() {
+				var request = loaderUtils.stringifyRequest({ context: test[0] }, test[1]);
+				assert.equal(request, test[2]);
+			});
+		});
 	});
 });

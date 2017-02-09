@@ -122,7 +122,12 @@ exports.stringifyRequest = function(loaderContext, request) {
 	var context = loaderContext.context || (loaderContext.options && loaderContext.options.context);
 	return JSON.stringify(splitted.map(function(part) {
 		if(/^\/|^[A-Z]:/i.test(part) && context) {
-			part = path.relative(context, part);
+			if ( part.indexOf("?") > 0 ) {
+				var splittedPart = part.split("?");
+				part = path.relative(context, splittedPart[0]) + "?" + splittedPart[1];
+			} else {
+				part = path.relative(context, part);
+			}
 			if(/^[A-Z]:/i.test(part)) {
 				return part;
 			} else {
