@@ -7,6 +7,9 @@ var emojiRegex = /[\uD800-\uDFFF]./;
 var emojiList = require("emojis-list").filter(function(emoji) {
 	return emojiRegex.test(emoji)
 });
+var matchAbsolutePath = /^\/|^[A-Z]:[/\\]|^\\\\/i; // node 0.10 does not support path.isAbsolute()
+var matchAbsoluteWin32Path = /^[A-Z]:[/\\]|^\\\\/i;
+var matchRelativePath = /^\.\.?[/\\]/;
 
 var baseEncodeTables = {
 	26: "abcdefghijklmnopqrstuvwxyz",
@@ -130,20 +133,24 @@ exports.stringifyRequest = function(loaderContext, request) {
 	var splitted = request.split("!");
 	var context = loaderContext.context || (loaderContext.options && loaderContext.options.context);
 	return JSON.stringify(splitted.map(function(part) {
-		if(/^\/|^[A-Z]:/i.test(part) && context) {
-			if ( part.indexOf("?") > 0 ) {
-				var splittedPart = part.split("?");
-				part = path.relative(context, splittedPart[0]) + "?" + splittedPart[1];
-			} else {
-				part = path.relative(context, part);
+		// First, separate singlePath from query, because the query might contain paths again
+		var splittedPart = part.match(/^(.*?)(\?.*)/);
+		var singlePath = splittedPart ? splittedPart[1] : part;
+		var query = splittedPart ? splittedPart[2] : "";
+		if(matchAbsolutePath.test(singlePath) && context) {
+			singlePath = path.relative(context, singlePath);
+			if(matchAbsolutePath.test(singlePath)) {
+				// If singlePath still matches an absolute path, singlePath was on a different drive than context.
+				// In this case, we leave the path platform-specific without replacing any separators.
+				// @see https://github.com/webpack/loader-utils/pull/14
+				return singlePath + query;
 			}
-			if(/^[A-Z]:/i.test(part)) {
-				return part;
-			} else {
-				return "./" + part.replace(/\\/g, "/");
+			if(matchRelativePath.test(singlePath) === false) {
+				// Ensure that the relative path starts at least with ./ otherwise it would be a request into the modules directory (like node_modules).
+				singlePath = "./" + singlePath;
 			}
 		}
-		return part;
+		return singlePath.replace(/\\/g, "/") + query;
 	}).join("!"));
 };
 
@@ -180,7 +187,7 @@ exports.urlToRequest = function(url, root) {
 	var moduleRequestRegex = /^[^?]*~/;
 	var request;
 
-	if(/^[a-zA-Z]:\\|^\\\\/.test(url)) {
+	if(matchAbsoluteWin32Path.test(url)) {
 		// absolute windows path, keep it
 		request = url;
 	} else if(root !== undefined && root !== false && /^\//.test(url)) {
@@ -250,7 +257,7 @@ exports.getHashDigest = function getHashDigest(buffer, hashType, digestType, max
 
 exports.interpolateName = function interpolateName(loaderContext, name, options) {
 	var filename;
-	if (typeof name == 'function') {
+	if (typeof name === "function") {
 		filename = name(loaderContext.resourcePath);
 	} else {
 		filename = name || "[hash].[ext]";
