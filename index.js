@@ -20,7 +20,7 @@ var baseEncodeTables = {
 };
 var emojiCache = {};
 var parseQueryDeprecationWarning = util.deprecate(function () {},
-	"loaderUtils.parseQuery() just received a value type of " + typeof query +
+	"loaderUtils.parseQuery() received a value type of " + typeof query +
 	" which can be problematic, see https://github.com/webpack/loader-utils/issues/56" + os.EOL +
 	"parseQuery() will be replaced with getOptions() in the next major version of loader-utils."
 );
