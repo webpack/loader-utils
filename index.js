@@ -1,5 +1,7 @@
 var JSON5 = require("json5");
 var path = require("path");
+var util = require("util");
+var os = require("os");
 var assign = require("object-assign");
 var emojiRegex = /[\uD800-\uDFFF]./;
 var emojiList = require("emojis-list").filter(function(emoji) {
@@ -17,6 +19,11 @@ var baseEncodeTables = {
 	64: "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_"
 };
 var emojiCache = {};
+var parseQueryDeprecationWarning = util.deprecate(function () {},
+	"loaderUtils.parseQuery() just received a value type of " + typeof query +
+	" which can be problematic, see https://github.com/webpack/loader-utils/issues/56" + os.EOL +
+	"parseQuery() will be replaced with getOptions() in the next major version of loader-utils."
+);
 
 function encodeStringToEmoji(content, length) {
 	if (emojiCache[content]) return emojiCache[content];
@@ -64,8 +71,10 @@ exports.parseQuery = function parseQuery(query) {
 		'false': false
 	};
 	if(!query) return {};
-	if(typeof query !== "string")
+	if(typeof query !== "string") {
+		parseQueryDeprecationWarning();
 		return query;
+	}
 	if(query.substr(0, 1) !== "?")
 		throw new Error("a valid query string passed to parseQuery should begin with '?'");
 	query = query.substr(1);
