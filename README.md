@@ -125,6 +125,7 @@ The following tokens are replaced in the `name` parameter:
   * other `digestType`s, i. e. `hex`, `base26`, `base32`, `base36`, `base49`, `base52`, `base58`, `base62`, `base64`
   * and `length` the length in chars
 * `[N]` the N-th match obtained from matching the current file name against `options.regExp`
+* `[fn:<path to function file>]` Passes the interpolateName arguments to a custom callback function exported from the `<path to function file>`. The path is relative to the input files path.
 
 Examples
 
@@ -166,6 +167,14 @@ loaderUtils.interpolateName(loaderContext, "[path][name].[ext]?[hash]", { conten
 // loaderContext.resourcePath = "/app/js/page-home.js"
 loaderUtils.interpolateName(loaderContext, "script-[1].[ext]", { regExp: "page-(.*)\\.js", content: ... });
 // => script-home.js
+
+// loaderContext.resourcePath = "app/css/app.css"
+module.exports = function(loaderContext, name, options) { // <- in file: 'app/js/CSSClassHandler.js'
+  return '.MyClass{color:blue}';
+};
+//
+loaderUtils.interpolateName(loaderContext, "[fn:../js/CSSClassHandler.js]", { content: ... });
+// => .MyClass{color:blue}
 ```
 
 ### `getHashDigest`
