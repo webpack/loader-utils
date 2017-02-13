@@ -249,7 +249,13 @@ exports.getHashDigest = function getHashDigest(buffer, hashType, digestType, max
 };
 
 exports.interpolateName = function interpolateName(loaderContext, name, options) {
-	var filename = name || "[hash].[ext]";
+	var filename;
+	if (name instanceof Function) {
+		filename = name(loaderContext.resourcePath);
+	} else {
+		filename = name || "[hash].[ext]";
+	}
+
 	var context = options.context;
 	var content = options.content;
 	var regExp = options.regExp;
