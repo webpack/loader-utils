@@ -250,7 +250,7 @@ exports.getHashDigest = function getHashDigest(buffer, hashType, digestType, max
 
 exports.interpolateName = function interpolateName(loaderContext, name, options) {
 	var filename;
-	if (typeof name === 'function') {
+	if (typeof name == 'function') {
 		filename = name(loaderContext.resourcePath);
 	} else {
 		filename = name || "[hash].[ext]";
