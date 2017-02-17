@@ -66,7 +66,7 @@ function encodeBufferToBase(buffer, base) {
 	return output;
 }
 
-exports.parseQuery = function parseQuery(query) {
+function parseQuery(query) {
 	const specialValues = {
 		"null": null,
 		"true": true,
@@ -113,10 +113,10 @@ exports.parseQuery = function parseQuery(query) {
 		}
 	});
 	return result;
-};
+}
 
-exports.getLoaderConfig = function(loaderContext, defaultConfigKey) {
-	const query = exports.parseQuery(loaderContext.query);
+function getLoaderConfig(loaderContext, defaultConfigKey) {
+	const query = parseQuery(loaderContext.query);
 	const configKey = query.config || defaultConfigKey;
 	if(configKey) {
 		const config = loaderContext.options[configKey] || {};
@@ -125,9 +125,9 @@ exports.getLoaderConfig = function(loaderContext, defaultConfigKey) {
 	}
 
 	return query;
-};
+}
 
-exports.stringifyRequest = function(loaderContext, request) {
+function stringifyRequest(loaderContext, request) {
 	const splitted = request.split("!");
 	const context = loaderContext.context || (loaderContext.options && loaderContext.options.context);
 	return JSON.stringify(splitted.map(part => {
@@ -150,27 +150,27 @@ exports.stringifyRequest = function(loaderContext, request) {
 		}
 		return singlePath.replace(/\\/g, "/") + query;
 	}).join("!"));
-};
+}
 
 function dotRequest(obj) {
 	return obj.request;
 }
 
-exports.getRemainingRequest = function(loaderContext) {
+function getRemainingRequest(loaderContext) {
 	if(loaderContext.remainingRequest)
 		return loaderContext.remainingRequest;
 	const request = loaderContext.loaders.slice(loaderContext.loaderIndex + 1).map(dotRequest).concat([loaderContext.resource]);
 	return request.join("!");
-};
+}
 
-exports.getCurrentRequest = function(loaderContext) {
+function getCurrentRequest(loaderContext) {
 	if(loaderContext.currentRequest)
 		return loaderContext.currentRequest;
 	const request = loaderContext.loaders.slice(loaderContext.loaderIndex).map(dotRequest).concat([loaderContext.resource]);
 	return request.join("!");
-};
+}
 
-exports.isUrlRequest = function(url, root) {
+function isUrlRequest(url, root) {
 	// An URL is not an request if
 	// 1. it's a Data Url
 	// 2. it's an absolute url or and protocol-relative
@@ -179,9 +179,9 @@ exports.isUrlRequest = function(url, root) {
 	// 4. It's also not an request if root isn't set and it's a root-relative url
 	if((root === undefined || root === false) && /^\//.test(url)) return false;
 	return true;
-};
+}
 
-exports.urlToRequest = function(url, root) {
+function urlToRequest(url, root) {
 	const moduleRequestRegex = /^[^?]*~/;
 	let request;
 
@@ -222,9 +222,9 @@ exports.urlToRequest = function(url, root) {
 	}
 
 	return request;
-};
+}
 
-exports.parseString = function parseString(str) {
+function parseString(str) {
 	try {
 		if(str[0] === "\"") return JSON.parse(str);
 		if(str[0] === "'" && str.substr(str.length - 1) === "'") {
@@ -238,9 +238,9 @@ exports.parseString = function parseString(str) {
 	} catch(e) {
 		return str;
 	}
-};
+}
 
-exports.getHashDigest = function getHashDigest(buffer, hashType, digestType, maxLength) {
+function getHashDigest(buffer, hashType, digestType, maxLength) {
 	hashType = hashType || "md5";
 	maxLength = maxLength || 9999;
 	const hash = require("crypto").createHash(hashType);
@@ -252,9 +252,9 @@ exports.getHashDigest = function getHashDigest(buffer, hashType, digestType, max
 	} else {
 		return hash.digest(digestType || "hex").substr(0, maxLength);
 	}
-};
+}
 
-exports.interpolateName = function interpolateName(loaderContext, name, options) {
+function interpolateName(loaderContext, name, options) {
 	let filename;
 	if(typeof name === "function") {
 		filename = name(loaderContext.resourcePath);
@@ -300,7 +300,7 @@ exports.interpolateName = function interpolateName(loaderContext, name, options)
 		url = url
 			.replace(
 				/\[(?:(\w+):)?hash(?::([a-z]+\d*))?(?::(\d+))?\]/ig,
-				(all, hashType, digestType, maxLength) => exports.getHashDigest(content, hashType, digestType, parseInt(maxLength, 10))
+				(all, hashType, digestType, maxLength) => getHashDigest(content, hashType, digestType, parseInt(maxLength, 10))
 			)
 			.replace(
 				/\[emoji(?::(\d+))?\]/ig,
@@ -325,4 +325,15 @@ exports.interpolateName = function interpolateName(loaderContext, name, options)
 		url = loaderContext.options.customInterpolateName.call(loaderContext, url, name, options);
 	}
 	return url;
-};
+}
+
+exports.parseQuery = parseQuery;
+exports.getLoaderConfig = getLoaderConfig;
+exports.stringifyRequest = stringifyRequest;
+exports.getRemainingRequest = getRemainingRequest;
+exports.getCurrentRequest = getCurrentRequest;
+exports.isUrlRequest = isUrlRequest;
+exports.urlToRequest = urlToRequest;
+exports.parseString = parseString;
+exports.getHashDigest = getHashDigest;
+exports.interpolateName = interpolateName;
