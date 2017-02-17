@@ -13,9 +13,9 @@ ExpectedError.prototype.matches = function(err) {
 	return this.regex.test(err.message);
 };
 
-describe("loader-utils", function() {
+describe("loader-utils", () => {
 
-	describe("#urlToRequest()", function() {
+	describe("#urlToRequest()", () => {
 		[
 			// without root
 			[["path/to/thing"], "./path/to/thing", "should handle implicit relative urls"],
@@ -41,8 +41,8 @@ describe("loader-utils", function() {
 			[["/path/to/thing", 1], new ExpectedError(/unexpected parameters/i), "should throw an error on invalid root"],
 			// difficult cases
 			[["a:b-not-\\window-path"], "./a:b-not-\\window-path", "should not incorrectly detect windows paths"]
-		].forEach(function(test) {
-			it(test[2], function() {
+		].forEach((test) => {
+			it(test[2], () => {
 				const expected = test[1];
 				try {
 					const request = loaderUtils.urlToRequest.apply(loaderUtils, test[0]);
@@ -58,7 +58,7 @@ describe("loader-utils", function() {
 		});
 	});
 
-	describe("#interpolateName", function() {
+	describe("#interpolateName", () => {
 		[
 			["/app/js/javascript.js", "js/[hash].script.[ext]", "test content", "js/9473fdd0d880a43c21b7778d34872157.script.js"],
 			["/app/page.html", "html-[hash:6].html", "test content", "html-9473fd.html"],
@@ -68,30 +68,30 @@ describe("loader-utils", function() {
 			["/vendor/test/images/loading.gif", function(path) {
 				return path.replace(/\/?vendor\/?/, "");
 			}, "test content", "test/images/loading.gif"]
-		].forEach(function(test) {
-			it("should interpolate " + test[0] + " " + test[1], function() {
+		].forEach((test) => {
+			it("should interpolate " + test[0] + " " + test[1], () => {
 				const interpolatedName = loaderUtils.interpolateName({ resourcePath: test[0] }, test[1], { content: test[2] });
 				assert.equal(interpolatedName, test[3]);
 			});
 		});
 	});
 
-	describe("#parseString", function() {
+	describe("#parseString", () => {
 		[
 			["test string", "test string"],
 			[s("!\"§$%&/()=?'*#+,.-;öäü:_test"), "!\"§$%&/()=?'*#+,.-;öäü:_test"],
 			["'escaped with single \"'", "escaped with single \""],
 			["invalid \"' string", "invalid \"' string"],
 			["\'inconsistent start and end\"", "\'inconsistent start and end\""]
-		].forEach(function(test) {
-			it("should parse " + test[0], function() {
+		].forEach((test) => {
+			it("should parse " + test[0], () => {
 				const parsed = loaderUtils.parseString(test[0]);
 				assert.equal(parsed, test[1]);
 			});
 		});
 	});
 
-	describe("#parseQuery", function() {
+	describe("#parseQuery", () => {
 		[
 			[
 				"?sweet=true&name=cheesecake&slices=8&delicious&warm=false",
@@ -117,34 +117,34 @@ describe("loader-utils", function() {
 				{ obj: "test" },
 				{ obj: "test" }
 			]
-		].forEach(function(test) {
-			it("should parse " + test[0], function() {
+		].forEach((test) => {
+			it("should parse " + test[0], () => {
 				const parsed = loaderUtils.parseQuery(test[0]);
 				assert.deepEqual(parsed, test[1]);
 			});
 		});
 	});
 
-	describe("#getLoaderConfig", function() {
-		it("should merge loaderContext.query and loaderContext.options.testLoader", function() {
+	describe("#getLoaderConfig", () => {
+		it("should merge loaderContext.query and loaderContext.options.testLoader", () => {
 			const config = loaderUtils.getLoaderConfig({ query: "?name=cheesecake",options: { testLoader: { slices: 8 } } }, "testLoader");
 			assert.deepEqual(config, { name: "cheesecake",slices: 8 });
 		});
-		it("should allow to specify a config property name via loaderContext.query.config", function() {
+		it("should allow to specify a config property name via loaderContext.query.config", () => {
 			const config = loaderUtils.getLoaderConfig({ query: "?name=cheesecake&config=otherConfig",options: { otherConfig: { slices: 8 } } }, "testLoader");
 			assert.deepEqual(config, { name: "cheesecake",slices: 8 });
 		});
-		it("should prefer loaderContext.query.slices over loaderContext.options.slices", function() {
+		it("should prefer loaderContext.query.slices over loaderContext.options.slices", () => {
 			const config = loaderUtils.getLoaderConfig({ query: "?slices=8",options: { testLoader: { slices: 4 } } }, "testLoader");
 			assert.deepEqual(config, { slices: 8 });
 		});
-		it("should allow no default key", function() {
+		it("should allow no default key", () => {
 			const config = loaderUtils.getLoaderConfig({ query: "?slices=8",options: {} });
 			assert.deepEqual(config, { slices: 8 });
 		});
 	});
 
-	describe("#getHashDigest", function() {
+	describe("#getHashDigest", () => {
 		[
 			["test string", "md5", "hex", undefined, "6f8db599de986fab7a21625b7916589c"],
 			["test string", "md5", "hex", 4, "6f8d"],
@@ -153,21 +153,21 @@ describe("loader-utils", function() {
 			["test string", "md5", "base26", 6, "bhtsgu"],
 			["test string", "sha512", "base64", undefined, "2IS-kbfIPnVflXb9CzgoNESGCkvkb0urMmucPD9z8q6HuYz8RShY1-tzSUpm5-Ivx_u4H1MEzPgAhyhaZ7RKog"],
 			["test_string", "md5", "hex", undefined, "3474851a3410906697ec77337df7aae4"]
-		].forEach(function(test) {
-			it("should getHashDigest " + test[0] + " " + test[1] + " " + test[2] + " " + test[3], function() {
+		].forEach((test) => {
+			it("should getHashDigest " + test[0] + " " + test[1] + " " + test[2] + " " + test[3], () => {
 				const hashDigest = loaderUtils.getHashDigest(test[0], test[1], test[2], test[3]);
 				assert.equal(hashDigest, test[4]);
 			});
 		});
 	});
 
-	describe("#interpolateName", function() {
+	describe("#interpolateName", () => {
 		function run(tests) {
-			tests.forEach(function(test) {
+			tests.forEach((test) => {
 				const args = test[0];
 				const expected = test[1];
 				const message = test[2];
-				it(message, function() {
+				it(message, () => {
 					const result = loaderUtils.interpolateName.apply(loaderUtils, args);
 					if(typeof expected === "function") {
 						expected(result);
@@ -202,14 +202,14 @@ describe("loader-utils", function() {
 				"should interpolate [emoji:3]"
 			],
 		]);
-		it("should return the same emoji for the same string", function() {
+		it("should return the same emoji for the same string", () => {
 			const args = [{}, "[emoji:5]", { content: "same_emoji" }];
 			const result1 = loaderUtils.interpolateName.apply(loaderUtils, args);
 			const result2 = loaderUtils.interpolateName.apply(loaderUtils, args);
 			assert.equal(result1, result2);
 		});
 
-		context("no loader context", function() {
+		context("no loader context", () => {
 			const loaderContext = {};
 			run([
 				[[loaderContext, "[ext]", {}], "bin", "should interpolate [ext] token"],
@@ -219,7 +219,7 @@ describe("loader-utils", function() {
 			]);
 		});
 
-		context("with loader context", function() {
+		context("with loader context", () => {
 			const loaderContext = { resourcePath: "/path/to/file.exe" };
 			run([
 				[[loaderContext, "[ext]", {}], "exe", "should interpolate [ext] token"],
@@ -243,7 +243,7 @@ describe("loader-utils", function() {
 		]);
 	});
 
-	describe("#stringifyRequest", function() {
+	describe("#stringifyRequest", () => {
 		// We know that query strings that contain paths and question marks can be problematic.
 		// We must ensure that stringifyRequest is not messing with them
 		const paramQueryString = "?questionMark?posix=path/to/thing&win=path\\to\\thing";
@@ -322,14 +322,14 @@ describe("loader-utils", function() {
 					["../../a/b.js" + paramQueryString, "c/d.js" + jsonQueryString, "./e/f.js"].join("!")
 				)
 			}
-		].forEach(function(testCase, i) {
+		].forEach((testCase, i) => {
 			if(!testCase) {
 				// If testCase is not defined, this test case should not be executed on this OS.
 				// This is because node's path module is OS agnostic which means that path.relative won't produce
 				// a relative path with absolute windows paths on posix systems.
 				return;
 			}
-			it("should stringify request " + testCase.request + " to " + testCase.expected + " inside context " + testCase.context, function() {
+			it("should stringify request " + testCase.request + " to " + testCase.expected + " inside context " + testCase.context, () => {
 				const actual = loaderUtils.stringifyRequest({ context: testCase.context }, testCase.request);
 				assert.equal(actual, testCase.expected);
 			});

@@ -49,6 +49,7 @@
 		"no-console": "off",
 		"valid-jsdoc": "error",
 		"no-var": "error",
-		"prefer-const": "error"
+		"prefer-const": "error",
+		"prefer-arrow-callback": "error"
 	}
 }

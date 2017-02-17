@@ -6,9 +6,7 @@ const util = require("util");
 const os = require("os");
 const assign = require("object-assign");
 const emojiRegex = /[\uD800-\uDFFF]./;
-const emojiList = require("emojis-list").filter(function(emoji) {
-	return emojiRegex.test(emoji);
-});
+const emojiList = require("emojis-list").filter(emoji => emojiRegex.test(emoji));
 const matchAbsolutePath = /^\/|^[A-Z]:[/\\]|^\\\\/i; // node 0.10 does not support path.isAbsolute()
 const matchAbsoluteWin32Path = /^[A-Z]:[/\\]|^\\\\/i;
 const matchRelativePath = /^\.\.?[/\\]/;
@@ -24,7 +22,7 @@ const baseEncodeTables = {
 	64: "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_"
 };
 const emojiCache = {};
-const parseQueryDeprecationWarning = util.deprecate(function() {},
+const parseQueryDeprecationWarning = util.deprecate(() => {},
 	"loaderUtils.parseQuery() received a non-string value which can be problematic, " +
 	"see https://github.com/webpack/loader-utils/issues/56" + os.EOL +
 	"parseQuery() will be replaced with getOptions() in the next major version of loader-utils."
@@ -88,7 +86,7 @@ exports.parseQuery = function parseQuery(query) {
 	}
 	const queryArgs = query.split(/[,\&]/g);
 	const result = {};
-	queryArgs.forEach(function(arg) {
+	queryArgs.forEach(arg => {
 		const idx = arg.indexOf("=");
 		if(idx >= 0) {
 			let name = arg.substr(0, idx);
@@ -133,7 +131,7 @@ exports.getLoaderConfig = function(loaderContext, defaultConfigKey) {
 exports.stringifyRequest = function(loaderContext, request) {
 	const splitted = request.split("!");
 	const context = loaderContext.context || (loaderContext.options && loaderContext.options.context);
-	return JSON.stringify(splitted.map(function(part) {
+	return JSON.stringify(splitted.map(part => {
 		// First, separate singlePath from query, because the query might contain paths again
 		const splittedPart = part.match(/^(.*?)(\?.*)/);
 		let singlePath = splittedPart ? splittedPart[1] : part;
@@ -231,10 +229,11 @@ exports.parseString = function parseString(str) {
 	try {
 		if(str[0] === "\"") return JSON.parse(str);
 		if(str[0] === "'" && str.substr(str.length - 1) === "'") {
-			return parseString(str.replace(/\\.|"/g, function(x) {
-				if(x === "\"") return "\\\"";
-				return x;
-			}).replace(/^'|'$/g, "\""));
+			return parseString(
+				str
+					.replace(/\\.|"/g, x => x === "\"" ? "\\\"" : x)
+					.replace(/^'|'$/g, "\"")
+			);
 		}
 		return JSON.parse("\"" + str + "\"");
 	} catch(e) {
@@ -287,7 +286,7 @@ exports.interpolateName = function interpolateName(loaderContext, name, options)
 		if(typeof context !== "undefined") {
 			directory = path.relative(context, resourcePath + "_").replace(/\\/g, "/").replace(/\.\.(\/)?/g, "_$1");
 			directory = directory.substr(0, directory.length - 1);
-		}		else {
+		} else {
 			directory = resourcePath.replace(/\\/g, "/").replace(/\.\.(\/)?/g, "_$1");
 		}
 		if(directory.length === 1) {
@@ -299,30 +298,29 @@ exports.interpolateName = function interpolateName(loaderContext, name, options)
 	let url = filename;
 	if(content) {
 		// Match hash template
-		url = url.replace(/\[(?:(\w+):)?hash(?::([a-z]+\d*))?(?::(\d+))?\]/ig, function() {
-			return exports.getHashDigest(content, arguments[1], arguments[2], parseInt(arguments[3], 10));
-		}).replace(/\[emoji(?::(\d+))?\]/ig, function() {
-			return encodeStringToEmoji(content, arguments[1]);
-		});
+		url = url
+			.replace(
+				/\[(?:(\w+):)?hash(?::([a-z]+\d*))?(?::(\d+))?\]/ig,
+				(all, hashType, digestType, maxLength) => exports.getHashDigest(content, hashType, digestType, parseInt(maxLength, 10))
+			)
+			.replace(
+				/\[emoji(?::(\d+))?\]/ig,
+				(all, length) => encodeStringToEmoji(content, length)
+			);
 	}
-	url = url.replace(/\[ext\]/ig, function() {
-		return ext;
-	}).replace(/\[name\]/ig, function() {
-		return basename;
-	}).replace(/\[path\]/ig, function() {
-		return directory;
-	}).replace(/\[folder\]/ig, function() {
-		return folder;
-	});
+	url = url
+		.replace(/\[ext\]/ig, () => ext)
+		.replace(/\[name\]/ig, () => basename)
+		.replace(/\[path\]/ig, () => directory)
+		.replace(/\[folder\]/ig, () => folder);
 	if(regExp && loaderContext.resourcePath) {
-		const re = new RegExp(regExp);
-		const match = loaderContext.resourcePath.match(re);
-		if(match) {
-			for(let i = 0; i < match.length; i++) {
-				const re = new RegExp("\\[" + i + "\\]", "ig");
-				url = url.replace(re, match[i]);
-			}
-		}
+		const match = loaderContext.resourcePath.match(new RegExp(regExp));
+		match && match.forEach((matched, i) => {
+			url = url.replace(
+				new RegExp("\\[" + i + "\\]", "ig"),
+				matched
+			);
+		});
 	}
 	if(typeof loaderContext.options === "object" && typeof loaderContext.options.customInterpolateName === "function") {
 		url = loaderContext.options.customInterpolateName.call(loaderContext, url, name, options);
