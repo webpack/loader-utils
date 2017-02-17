@@ -6,8 +6,7 @@ const util = require("util");
 const os = require("os");
 const emojiRegex = /[\uD800-\uDFFF]./;
 const emojiList = require("emojis-list").filter(emoji => emojiRegex.test(emoji));
-const matchAbsolutePath = /^\/|^[A-Z]:[/\\]|^\\\\/i; // node 0.10 does not support path.isAbsolute()
-const matchAbsoluteWin32Path = /^[A-Z]:[/\\]|^\\\\/i;
+const matchNativeWin32Path = /^[A-Z]:[/\\]|^\\\\/i;
 const matchRelativePath = /^\.\.?[/\\]/;
 
 const baseEncodeTables = {
@@ -26,6 +25,14 @@ const parseQueryDeprecationWarning = util.deprecate(() => {},
 	"see https://github.com/webpack/loader-utils/issues/56" + os.EOL +
 	"parseQuery() will be replaced with getOptions() in the next major version of loader-utils."
 );
+
+function isAbsolutePath(str) {
+	return path.posix.isAbsolute(str) || path.win32.isAbsolute(str);
+}
+
+function isRelativePath(str) {
+	return matchRelativePath.test(str);
+}
 
 function encodeStringToEmoji(content, length) {
 	if(emojiCache[content]) return emojiCache[content];
@@ -135,15 +142,15 @@ function stringifyRequest(loaderContext, request) {
 		const splittedPart = part.match(/^(.*?)(\?.*)/);
 		let singlePath = splittedPart ? splittedPart[1] : part;
 		const query = splittedPart ? splittedPart[2] : "";
-		if(matchAbsolutePath.test(singlePath) && context) {
+		if(isAbsolutePath(singlePath) && context) {
 			singlePath = path.relative(context, singlePath);
-			if(matchAbsolutePath.test(singlePath)) {
+			if(isAbsolutePath(singlePath)) {
 				// If singlePath still matches an absolute path, singlePath was on a different drive than context.
 				// In this case, we leave the path platform-specific without replacing any separators.
 				// @see https://github.com/webpack/loader-utils/pull/14
 				return singlePath + query;
 			}
-			if(matchRelativePath.test(singlePath) === false) {
+			if(isRelativePath(singlePath) === false) {
 				// Ensure that the relative path starts at least with ./ otherwise it would be a request into the modules directory (like node_modules).
 				singlePath = "./" + singlePath;
 			}
@@ -185,7 +192,8 @@ function urlToRequest(url, root) {
 	const moduleRequestRegex = /^[^?]*~/;
 	let request;
 
-	if(matchAbsoluteWin32Path.test(url)) {
+	// we can't use path.win32.isAbsolute because it also matches paths starting with a forward slash
+	if(matchNativeWin32Path.test(url)) {
 		// absolute windows path, keep it
 		request = url;
 	} else if(root !== undefined && root !== false && /^\//.test(url)) {
