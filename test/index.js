@@ -1,8 +1,10 @@
-var assert = require("assert"),
-	path = require("path"),
-	loaderUtils = require("../");
+"use strict";
 
-var s = JSON.stringify;
+const assert = require("assert");
+const path = require("path");
+const loaderUtils = require("../");
+
+const s = JSON.stringify;
 
 function ExpectedError(regex) {
 	this.regex = regex;
@@ -41,9 +43,9 @@ describe("loader-utils", function() {
 			[["a:b-not-\\window-path"], "./a:b-not-\\window-path", "should not incorrectly detect windows paths"]
 		].forEach(function(test) {
 			it(test[2], function() {
-				var expected = test[1];
+				const expected = test[1];
 				try {
-					var request = loaderUtils.urlToRequest.apply(loaderUtils, test[0]);
+					const request = loaderUtils.urlToRequest.apply(loaderUtils, test[0]);
 					assert.equal(request, expected);
 				} catch(e) {
 					if(expected instanceof ExpectedError) {
@@ -68,7 +70,7 @@ describe("loader-utils", function() {
 			}, "test content", "test/images/loading.gif"]
 		].forEach(function(test) {
 			it("should interpolate " + test[0] + " " + test[1], function() {
-				var interpolatedName = loaderUtils.interpolateName({ resourcePath: test[0] }, test[1], { content: test[2] });
+				const interpolatedName = loaderUtils.interpolateName({ resourcePath: test[0] }, test[1], { content: test[2] });
 				assert.equal(interpolatedName, test[3]);
 			});
 		});
@@ -83,7 +85,7 @@ describe("loader-utils", function() {
 			["\'inconsistent start and end\"", "\'inconsistent start and end\""]
 		].forEach(function(test) {
 			it("should parse " + test[0], function() {
-				var parsed = loaderUtils.parseString(test[0]);
+				const parsed = loaderUtils.parseString(test[0]);
 				assert.equal(parsed, test[1]);
 			});
 		});
@@ -117,7 +119,7 @@ describe("loader-utils", function() {
 			]
 		].forEach(function(test) {
 			it("should parse " + test[0], function() {
-				var parsed = loaderUtils.parseQuery(test[0]);
+				const parsed = loaderUtils.parseQuery(test[0]);
 				assert.deepEqual(parsed, test[1]);
 			});
 		});
@@ -125,19 +127,19 @@ describe("loader-utils", function() {
 
 	describe("#getLoaderConfig", function() {
 		it("should merge loaderContext.query and loaderContext.options.testLoader", function() {
-			var config = loaderUtils.getLoaderConfig({ query: "?name=cheesecake",options: { testLoader: { slices: 8 } } }, "testLoader");
+			const config = loaderUtils.getLoaderConfig({ query: "?name=cheesecake",options: { testLoader: { slices: 8 } } }, "testLoader");
 			assert.deepEqual(config, { name: "cheesecake",slices: 8 });
 		});
 		it("should allow to specify a config property name via loaderContext.query.config", function() {
-			var config = loaderUtils.getLoaderConfig({ query: "?name=cheesecake&config=otherConfig",options: { otherConfig: { slices: 8 } } }, "testLoader");
+			const config = loaderUtils.getLoaderConfig({ query: "?name=cheesecake&config=otherConfig",options: { otherConfig: { slices: 8 } } }, "testLoader");
 			assert.deepEqual(config, { name: "cheesecake",slices: 8 });
 		});
 		it("should prefer loaderContext.query.slices over loaderContext.options.slices", function() {
-			var config = loaderUtils.getLoaderConfig({ query: "?slices=8",options: { testLoader: { slices: 4 } } }, "testLoader");
+			const config = loaderUtils.getLoaderConfig({ query: "?slices=8",options: { testLoader: { slices: 4 } } }, "testLoader");
 			assert.deepEqual(config, { slices: 8 });
 		});
 		it("should allow no default key", function() {
-			var config = loaderUtils.getLoaderConfig({ query: "?slices=8",options: {} });
+			const config = loaderUtils.getLoaderConfig({ query: "?slices=8",options: {} });
 			assert.deepEqual(config, { slices: 8 });
 		});
 	});
@@ -153,7 +155,7 @@ describe("loader-utils", function() {
 			["test_string", "md5", "hex", undefined, "3474851a3410906697ec77337df7aae4"]
 		].forEach(function(test) {
 			it("should getHashDigest " + test[0] + " " + test[1] + " " + test[2] + " " + test[3], function() {
-				var hashDigest = loaderUtils.getHashDigest(test[0], test[1], test[2], test[3]);
+				const hashDigest = loaderUtils.getHashDigest(test[0], test[1], test[2], test[3]);
 				assert.equal(hashDigest, test[4]);
 			});
 		});
@@ -162,11 +164,11 @@ describe("loader-utils", function() {
 	describe("#interpolateName", function() {
 		function run(tests) {
 			tests.forEach(function(test) {
-				var args = test[0];
-				var expected = test[1];
-				var message = test[2];
+				const args = test[0];
+				const expected = test[1];
+				const message = test[2];
 				it(message, function() {
-					var result = loaderUtils.interpolateName.apply(loaderUtils, args);
+					const result = loaderUtils.interpolateName.apply(loaderUtils, args);
 					if(typeof expected === "function") {
 						expected(result);
 					} else {
@@ -182,7 +184,7 @@ describe("loader-utils", function() {
 			[[{}, "[unrecognized]", { content: "test string" }], "[unrecognized]", "should not interpolate unrecognized token"],
 		]);
 
-		var emojiRegex = /[\uD800-\uDFFF]./;
+		const emojiRegex = /[\uD800-\uDFFF]./;
 		run([
 			[
 				[{}, "[emoji]", { content: "test" }],
@@ -201,14 +203,14 @@ describe("loader-utils", function() {
 			],
 		]);
 		it("should return the same emoji for the same string", function() {
-			var args = [{}, "[emoji:5]", { content: "same_emoji" }];
-			var result1 = loaderUtils.interpolateName.apply(loaderUtils, args);
-			var result2 = loaderUtils.interpolateName.apply(loaderUtils, args);
+			const args = [{}, "[emoji:5]", { content: "same_emoji" }];
+			const result1 = loaderUtils.interpolateName.apply(loaderUtils, args);
+			const result2 = loaderUtils.interpolateName.apply(loaderUtils, args);
 			assert.equal(result1, result2);
 		});
 
 		context("no loader context", function() {
-			var loaderContext = {};
+			const loaderContext = {};
 			run([
 				[[loaderContext, "[ext]", {}], "bin", "should interpolate [ext] token"],
 				[[loaderContext, "[name]", {}], "file", "should interpolate [name] token"],
@@ -218,7 +220,7 @@ describe("loader-utils", function() {
 		});
 
 		context("with loader context", function() {
-			var loaderContext = { resourcePath: "/path/to/file.exe" };
+			const loaderContext = { resourcePath: "/path/to/file.exe" };
 			run([
 				[[loaderContext, "[ext]", {}], "exe", "should interpolate [ext] token"],
 				[[loaderContext, "[name]", {}], "file", "should interpolate [name] token"],
@@ -244,14 +246,14 @@ describe("loader-utils", function() {
 	describe("#stringifyRequest", function() {
 		// We know that query strings that contain paths and question marks can be problematic.
 		// We must ensure that stringifyRequest is not messing with them
-		var paramQueryString = "?questionMark?posix=path/to/thing&win=path\\to\\thing";
-		var jsonQueryString = "?" + s({
+		const paramQueryString = "?questionMark?posix=path/to/thing&win=path\\to\\thing";
+		const jsonQueryString = "?" + s({
 			questionMark: "?",
 			posix: "path/to/thing",
 			win: "path\\to\\file"
 		});
-		var win = path.sep === "\\";
-		var posix = path.sep === "/";
+		const win = path.sep === "\\";
+		const posix = path.sep === "/";
 		[
 			{ request: "./a.js", expected: s("./a.js") },
 			{ request: ".\\a.js", expected: s("./a.js") },
@@ -328,7 +330,7 @@ describe("loader-utils", function() {
 				return;
 			}
 			it("should stringify request " + testCase.request + " to " + testCase.expected + " inside context " + testCase.context, function() {
-				var actual = loaderUtils.stringifyRequest({ context: testCase.context }, testCase.request);
+				const actual = loaderUtils.stringifyRequest({ context: testCase.context }, testCase.request);
 				assert.equal(actual, testCase.expected);
 			});
 		});

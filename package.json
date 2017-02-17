@@ -11,6 +11,7 @@
   },
   "scripts": {
     "test": "mocha",
+    "posttest": "npm run lint",
     "lint": "eslint --fix *.js test",
     "travis": "npm run cover -- --report lcovonly",
     "cover": "istanbul cover -x *.runtime.js node_modules/mocha/bin/_mocha",

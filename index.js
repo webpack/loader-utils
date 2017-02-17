@@ -1,17 +1,19 @@
-var JSON5 = require("json5");
-var path = require("path");
-var util = require("util");
-var os = require("os");
-var assign = require("object-assign");
-var emojiRegex = /[\uD800-\uDFFF]./;
-var emojiList = require("emojis-list").filter(function(emoji) {
+"use strict";
+
+const JSON5 = require("json5");
+const path = require("path");
+const util = require("util");
+const os = require("os");
+const assign = require("object-assign");
+const emojiRegex = /[\uD800-\uDFFF]./;
+const emojiList = require("emojis-list").filter(function(emoji) {
 	return emojiRegex.test(emoji);
 });
-var matchAbsolutePath = /^\/|^[A-Z]:[/\\]|^\\\\/i; // node 0.10 does not support path.isAbsolute()
-var matchAbsoluteWin32Path = /^[A-Z]:[/\\]|^\\\\/i;
-var matchRelativePath = /^\.\.?[/\\]/;
+const matchAbsolutePath = /^\/|^[A-Z]:[/\\]|^\\\\/i; // node 0.10 does not support path.isAbsolute()
+const matchAbsoluteWin32Path = /^[A-Z]:[/\\]|^\\\\/i;
+const matchRelativePath = /^\.\.?[/\\]/;
 
-var baseEncodeTables = {
+const baseEncodeTables = {
 	26: "abcdefghijklmnopqrstuvwxyz",
 	32: "123456789abcdefghjkmnpqrstuvwxyz", // no 0lio
 	36: "0123456789abcdefghijklmnopqrstuvwxyz",
@@ -21,8 +23,8 @@ var baseEncodeTables = {
 	62: "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
 	64: "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_"
 };
-var emojiCache = {};
-var parseQueryDeprecationWarning = util.deprecate(function() {},
+const emojiCache = {};
+const parseQueryDeprecationWarning = util.deprecate(function() {},
 	"loaderUtils.parseQuery() received a non-string value which can be problematic, " +
 	"see https://github.com/webpack/loader-utils/issues/56" + os.EOL +
 	"parseQuery() will be replaced with getOptions() in the next major version of loader-utils."
@@ -31,31 +33,31 @@ var parseQueryDeprecationWarning = util.deprecate(function() {},
 function encodeStringToEmoji(content, length) {
 	if(emojiCache[content]) return emojiCache[content];
 	length = length || 1;
-	var emojis = [];
+	const emojis = [];
 	do {
-		var index = Math.floor(Math.random() * emojiList.length);
+		const index = Math.floor(Math.random() * emojiList.length);
 		emojis.push(emojiList[index]);
 		emojiList.splice(index, 1);
 	} while(--length > 0);
-	var emojiEncoding = emojis.join("");
+	const emojiEncoding = emojis.join("");
 	emojiCache[content] = emojiEncoding;
 	return emojiEncoding;
 }
 
 function encodeBufferToBase(buffer, base) {
-	var encodeTable = baseEncodeTables[base];
+	const encodeTable = baseEncodeTables[base];
 	if(!encodeTable) throw new Error("Unknown encoding base" + base);
 
-	var readLength = buffer.length;
+	const readLength = buffer.length;
 
-	var Big = require("big.js");
+	const Big = require("big.js");
 	Big.RM = Big.DP = 0;
-	var b = new Big(0);
-	for(var i = readLength - 1; i >= 0; i--) {
+	let b = new Big(0);
+	for(let i = readLength - 1; i >= 0; i--) {
 		b = b.times(256).plus(buffer[i]);
 	}
 
-	var output = "";
+	let output = "";
 	while(b.gt(0)) {
 		output = encodeTable[b.mod(base)] + output;
 		b = b.div(base);
@@ -68,7 +70,7 @@ function encodeBufferToBase(buffer, base) {
 }
 
 exports.parseQuery = function parseQuery(query) {
-	var specialValues = {
+	const specialValues = {
 		"null": null,
 		"true": true,
 		"false": false
@@ -84,13 +86,13 @@ exports.parseQuery = function parseQuery(query) {
 	if(query.substr(0, 1) === "{" && query.substr(-1) === "}") {
 		return JSON5.parse(query);
 	}
-	var queryArgs = query.split(/[,\&]/g);
-	var result = {};
+	const queryArgs = query.split(/[,\&]/g);
+	const result = {};
 	queryArgs.forEach(function(arg) {
-		var idx = arg.indexOf("=");
+		const idx = arg.indexOf("=");
 		if(idx >= 0) {
-			var name = arg.substr(0, idx);
-			var value = decodeURIComponent(arg.substr(idx + 1));
+			let name = arg.substr(0, idx);
+			let value = decodeURIComponent(arg.substr(idx + 1));
 			if(specialValues.hasOwnProperty(value)) {
 				value = specialValues[value];
 			}
@@ -117,10 +119,10 @@ exports.parseQuery = function parseQuery(query) {
 };
 
 exports.getLoaderConfig = function(loaderContext, defaultConfigKey) {
-	var query = exports.parseQuery(loaderContext.query);
-	var configKey = query.config || defaultConfigKey;
+	const query = exports.parseQuery(loaderContext.query);
+	const configKey = query.config || defaultConfigKey;
 	if(configKey) {
-		var config = loaderContext.options[configKey] || {};
+		const config = loaderContext.options[configKey] || {};
 		delete query.config;
 		return assign({}, config, query);
 	}
@@ -129,13 +131,13 @@ exports.getLoaderConfig = function(loaderContext, defaultConfigKey) {
 };
 
 exports.stringifyRequest = function(loaderContext, request) {
-	var splitted = request.split("!");
-	var context = loaderContext.context || (loaderContext.options && loaderContext.options.context);
+	const splitted = request.split("!");
+	const context = loaderContext.context || (loaderContext.options && loaderContext.options.context);
 	return JSON.stringify(splitted.map(function(part) {
 		// First, separate singlePath from query, because the query might contain paths again
-		var splittedPart = part.match(/^(.*?)(\?.*)/);
-		var singlePath = splittedPart ? splittedPart[1] : part;
-		var query = splittedPart ? splittedPart[2] : "";
+		const splittedPart = part.match(/^(.*?)(\?.*)/);
+		let singlePath = splittedPart ? splittedPart[1] : part;
+		const query = splittedPart ? splittedPart[2] : "";
 		if(matchAbsolutePath.test(singlePath) && context) {
 			singlePath = path.relative(context, singlePath);
 			if(matchAbsolutePath.test(singlePath)) {
@@ -160,14 +162,14 @@ function dotRequest(obj) {
 exports.getRemainingRequest = function(loaderContext) {
 	if(loaderContext.remainingRequest)
 		return loaderContext.remainingRequest;
-	var request = loaderContext.loaders.slice(loaderContext.loaderIndex + 1).map(dotRequest).concat([loaderContext.resource]);
+	const request = loaderContext.loaders.slice(loaderContext.loaderIndex + 1).map(dotRequest).concat([loaderContext.resource]);
 	return request.join("!");
 };
 
 exports.getCurrentRequest = function(loaderContext) {
 	if(loaderContext.currentRequest)
 		return loaderContext.currentRequest;
-	var request = loaderContext.loaders.slice(loaderContext.loaderIndex).map(dotRequest).concat([loaderContext.resource]);
+	const request = loaderContext.loaders.slice(loaderContext.loaderIndex).map(dotRequest).concat([loaderContext.resource]);
 	return request.join("!");
 };
 
@@ -183,8 +185,8 @@ exports.isUrlRequest = function(url, root) {
 };
 
 exports.urlToRequest = function(url, root) {
-	var moduleRequestRegex = /^[^?]*~/;
-	var request;
+	const moduleRequestRegex = /^[^?]*~/;
+	let request;
 
 	if(matchAbsoluteWin32Path.test(url)) {
 		// absolute windows path, keep it
@@ -243,7 +245,7 @@ exports.parseString = function parseString(str) {
 exports.getHashDigest = function getHashDigest(buffer, hashType, digestType, maxLength) {
 	hashType = hashType || "md5";
 	maxLength = maxLength || 9999;
-	var hash = require("crypto").createHash(hashType);
+	const hash = require("crypto").createHash(hashType);
 	hash.update(buffer);
 	if(digestType === "base26" || digestType === "base32" || digestType === "base36" ||
 		digestType === "base49" || digestType === "base52" || digestType === "base58" ||
@@ -255,25 +257,25 @@ exports.getHashDigest = function getHashDigest(buffer, hashType, digestType, max
 };
 
 exports.interpolateName = function interpolateName(loaderContext, name, options) {
-	var filename;
+	let filename;
 	if(typeof name === "function") {
 		filename = name(loaderContext.resourcePath);
 	} else {
 		filename = name || "[hash].[ext]";
 	}
-	var context = options.context;
-	var content = options.content;
-	var regExp = options.regExp;
-	var ext = "bin";
-	var basename = "file";
-	var directory = "";
-	var folder = "";
+	const context = options.context;
+	const content = options.content;
+	const regExp = options.regExp;
+	let ext = "bin";
+	let basename = "file";
+	let directory = "";
+	let folder = "";
 	if(loaderContext.resourcePath) {
-		var resourcePath = loaderContext.resourcePath;
-		var idx = resourcePath.lastIndexOf(".");
-		var i = resourcePath.lastIndexOf("\\");
-		var j = resourcePath.lastIndexOf("/");
-		var p = i < 0 ? j : j < 0 ? i : i < j ? i : j;
+		let resourcePath = loaderContext.resourcePath;
+		const idx = resourcePath.lastIndexOf(".");
+		const i = resourcePath.lastIndexOf("\\");
+		const j = resourcePath.lastIndexOf("/");
+		const p = i < 0 ? j : j < 0 ? i : i < j ? i : j;
 		if(idx >= 0) {
 			ext = resourcePath.substr(idx + 1);
 			resourcePath = resourcePath.substr(0, idx);
@@ -294,7 +296,7 @@ exports.interpolateName = function interpolateName(loaderContext, name, options)
 			folder = path.basename(directory);
 		}
 	}
-	var url = filename;
+	let url = filename;
 	if(content) {
 		// Match hash template
 		url = url.replace(/\[(?:(\w+):)?hash(?::([a-z]+\d*))?(?::(\d+))?\]/ig, function() {
@@ -313,11 +315,11 @@ exports.interpolateName = function interpolateName(loaderContext, name, options)
 		return folder;
 	});
 	if(regExp && loaderContext.resourcePath) {
-		var re = new RegExp(regExp);
-		var match = loaderContext.resourcePath.match(re);
+		const re = new RegExp(regExp);
+		const match = loaderContext.resourcePath.match(re);
 		if(match) {
-			for(i = 0; i < match.length; i++) {
-				re = new RegExp("\\[" + i + "\\]", "ig");
+			for(let i = 0; i < match.length; i++) {
+				const re = new RegExp("\\[" + i + "\\]", "ig");
 				url = url.replace(re, match[i]);
 			}
 		}

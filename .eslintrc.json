@@ -47,6 +47,8 @@
 			}
 		}],
 		"no-console": "off",
-		"valid-jsdoc": "error"
+		"valid-jsdoc": "error",
+		"no-var": "error",
+		"prefer-const": "error"
 	}
 }
