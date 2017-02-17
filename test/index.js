@@ -1,5 +1,8 @@
 var assert = require("assert"),
+	path = require("path"),
 	loaderUtils = require("../");
+
+var s = JSON.stringify;
 
 function ExpectedError(regex) { this.regex = regex; }
 ExpectedError.prototype.matches = function (err) {
@@ -70,7 +73,7 @@ describe("loader-utils", function() {
 	describe("#parseString", function() {
 		[
 			["test string", "test string"],
-			[JSON.stringify("!\"§$%&/()=?'*#+,.-;öäü:_test"), "!\"§$%&/()=?'*#+,.-;öäü:_test"],
+			[s("!\"§$%&/()=?'*#+,.-;öäü:_test"), "!\"§$%&/()=?'*#+,.-;öäü:_test"],
 			["'escaped with single \"'", 'escaped with single "'],
 			["invalid \"' string", "invalid \"' string"],
 			["\'inconsistent start and end\"", "\'inconsistent start and end\""]
@@ -234,17 +237,95 @@ describe("loader-utils", function() {
 		]);
 	});
 
-	// request with relative path args
 	describe("#stringifyRequest", function() {
-		var pathArgsString = "path=../../thing/file";
-		var pathArgsObjString = JSON.stringify( { "path-to-file": "../../thing/file" } );
+		// We know that query strings that contain paths and question marks can be problematic.
+		// We must ensure that stringifyRequest is not messing with them
+		var paramQueryString = "?questionMark?posix=path/to/thing&win=path\\to\\thing";
+		var jsonQueryString = "?" + s({
+			questionMark: "?",
+			posix: "path/to/thing",
+			win: "path\\to\\file"
+		});
+		var win = path.sep === "\\";
+		var posix = path.sep === "/";
 		[
-			["/path/to/thing", "/path/to/thing/file!/path/to/thing/file?" + pathArgsString, JSON.stringify("./file!./file?" + pathArgsString)],
-			["/path/to/thing", "/path/to/thing/file!/path/to/thing/file?" + pathArgsObjString, JSON.stringify("./file!./file?" + pathArgsObjString)]
-		].forEach(function(test) {
-			it("should stringify " + test[1] + " " + test[2], function() {
-				var request = loaderUtils.stringifyRequest({ context: test[0] }, test[1]);
-				assert.equal(request, test[2]);
+			{ request: "./a.js", expected: s("./a.js") },
+			{ request: ".\\a.js", expected: s("./a.js") },
+			{ request: "./a/b.js", expected: s("./a/b.js") },
+			{ request: ".\\a\\b.js", expected: s("./a/b.js") },
+			{ request: "module", expected: s("module") }, // without ./ is a request into the modules directory
+			{ request: "module/a.js", expected: s("module/a.js") },
+			{ request: "module\\a.js", expected: s("module/a.js") },
+			{ request: "./a.js" + paramQueryString, expected: s("./a.js" + paramQueryString) },
+			{ request: "./a.js" + jsonQueryString, expected: s("./a.js" + jsonQueryString) },
+			{ request: "module" + paramQueryString, expected: s("module" + paramQueryString) },
+			{ request: "module" + jsonQueryString, expected: s("module" + jsonQueryString) },
+			posix && { context: "/path/to", request: "/path/to/module/a.js", expected: s("./module/a.js") },
+			win && { context: "C:\\path\\to\\", request: "C:\\path\\to\\module\\a.js", expected: s("./module/a.js") },
+			posix && { context: "/path/to/thing", request: "/path/to/module/a.js", expected: s("../module/a.js") },
+			win && { context: "C:\\path\\to\\thing", request: "C:\\path\\to\\module\\a.js", expected: s("../module/a.js") },
+			win && { context: "\\\\A\\path\\to\\thing", request: "\\\\A\\path\\to\\module\\a.js", expected: s("../module/a.js") },
+			// If context and request are on different drives, the path should not be relative
+			// @see https://github.com/webpack/loader-utils/pull/14
+			win && { context: "D:\\path\\to\\thing", request: "C:\\path\\to\\module\\a.js", expected: s("C:\\path\\to\\module\\a.js") },
+			win && { context: "\\\\A\\path\\to\\thing", request: "\\\\B\\path\\to\\module\\a.js", expected: s("\\\\B\\path\\to\\module\\a.js") },
+			posix && {
+				context: "/path/to",
+				request: "/path/to/module/a.js" + paramQueryString,
+				expected: s("./module/a.js" + paramQueryString)
+			},
+			win && {
+				context: "C:\\path\\to\\",
+				request: "C:\\path\\to\\module\\a.js" + paramQueryString,
+				expected: s("./module/a.js" + paramQueryString)
+			},
+			{
+				request:
+					["./a.js", "./b.js", "./c.js"].join("!"),
+				expected: s(
+					["./a.js", "./b.js", "./c.js"].join("!")
+				)
+			},
+			{
+				request:
+					["a/b.js", "c/d.js", "e/f.js", "g"].join("!"),
+				expected: s(
+					["a/b.js", "c/d.js", "e/f.js", "g"].join("!")
+				)
+			},
+			{
+				request:
+					["a/b.js" + paramQueryString, "c/d.js" + jsonQueryString, "e/f.js"].join("!"),
+				expected: s(
+					["a/b.js" + paramQueryString, "c/d.js" + jsonQueryString, "e/f.js"].join("!")
+				)
+			},
+			posix && {
+				context: "/path/to",
+				request:
+					["/a/b.js" + paramQueryString, "c/d.js" + jsonQueryString, "/path/to/e/f.js"].join("!"),
+				expected: s(
+					["../../a/b.js" + paramQueryString, "c/d.js" + jsonQueryString, "./e/f.js"].join("!")
+				)
+			},
+			win && {
+				context: "C:\\path\\to\\",
+				request:
+					["C:\\a\\b.js" + paramQueryString, "c\\d.js" + jsonQueryString, "C:\\path\\to\\e\\f.js"].join("!"),
+				expected: s(
+					["../../a/b.js" + paramQueryString, "c/d.js" + jsonQueryString, "./e/f.js"].join("!")
+				)
+			}
+		].forEach(function (testCase, i) {
+			if (!testCase) {
+				// If testCase is not defined, this test case should not be executed on this OS.
+				// This is because node's path module is OS agnostic which means that path.relative won't produce
+				// a relative path with absolute windows paths on posix systems.
+				return;
+			}
+			it("should stringify request " + testCase.request + " to " + testCase.expected + " inside context " + testCase.context, function () {
+				var actual = loaderUtils.stringifyRequest({ context: testCase.context }, testCase.request);
+				assert.equal(actual, testCase.expected);
 			});
 		});
 	});
