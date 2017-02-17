@@ -31,7 +31,8 @@
     "istanbul": "^0.3.14",
     "mocha": "^1.21.4"
   },
+  "main": "lib/index.js",
   "files": [
-    "index.js"
+    "lib"
   ]
 }
