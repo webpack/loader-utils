@@ -22,9 +22,9 @@ var baseEncodeTables = {
 	64: "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_"
 };
 var emojiCache = {};
-var parseQueryDeprecationWarning = util.deprecate(function () {},
-	"loaderUtils.parseQuery() received a value type of " + typeof query +
-	" which can be problematic, see https://github.com/webpack/loader-utils/issues/56" + os.EOL +
+var parseQueryDeprecationWarning = util.deprecate(function() {},
+	"loaderUtils.parseQuery() received a non-string value which can be problematic, " +
+	"see https://github.com/webpack/loader-utils/issues/56" + os.EOL +
 	"parseQuery() will be replaced with getOptions() in the next major version of loader-utils."
 );
 
