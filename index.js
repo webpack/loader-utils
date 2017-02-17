@@ -4,7 +4,6 @@ const JSON5 = require("json5");
 const path = require("path");
 const util = require("util");
 const os = require("os");
-const assign = require("object-assign");
 const emojiRegex = /[\uD800-\uDFFF]./;
 const emojiList = require("emojis-list").filter(emoji => emojiRegex.test(emoji));
 const matchAbsolutePath = /^\/|^[A-Z]:[/\\]|^\\\\/i; // node 0.10 does not support path.isAbsolute()
@@ -122,7 +121,7 @@ exports.getLoaderConfig = function(loaderContext, defaultConfigKey) {
 	if(configKey) {
 		const config = loaderContext.options[configKey] || {};
 		delete query.config;
-		return assign({}, config, query);
+		return Object.assign({}, config, query);
 	}
 
 	return query;
