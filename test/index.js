@@ -4,8 +4,10 @@ var assert = require("assert"),
 
 var s = JSON.stringify;
 
-function ExpectedError(regex) { this.regex = regex; }
-ExpectedError.prototype.matches = function (err) {
+function ExpectedError(regex) {
+	this.regex = regex;
+}
+ExpectedError.prototype.matches = function(err) {
 	return this.regex.test(err.message);
 };
 
@@ -43,8 +45,8 @@ describe("loader-utils", function() {
 				try {
 					var request = loaderUtils.urlToRequest.apply(loaderUtils, test[0]);
 					assert.equal(request, expected);
-				} catch (e) {
-					if (expected instanceof ExpectedError) {
+				} catch(e) {
+					if(expected instanceof ExpectedError) {
 						assert.ok(expected.matches(e));
 					} else {
 						assert.ok(false, "should not have thrown an error: " + e.message);
@@ -61,7 +63,9 @@ describe("loader-utils", function() {
 			["/app/flash.txt", "[hash]", "test content", "9473fdd0d880a43c21b7778d34872157"],
 			["/app/img/image.png", "[sha512:hash:base64:7].[ext]", "test content", "2BKDTjl.png"],
 			["/app/dir/file.png", "[path][name].[ext]?[hash]", "test content", "/app/dir/file.png?9473fdd0d880a43c21b7778d34872157"],
-			["/vendor/test/images/loading.gif", function(path) { return path.replace(/\/?vendor\/?/, ''); }, "test content", "test/images/loading.gif"]
+			["/vendor/test/images/loading.gif", function(path) {
+				return path.replace(/\/?vendor\/?/, "");
+			}, "test content", "test/images/loading.gif"]
 		].forEach(function(test) {
 			it("should interpolate " + test[0] + " " + test[1], function() {
 				var interpolatedName = loaderUtils.interpolateName({ resourcePath: test[0] }, test[1], { content: test[2] });
@@ -74,7 +78,7 @@ describe("loader-utils", function() {
 		[
 			["test string", "test string"],
 			[s("!\"§$%&/()=?'*#+,.-;öäü:_test"), "!\"§$%&/()=?'*#+,.-;öäü:_test"],
-			["'escaped with single \"'", 'escaped with single "'],
+			["'escaped with single \"'", "escaped with single \""],
 			["invalid \"' string", "invalid \"' string"],
 			["\'inconsistent start and end\"", "\'inconsistent start and end\""]
 		].forEach(function(test) {
@@ -89,23 +93,23 @@ describe("loader-utils", function() {
 		[
 			[
 				"?sweet=true&name=cheesecake&slices=8&delicious&warm=false",
-				{"sweet":true,"name":"cheesecake","slices":"8","delicious":true,"warm": false}
+				{ "sweet": true,"name": "cheesecake","slices": "8","delicious": true,"warm": false }
 			],
 			[
 				"?%3d",
-				{"=": true}
+				{ "=": true }
 			],
 			[
 				"?+%3d",
-				{"=": true}
+				{ "=": true }
 			],
 			[
 				"?-%3d",
-				{"=": false}
+				{ "=": false }
 			],
 			[
 				"?%3d=%3D",
-				{"=": "="}
+				{ "=": "=" }
 			],
 			[
 				{ obj: "test" },
@@ -120,21 +124,21 @@ describe("loader-utils", function() {
 	});
 
 	describe("#getLoaderConfig", function() {
-		it("should merge loaderContext.query and loaderContext.options.testLoader", function () {
-			var config = loaderUtils.getLoaderConfig({query:"?name=cheesecake",options:{testLoader:{slices:8}}}, "testLoader");
-			assert.deepEqual(config, {name:"cheesecake",slices:8});
+		it("should merge loaderContext.query and loaderContext.options.testLoader", function() {
+			var config = loaderUtils.getLoaderConfig({ query: "?name=cheesecake",options: { testLoader: { slices: 8 } } }, "testLoader");
+			assert.deepEqual(config, { name: "cheesecake",slices: 8 });
 		});
-		it("should allow to specify a config property name via loaderContext.query.config", function () {
-			var config = loaderUtils.getLoaderConfig({query:"?name=cheesecake&config=otherConfig",options:{otherConfig:{slices:8}}}, "testLoader");
-			assert.deepEqual(config, {name:"cheesecake",slices:8});
+		it("should allow to specify a config property name via loaderContext.query.config", function() {
+			var config = loaderUtils.getLoaderConfig({ query: "?name=cheesecake&config=otherConfig",options: { otherConfig: { slices: 8 } } }, "testLoader");
+			assert.deepEqual(config, { name: "cheesecake",slices: 8 });
 		});
-		it("should prefer loaderContext.query.slices over loaderContext.options.slices", function () {
-			var config = loaderUtils.getLoaderConfig({query:"?slices=8",options:{testLoader:{slices:4}}}, "testLoader");
-			assert.deepEqual(config, {slices:8});
+		it("should prefer loaderContext.query.slices over loaderContext.options.slices", function() {
+			var config = loaderUtils.getLoaderConfig({ query: "?slices=8",options: { testLoader: { slices: 4 } } }, "testLoader");
+			assert.deepEqual(config, { slices: 8 });
 		});
-		it("should allow no default key", function () {
-			var config = loaderUtils.getLoaderConfig({query:"?slices=8",options:{}});
-			assert.deepEqual(config, {slices:8});
+		it("should allow no default key", function() {
+			var config = loaderUtils.getLoaderConfig({ query: "?slices=8",options: {} });
+			assert.deepEqual(config, { slices: 8 });
 		});
 	});
 
@@ -163,7 +167,7 @@ describe("loader-utils", function() {
 				var message = test[2];
 				it(message, function() {
 					var result = loaderUtils.interpolateName.apply(loaderUtils, args);
-					if (typeof expected === "function") {
+					if(typeof expected === "function") {
 						expected(result);
 					} else {
 						assert.equal(result, expected);
@@ -316,14 +320,14 @@ describe("loader-utils", function() {
 					["../../a/b.js" + paramQueryString, "c/d.js" + jsonQueryString, "./e/f.js"].join("!")
 				)
 			}
-		].forEach(function (testCase, i) {
-			if (!testCase) {
+		].forEach(function(testCase, i) {
+			if(!testCase) {
 				// If testCase is not defined, this test case should not be executed on this OS.
 				// This is because node's path module is OS agnostic which means that path.relative won't produce
 				// a relative path with absolute windows paths on posix systems.
 				return;
 			}
-			it("should stringify request " + testCase.request + " to " + testCase.expected + " inside context " + testCase.context, function () {
+			it("should stringify request " + testCase.request + " to " + testCase.expected + " inside context " + testCase.context, function() {
 				var actual = loaderUtils.stringifyRequest({ context: testCase.context }, testCase.request);
 				assert.equal(actual, testCase.expected);
 			});

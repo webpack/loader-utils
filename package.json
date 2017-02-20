@@ -11,6 +11,7 @@
   },
   "scripts": {
     "test": "mocha",
+    "lint": "eslint --fix *.js test",
     "travis": "npm run cover -- --report lcovonly",
     "cover": "istanbul cover -x *.runtime.js node_modules/mocha/bin/_mocha",
     "publish-patch": "mocha && npm version patch && git push && git push --tags && npm publish"
@@ -22,6 +23,8 @@
   },
   "devDependencies": {
     "coveralls": "^2.11.2",
+    "eslint": "^3.15.0",
+    "eslint-plugin-node": "^4.0.1",
     "istanbul": "^0.3.14",
     "mocha": "^1.21.4"
   },
