@@ -1,6 +1,6 @@
 {
   "name": "loader-utils",
-  "version": "0.2.16",
+  "version": "0.2.17",
   "author": "Tobias Koppers @sokra",
   "description": "utils for webpack loaders",
   "dependencies": {
