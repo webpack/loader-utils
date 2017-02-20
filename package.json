@@ -33,6 +33,8 @@
   },
   "main": "lib/index.js",
   "files": [
-    "lib"
+    "lib",
+    "README",
+    "LICENSE"
   ]
 }
