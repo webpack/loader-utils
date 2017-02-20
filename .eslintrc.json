@@ -50,6 +50,7 @@
 		"valid-jsdoc": "error",
 		"no-var": "error",
 		"prefer-const": "error",
-		"prefer-arrow-callback": "error"
+		"prefer-arrow-callback": "error",
+    "object-shorthand": "error"
 	}
 }
