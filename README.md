@@ -2,7 +2,7 @@
 
 ## Methods
 
-### getOptions
+### `getOptions`
 
 Recommended way to retrieve the options of a loader invocation:
 
