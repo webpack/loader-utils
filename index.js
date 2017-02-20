@@ -1,17 +1,15 @@
-var JSON5 = require("json5");
-var path = require("path");
-var util = require("util");
-var os = require("os");
-var assign = require("object-assign");
-var emojiRegex = /[\uD800-\uDFFF]./;
-var emojiList = require("emojis-list").filter(function(emoji) {
-	return emojiRegex.test(emoji);
-});
-var matchAbsolutePath = /^\/|^[A-Z]:[/\\]|^\\\\/i; // node 0.10 does not support path.isAbsolute()
-var matchAbsoluteWin32Path = /^[A-Z]:[/\\]|^\\\\/i;
-var matchRelativePath = /^\.\.?[/\\]/;
+"use strict";
 
-var baseEncodeTables = {
+const JSON5 = require("json5");
+const path = require("path");
+const util = require("util");
+const os = require("os");
+const emojiRegex = /[\uD800-\uDFFF]./;
+const emojiList = require("emojis-list").filter(emoji => emojiRegex.test(emoji));
+const matchNativeWin32Path = /^[A-Z]:[/\\]|^\\\\/i;
+const matchRelativePath = /^\.\.?[/\\]/;
+
+const baseEncodeTables = {
 	26: "abcdefghijklmnopqrstuvwxyz",
 	32: "123456789abcdefghjkmnpqrstuvwxyz", // no 0lio
 	36: "0123456789abcdefghijklmnopqrstuvwxyz",
@@ -21,41 +19,49 @@ var baseEncodeTables = {
 	62: "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
 	64: "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_"
 };
-var emojiCache = {};
-var parseQueryDeprecationWarning = util.deprecate(function() {},
+const emojiCache = {};
+const parseQueryDeprecationWarning = util.deprecate(() => {},
 	"loaderUtils.parseQuery() received a non-string value which can be problematic, " +
 	"see https://github.com/webpack/loader-utils/issues/56" + os.EOL +
 	"parseQuery() will be replaced with getOptions() in the next major version of loader-utils."
 );
 
+function isAbsolutePath(str) {
+	return path.posix.isAbsolute(str) || path.win32.isAbsolute(str);
+}
+
+function isRelativePath(str) {
+	return matchRelativePath.test(str);
+}
+
 function encodeStringToEmoji(content, length) {
 	if(emojiCache[content]) return emojiCache[content];
 	length = length || 1;
-	var emojis = [];
+	const emojis = [];
 	do {
-		var index = Math.floor(Math.random() * emojiList.length);
+		const index = Math.floor(Math.random() * emojiList.length);
 		emojis.push(emojiList[index]);
 		emojiList.splice(index, 1);
 	} while(--length > 0);
-	var emojiEncoding = emojis.join("");
+	const emojiEncoding = emojis.join("");
 	emojiCache[content] = emojiEncoding;
 	return emojiEncoding;
 }
 
 function encodeBufferToBase(buffer, base) {
-	var encodeTable = baseEncodeTables[base];
+	const encodeTable = baseEncodeTables[base];
 	if(!encodeTable) throw new Error("Unknown encoding base" + base);
 
-	var readLength = buffer.length;
+	const readLength = buffer.length;
 
-	var Big = require("big.js");
+	const Big = require("big.js");
 	Big.RM = Big.DP = 0;
-	var b = new Big(0);
-	for(var i = readLength - 1; i >= 0; i--) {
+	let b = new Big(0);
+	for(let i = readLength - 1; i >= 0; i--) {
 		b = b.times(256).plus(buffer[i]);
 	}
 
-	var output = "";
+	let output = "";
 	while(b.gt(0)) {
 		output = encodeTable[b.mod(base)] + output;
 		b = b.div(base);
@@ -67,8 +73,8 @@ function encodeBufferToBase(buffer, base) {
 	return output;
 }
 
-exports.parseQuery = function parseQuery(query) {
-	var specialValues = {
+function parseQuery(query) {
+	const specialValues = {
 		"null": null,
 		"true": true,
 		"false": false
@@ -84,13 +90,13 @@ exports.parseQuery = function parseQuery(query) {
 	if(query.substr(0, 1) === "{" && query.substr(-1) === "}") {
 		return JSON5.parse(query);
 	}
-	var queryArgs = query.split(/[,\&]/g);
-	var result = {};
-	queryArgs.forEach(function(arg) {
-		var idx = arg.indexOf("=");
+	const queryArgs = query.split(/[,\&]/g);
+	const result = {};
+	queryArgs.forEach(arg => {
+		const idx = arg.indexOf("=");
 		if(idx >= 0) {
-			var name = arg.substr(0, idx);
-			var value = decodeURIComponent(arg.substr(idx + 1));
+			let name = arg.substr(0, idx);
+			let value = decodeURIComponent(arg.substr(idx + 1));
 			if(specialValues.hasOwnProperty(value)) {
 				value = specialValues[value];
 			}
@@ -114,64 +120,64 @@ exports.parseQuery = function parseQuery(query) {
 		}
 	});
 	return result;
-};
+}
 
-exports.getLoaderConfig = function(loaderContext, defaultConfigKey) {
-	var query = exports.parseQuery(loaderContext.query);
-	var configKey = query.config || defaultConfigKey;
+function getLoaderConfig(loaderContext, defaultConfigKey) {
+	const query = parseQuery(loaderContext.query);
+	const configKey = query.config || defaultConfigKey;
 	if(configKey) {
-		var config = loaderContext.options[configKey] || {};
+		const config = loaderContext.options[configKey] || {};
 		delete query.config;
-		return assign({}, config, query);
+		return Object.assign({}, config, query);
 	}
 
 	return query;
-};
+}
 
-exports.stringifyRequest = function(loaderContext, request) {
-	var splitted = request.split("!");
-	var context = loaderContext.context || (loaderContext.options && loaderContext.options.context);
-	return JSON.stringify(splitted.map(function(part) {
+function stringifyRequest(loaderContext, request) {
+	const splitted = request.split("!");
+	const context = loaderContext.context || (loaderContext.options && loaderContext.options.context);
+	return JSON.stringify(splitted.map(part => {
 		// First, separate singlePath from query, because the query might contain paths again
-		var splittedPart = part.match(/^(.*?)(\?.*)/);
-		var singlePath = splittedPart ? splittedPart[1] : part;
-		var query = splittedPart ? splittedPart[2] : "";
-		if(matchAbsolutePath.test(singlePath) && context) {
+		const splittedPart = part.match(/^(.*?)(\?.*)/);
+		let singlePath = splittedPart ? splittedPart[1] : part;
+		const query = splittedPart ? splittedPart[2] : "";
+		if(isAbsolutePath(singlePath) && context) {
 			singlePath = path.relative(context, singlePath);
-			if(matchAbsolutePath.test(singlePath)) {
+			if(isAbsolutePath(singlePath)) {
 				// If singlePath still matches an absolute path, singlePath was on a different drive than context.
 				// In this case, we leave the path platform-specific without replacing any separators.
 				// @see https://github.com/webpack/loader-utils/pull/14
 				return singlePath + query;
 			}
-			if(matchRelativePath.test(singlePath) === false) {
+			if(isRelativePath(singlePath) === false) {
 				// Ensure that the relative path starts at least with ./ otherwise it would be a request into the modules directory (like node_modules).
 				singlePath = "./" + singlePath;
 			}
 		}
 		return singlePath.replace(/\\/g, "/") + query;
 	}).join("!"));
-};
+}
 
 function dotRequest(obj) {
 	return obj.request;
 }
 
-exports.getRemainingRequest = function(loaderContext) {
+function getRemainingRequest(loaderContext) {
 	if(loaderContext.remainingRequest)
 		return loaderContext.remainingRequest;
-	var request = loaderContext.loaders.slice(loaderContext.loaderIndex + 1).map(dotRequest).concat([loaderContext.resource]);
+	const request = loaderContext.loaders.slice(loaderContext.loaderIndex + 1).map(dotRequest).concat([loaderContext.resource]);
 	return request.join("!");
-};
+}
 
-exports.getCurrentRequest = function(loaderContext) {
+function getCurrentRequest(loaderContext) {
 	if(loaderContext.currentRequest)
 		return loaderContext.currentRequest;
-	var request = loaderContext.loaders.slice(loaderContext.loaderIndex).map(dotRequest).concat([loaderContext.resource]);
+	const request = loaderContext.loaders.slice(loaderContext.loaderIndex).map(dotRequest).concat([loaderContext.resource]);
 	return request.join("!");
-};
+}
 
-exports.isUrlRequest = function(url, root) {
+function isUrlRequest(url, root) {
 	// An URL is not an request if
 	// 1. it's a Data Url
 	// 2. it's an absolute url or and protocol-relative
@@ -180,13 +186,14 @@ exports.isUrlRequest = function(url, root) {
 	// 4. It's also not an request if root isn't set and it's a root-relative url
 	if((root === undefined || root === false) && /^\//.test(url)) return false;
 	return true;
-};
+}
 
-exports.urlToRequest = function(url, root) {
-	var moduleRequestRegex = /^[^?]*~/;
-	var request;
+function urlToRequest(url, root) {
+	const moduleRequestRegex = /^[^?]*~/;
+	let request;
 
-	if(matchAbsoluteWin32Path.test(url)) {
+	// we can't use path.win32.isAbsolute because it also matches paths starting with a forward slash
+	if(matchNativeWin32Path.test(url)) {
 		// absolute windows path, keep it
 		request = url;
 	} else if(root !== undefined && root !== false && /^\//.test(url)) {
@@ -223,27 +230,28 @@ exports.urlToRequest = function(url, root) {
 	}
 
 	return request;
-};
+}
 
-exports.parseString = function parseString(str) {
+function parseString(str) {
 	try {
 		if(str[0] === "\"") return JSON.parse(str);
 		if(str[0] === "'" && str.substr(str.length - 1) === "'") {
-			return parseString(str.replace(/\\.|"/g, function(x) {
-				if(x === "\"") return "\\\"";
-				return x;
-			}).replace(/^'|'$/g, "\""));
+			return parseString(
+				str
+					.replace(/\\.|"/g, x => x === "\"" ? "\\\"" : x)
+					.replace(/^'|'$/g, "\"")
+			);
 		}
 		return JSON.parse("\"" + str + "\"");
 	} catch(e) {
 		return str;
 	}
-};
+}
 
-exports.getHashDigest = function getHashDigest(buffer, hashType, digestType, maxLength) {
+function getHashDigest(buffer, hashType, digestType, maxLength) {
 	hashType = hashType || "md5";
 	maxLength = maxLength || 9999;
-	var hash = require("crypto").createHash(hashType);
+	const hash = require("crypto").createHash(hashType);
 	hash.update(buffer);
 	if(digestType === "base26" || digestType === "base32" || digestType === "base36" ||
 		digestType === "base49" || digestType === "base52" || digestType === "base58" ||
@@ -252,28 +260,28 @@ exports.getHashDigest = function getHashDigest(buffer, hashType, digestType, max
 	} else {
 		return hash.digest(digestType || "hex").substr(0, maxLength);
 	}
-};
+}
 
-exports.interpolateName = function interpolateName(loaderContext, name, options) {
-	var filename;
+function interpolateName(loaderContext, name, options) {
+	let filename;
 	if(typeof name === "function") {
 		filename = name(loaderContext.resourcePath);
 	} else {
 		filename = name || "[hash].[ext]";
 	}
-	var context = options.context;
-	var content = options.content;
-	var regExp = options.regExp;
-	var ext = "bin";
-	var basename = "file";
-	var directory = "";
-	var folder = "";
+	const context = options.context;
+	const content = options.content;
+	const regExp = options.regExp;
+	let ext = "bin";
+	let basename = "file";
+	let directory = "";
+	let folder = "";
 	if(loaderContext.resourcePath) {
-		var resourcePath = loaderContext.resourcePath;
-		var idx = resourcePath.lastIndexOf(".");
-		var i = resourcePath.lastIndexOf("\\");
-		var j = resourcePath.lastIndexOf("/");
-		var p = i < 0 ? j : j < 0 ? i : i < j ? i : j;
+		let resourcePath = loaderContext.resourcePath;
+		const idx = resourcePath.lastIndexOf(".");
+		const i = resourcePath.lastIndexOf("\\");
+		const j = resourcePath.lastIndexOf("/");
+		const p = i < 0 ? j : j < 0 ? i : i < j ? i : j;
 		if(idx >= 0) {
 			ext = resourcePath.substr(idx + 1);
 			resourcePath = resourcePath.substr(0, idx);
@@ -285,7 +293,7 @@ exports.interpolateName = function interpolateName(loaderContext, name, options)
 		if(typeof context !== "undefined") {
 			directory = path.relative(context, resourcePath + "_").replace(/\\/g, "/").replace(/\.\.(\/)?/g, "_$1");
 			directory = directory.substr(0, directory.length - 1);
-		}		else {
+		} else {
 			directory = resourcePath.replace(/\\/g, "/").replace(/\.\.(\/)?/g, "_$1");
 		}
 		if(directory.length === 1) {
@@ -294,36 +302,46 @@ exports.interpolateName = function interpolateName(loaderContext, name, options)
 			folder = path.basename(directory);
 		}
 	}
-	var url = filename;
+	let url = filename;
 	if(content) {
 		// Match hash template
-		url = url.replace(/\[(?:(\w+):)?hash(?::([a-z]+\d*))?(?::(\d+))?\]/ig, function() {
-			return exports.getHashDigest(content, arguments[1], arguments[2], parseInt(arguments[3], 10));
-		}).replace(/\[emoji(?::(\d+))?\]/ig, function() {
-			return encodeStringToEmoji(content, arguments[1]);
-		});
+		url = url
+			.replace(
+				/\[(?:(\w+):)?hash(?::([a-z]+\d*))?(?::(\d+))?\]/ig,
+				(all, hashType, digestType, maxLength) => getHashDigest(content, hashType, digestType, parseInt(maxLength, 10))
+			)
+			.replace(
+				/\[emoji(?::(\d+))?\]/ig,
+				(all, length) => encodeStringToEmoji(content, length)
+			);
 	}
-	url = url.replace(/\[ext\]/ig, function() {
-		return ext;
-	}).replace(/\[name\]/ig, function() {
-		return basename;
-	}).replace(/\[path\]/ig, function() {
-		return directory;
-	}).replace(/\[folder\]/ig, function() {
-		return folder;
-	});
+	url = url
+		.replace(/\[ext\]/ig, () => ext)
+		.replace(/\[name\]/ig, () => basename)
+		.replace(/\[path\]/ig, () => directory)
+		.replace(/\[folder\]/ig, () => folder);
 	if(regExp && loaderContext.resourcePath) {
-		var re = new RegExp(regExp);
-		var match = loaderContext.resourcePath.match(re);
-		if(match) {
-			for(i = 0; i < match.length; i++) {
-				re = new RegExp("\\[" + i + "\\]", "ig");
-				url = url.replace(re, match[i]);
-			}
-		}
+		const match = loaderContext.resourcePath.match(new RegExp(regExp));
+		match && match.forEach((matched, i) => {
+			url = url.replace(
+				new RegExp("\\[" + i + "\\]", "ig"),
+				matched
+			);
+		});
 	}
 	if(typeof loaderContext.options === "object" && typeof loaderContext.options.customInterpolateName === "function") {
 		url = loaderContext.options.customInterpolateName.call(loaderContext, url, name, options);
 	}
 	return url;
-};
+}
+
+exports.parseQuery = parseQuery;
+exports.getLoaderConfig = getLoaderConfig;
+exports.stringifyRequest = stringifyRequest;
+exports.getRemainingRequest = getRemainingRequest;
+exports.getCurrentRequest = getCurrentRequest;
+exports.isUrlRequest = isUrlRequest;
+exports.urlToRequest = urlToRequest;
+exports.parseString = parseString;
+exports.getHashDigest = getHashDigest;
+exports.interpolateName = interpolateName;

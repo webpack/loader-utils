@@ -1,8 +1,10 @@
-var assert = require("assert"),
-	path = require("path"),
-	loaderUtils = require("../");
+"use strict";
 
-var s = JSON.stringify;
+const assert = require("assert");
+const path = require("path");
+const loaderUtils = require("../");
+
+const s = JSON.stringify;
 
 function ExpectedError(regex) {
 	this.regex = regex;
@@ -11,9 +13,9 @@ ExpectedError.prototype.matches = function(err) {
 	return this.regex.test(err.message);
 };
 
-describe("loader-utils", function() {
+describe("loader-utils", () => {
 
-	describe("#urlToRequest()", function() {
+	describe("#urlToRequest()", () => {
 		[
 			// without root
 			[["path/to/thing"], "./path/to/thing", "should handle implicit relative urls"],
@@ -39,11 +41,11 @@ describe("loader-utils", function() {
 			[["/path/to/thing", 1], new ExpectedError(/unexpected parameters/i), "should throw an error on invalid root"],
 			// difficult cases
 			[["a:b-not-\\window-path"], "./a:b-not-\\window-path", "should not incorrectly detect windows paths"]
-		].forEach(function(test) {
-			it(test[2], function() {
-				var expected = test[1];
+		].forEach((test) => {
+			it(test[2], () => {
+				const expected = test[1];
 				try {
-					var request = loaderUtils.urlToRequest.apply(loaderUtils, test[0]);
+					const request = loaderUtils.urlToRequest.apply(loaderUtils, test[0]);
 					assert.equal(request, expected);
 				} catch(e) {
 					if(expected instanceof ExpectedError) {
@@ -56,7 +58,7 @@ describe("loader-utils", function() {
 		});
 	});
 
-	describe("#interpolateName", function() {
+	describe("#interpolateName", () => {
 		[
 			["/app/js/javascript.js", "js/[hash].script.[ext]", "test content", "js/9473fdd0d880a43c21b7778d34872157.script.js"],
 			["/app/page.html", "html-[hash:6].html", "test content", "html-9473fd.html"],
@@ -66,30 +68,30 @@ describe("loader-utils", function() {
 			["/vendor/test/images/loading.gif", function(path) {
 				return path.replace(/\/?vendor\/?/, "");
 			}, "test content", "test/images/loading.gif"]
-		].forEach(function(test) {
-			it("should interpolate " + test[0] + " " + test[1], function() {
-				var interpolatedName = loaderUtils.interpolateName({ resourcePath: test[0] }, test[1], { content: test[2] });
+		].forEach((test) => {
+			it("should interpolate " + test[0] + " " + test[1], () => {
+				const interpolatedName = loaderUtils.interpolateName({ resourcePath: test[0] }, test[1], { content: test[2] });
 				assert.equal(interpolatedName, test[3]);
 			});
 		});
 	});
 
-	describe("#parseString", function() {
+	describe("#parseString", () => {
 		[
 			["test string", "test string"],
 			[s("!\"§$%&/()=?'*#+,.-;öäü:_test"), "!\"§$%&/()=?'*#+,.-;öäü:_test"],
 			["'escaped with single \"'", "escaped with single \""],
 			["invalid \"' string", "invalid \"' string"],
 			["\'inconsistent start and end\"", "\'inconsistent start and end\""]
-		].forEach(function(test) {
-			it("should parse " + test[0], function() {
-				var parsed = loaderUtils.parseString(test[0]);
+		].forEach((test) => {
+			it("should parse " + test[0], () => {
+				const parsed = loaderUtils.parseString(test[0]);
 				assert.equal(parsed, test[1]);
 			});
 		});
 	});
 
-	describe("#parseQuery", function() {
+	describe("#parseQuery", () => {
 		[
 			[
 				"?sweet=true&name=cheesecake&slices=8&delicious&warm=false",
@@ -115,34 +117,34 @@ describe("loader-utils", function() {
 				{ obj: "test" },
 				{ obj: "test" }
 			]
-		].forEach(function(test) {
-			it("should parse " + test[0], function() {
-				var parsed = loaderUtils.parseQuery(test[0]);
+		].forEach((test) => {
+			it("should parse " + test[0], () => {
+				const parsed = loaderUtils.parseQuery(test[0]);
 				assert.deepEqual(parsed, test[1]);
 			});
 		});
 	});
 
-	describe("#getLoaderConfig", function() {
-		it("should merge loaderContext.query and loaderContext.options.testLoader", function() {
-			var config = loaderUtils.getLoaderConfig({ query: "?name=cheesecake",options: { testLoader: { slices: 8 } } }, "testLoader");
+	describe("#getLoaderConfig", () => {
+		it("should merge loaderContext.query and loaderContext.options.testLoader", () => {
+			const config = loaderUtils.getLoaderConfig({ query: "?name=cheesecake",options: { testLoader: { slices: 8 } } }, "testLoader");
 			assert.deepEqual(config, { name: "cheesecake",slices: 8 });
 		});
-		it("should allow to specify a config property name via loaderContext.query.config", function() {
-			var config = loaderUtils.getLoaderConfig({ query: "?name=cheesecake&config=otherConfig",options: { otherConfig: { slices: 8 } } }, "testLoader");
+		it("should allow to specify a config property name via loaderContext.query.config", () => {
+			const config = loaderUtils.getLoaderConfig({ query: "?name=cheesecake&config=otherConfig",options: { otherConfig: { slices: 8 } } }, "testLoader");
 			assert.deepEqual(config, { name: "cheesecake",slices: 8 });
 		});
-		it("should prefer loaderContext.query.slices over loaderContext.options.slices", function() {
-			var config = loaderUtils.getLoaderConfig({ query: "?slices=8",options: { testLoader: { slices: 4 } } }, "testLoader");
+		it("should prefer loaderContext.query.slices over loaderContext.options.slices", () => {
+			const config = loaderUtils.getLoaderConfig({ query: "?slices=8",options: { testLoader: { slices: 4 } } }, "testLoader");
 			assert.deepEqual(config, { slices: 8 });
 		});
-		it("should allow no default key", function() {
-			var config = loaderUtils.getLoaderConfig({ query: "?slices=8",options: {} });
+		it("should allow no default key", () => {
+			const config = loaderUtils.getLoaderConfig({ query: "?slices=8",options: {} });
 			assert.deepEqual(config, { slices: 8 });
 		});
 	});
 
-	describe("#getHashDigest", function() {
+	describe("#getHashDigest", () => {
 		[
 			["test string", "md5", "hex", undefined, "6f8db599de986fab7a21625b7916589c"],
 			["test string", "md5", "hex", 4, "6f8d"],
@@ -151,22 +153,22 @@ describe("loader-utils", function() {
 			["test string", "md5", "base26", 6, "bhtsgu"],
 			["test string", "sha512", "base64", undefined, "2IS-kbfIPnVflXb9CzgoNESGCkvkb0urMmucPD9z8q6HuYz8RShY1-tzSUpm5-Ivx_u4H1MEzPgAhyhaZ7RKog"],
 			["test_string", "md5", "hex", undefined, "3474851a3410906697ec77337df7aae4"]
-		].forEach(function(test) {
-			it("should getHashDigest " + test[0] + " " + test[1] + " " + test[2] + " " + test[3], function() {
-				var hashDigest = loaderUtils.getHashDigest(test[0], test[1], test[2], test[3]);
+		].forEach((test) => {
+			it("should getHashDigest " + test[0] + " " + test[1] + " " + test[2] + " " + test[3], () => {
+				const hashDigest = loaderUtils.getHashDigest(test[0], test[1], test[2], test[3]);
 				assert.equal(hashDigest, test[4]);
 			});
 		});
 	});
 
-	describe("#interpolateName", function() {
+	describe("#interpolateName", () => {
 		function run(tests) {
-			tests.forEach(function(test) {
-				var args = test[0];
-				var expected = test[1];
-				var message = test[2];
-				it(message, function() {
-					var result = loaderUtils.interpolateName.apply(loaderUtils, args);
+			tests.forEach((test) => {
+				const args = test[0];
+				const expected = test[1];
+				const message = test[2];
+				it(message, () => {
+					const result = loaderUtils.interpolateName.apply(loaderUtils, args);
 					if(typeof expected === "function") {
 						expected(result);
 					} else {
@@ -182,7 +184,7 @@ describe("loader-utils", function() {
 			[[{}, "[unrecognized]", { content: "test string" }], "[unrecognized]", "should not interpolate unrecognized token"],
 		]);
 
-		var emojiRegex = /[\uD800-\uDFFF]./;
+		const emojiRegex = /[\uD800-\uDFFF]./;
 		run([
 			[
 				[{}, "[emoji]", { content: "test" }],
@@ -200,15 +202,15 @@ describe("loader-utils", function() {
 				"should interpolate [emoji:3]"
 			],
 		]);
-		it("should return the same emoji for the same string", function() {
-			var args = [{}, "[emoji:5]", { content: "same_emoji" }];
-			var result1 = loaderUtils.interpolateName.apply(loaderUtils, args);
-			var result2 = loaderUtils.interpolateName.apply(loaderUtils, args);
+		it("should return the same emoji for the same string", () => {
+			const args = [{}, "[emoji:5]", { content: "same_emoji" }];
+			const result1 = loaderUtils.interpolateName.apply(loaderUtils, args);
+			const result2 = loaderUtils.interpolateName.apply(loaderUtils, args);
 			assert.equal(result1, result2);
 		});
 
-		context("no loader context", function() {
-			var loaderContext = {};
+		context("no loader context", () => {
+			const loaderContext = {};
 			run([
 				[[loaderContext, "[ext]", {}], "bin", "should interpolate [ext] token"],
 				[[loaderContext, "[name]", {}], "file", "should interpolate [name] token"],
@@ -217,8 +219,8 @@ describe("loader-utils", function() {
 			]);
 		});
 
-		context("with loader context", function() {
-			var loaderContext = { resourcePath: "/path/to/file.exe" };
+		context("with loader context", () => {
+			const loaderContext = { resourcePath: "/path/to/file.exe" };
 			run([
 				[[loaderContext, "[ext]", {}], "exe", "should interpolate [ext] token"],
 				[[loaderContext, "[name]", {}], "file", "should interpolate [name] token"],
@@ -241,49 +243,52 @@ describe("loader-utils", function() {
 		]);
 	});
 
-	describe("#stringifyRequest", function() {
+	describe("#stringifyRequest", () => {
 		// We know that query strings that contain paths and question marks can be problematic.
 		// We must ensure that stringifyRequest is not messing with them
-		var paramQueryString = "?questionMark?posix=path/to/thing&win=path\\to\\thing";
-		var jsonQueryString = "?" + s({
+		const paramQueryString = "?questionMark?posix=path/to/thing&win=path\\to\\thing";
+		const jsonQueryString = "?" + s({
 			questionMark: "?",
 			posix: "path/to/thing",
 			win: "path\\to\\file"
 		});
-		var win = path.sep === "\\";
-		var posix = path.sep === "/";
 		[
-			{ request: "./a.js", expected: s("./a.js") },
-			{ request: ".\\a.js", expected: s("./a.js") },
-			{ request: "./a/b.js", expected: s("./a/b.js") },
-			{ request: ".\\a\\b.js", expected: s("./a/b.js") },
-			{ request: "module", expected: s("module") }, // without ./ is a request into the modules directory
-			{ request: "module/a.js", expected: s("module/a.js") },
-			{ request: "module\\a.js", expected: s("module/a.js") },
-			{ request: "./a.js" + paramQueryString, expected: s("./a.js" + paramQueryString) },
-			{ request: "./a.js" + jsonQueryString, expected: s("./a.js" + jsonQueryString) },
-			{ request: "module" + paramQueryString, expected: s("module" + paramQueryString) },
-			{ request: "module" + jsonQueryString, expected: s("module" + jsonQueryString) },
-			posix && { context: "/path/to", request: "/path/to/module/a.js", expected: s("./module/a.js") },
-			win && { context: "C:\\path\\to\\", request: "C:\\path\\to\\module\\a.js", expected: s("./module/a.js") },
-			posix && { context: "/path/to/thing", request: "/path/to/module/a.js", expected: s("../module/a.js") },
-			win && { context: "C:\\path\\to\\thing", request: "C:\\path\\to\\module\\a.js", expected: s("../module/a.js") },
-			win && { context: "\\\\A\\path\\to\\thing", request: "\\\\A\\path\\to\\module\\a.js", expected: s("../module/a.js") },
+			{ test: 1, request: "./a.js", expected: s("./a.js") },
+			{ test: 2, request: ".\\a.js", expected: s("./a.js") },
+			{ test: 3, request: "./a/b.js", expected: s("./a/b.js") },
+			{ test: 4, request: ".\\a\\b.js", expected: s("./a/b.js") },
+			{ test: 5, request: "module", expected: s("module") }, // without ./ is a request into the modules directory
+			{ test: 6, request: "module/a.js", expected: s("module/a.js") },
+			{ test: 7, request: "module\\a.js", expected: s("module/a.js") },
+			{ test: 8, request: "./a.js" + paramQueryString, expected: s("./a.js" + paramQueryString) },
+			{ test: 9, request: "./a.js" + jsonQueryString, expected: s("./a.js" + jsonQueryString) },
+			{ test: 10, request: "module" + paramQueryString, expected: s("module" + paramQueryString) },
+			{ test: 11, request: "module" + jsonQueryString, expected: s("module" + jsonQueryString) },
+			{ test: 12, os: "posix", context: "/path/to", request: "/path/to/module/a.js", expected: s("./module/a.js") },
+			{ test: 13, os: "win32", context: "C:\\path\\to\\", request: "C:\\path\\to\\module\\a.js", expected: s("./module/a.js") },
+			{ test: 14, os: "posix", context: "/path/to/thing", request: "/path/to/module/a.js", expected: s("../module/a.js") },
+			{ test: 15, os: "win32", context: "C:\\path\\to\\thing", request: "C:\\path\\to\\module\\a.js", expected: s("../module/a.js") },
+			{ test: 16, os: "win32", context: "\\\\A\\path\\to\\thing", request: "\\\\A\\path\\to\\module\\a.js", expected: s("../module/a.js") },
 			// If context and request are on different drives, the path should not be relative
 			// @see https://github.com/webpack/loader-utils/pull/14
-			win && { context: "D:\\path\\to\\thing", request: "C:\\path\\to\\module\\a.js", expected: s("C:\\path\\to\\module\\a.js") },
-			win && { context: "\\\\A\\path\\to\\thing", request: "\\\\B\\path\\to\\module\\a.js", expected: s("\\\\B\\path\\to\\module\\a.js") },
-			posix && {
+			{ test: 17, os: "win32", context: "D:\\path\\to\\thing", request: "C:\\path\\to\\module\\a.js", expected: s("C:\\path\\to\\module\\a.js") },
+			{ test: 18, os: "win32", context: "\\\\A\\path\\to\\thing", request: "\\\\B\\path\\to\\module\\a.js", expected: s("\\\\B\\path\\to\\module\\a.js") },
+			{
+				test: 19,
+				os: "posix",
 				context: "/path/to",
 				request: "/path/to/module/a.js" + paramQueryString,
 				expected: s("./module/a.js" + paramQueryString)
 			},
-			win && {
+			{
+				test: 20,
+				os: "win32",
 				context: "C:\\path\\to\\",
 				request: "C:\\path\\to\\module\\a.js" + paramQueryString,
 				expected: s("./module/a.js" + paramQueryString)
 			},
 			{
+				test: 21,
 				request:
 					["./a.js", "./b.js", "./c.js"].join("!"),
 				expected: s(
@@ -291,6 +296,7 @@ describe("loader-utils", function() {
 				)
 			},
 			{
+				test: 22,
 				request:
 					["a/b.js", "c/d.js", "e/f.js", "g"].join("!"),
 				expected: s(
@@ -298,13 +304,16 @@ describe("loader-utils", function() {
 				)
 			},
 			{
+				test: 23,
 				request:
 					["a/b.js" + paramQueryString, "c/d.js" + jsonQueryString, "e/f.js"].join("!"),
 				expected: s(
 					["a/b.js" + paramQueryString, "c/d.js" + jsonQueryString, "e/f.js"].join("!")
 				)
 			},
-			posix && {
+			{
+				test: 24,
+				os: "posix",
 				context: "/path/to",
 				request:
 					["/a/b.js" + paramQueryString, "c/d.js" + jsonQueryString, "/path/to/e/f.js"].join("!"),
@@ -312,7 +321,9 @@ describe("loader-utils", function() {
 					["../../a/b.js" + paramQueryString, "c/d.js" + jsonQueryString, "./e/f.js"].join("!")
 				)
 			},
-			win && {
+			{
+				test: 25,
+				os: "win32",
 				context: "C:\\path\\to\\",
 				request:
 					["C:\\a\\b.js" + paramQueryString, "c\\d.js" + jsonQueryString, "C:\\path\\to\\e\\f.js"].join("!"),
@@ -320,16 +331,16 @@ describe("loader-utils", function() {
 					["../../a/b.js" + paramQueryString, "c/d.js" + jsonQueryString, "./e/f.js"].join("!")
 				)
 			}
-		].forEach(function(testCase, i) {
-			if(!testCase) {
-				// If testCase is not defined, this test case should not be executed on this OS.
-				// This is because node's path module is OS agnostic which means that path.relative won't produce
-				// a relative path with absolute windows paths on posix systems.
-				return;
-			}
-			it("should stringify request " + testCase.request + " to " + testCase.expected + " inside context " + testCase.context, function() {
-				var actual = loaderUtils.stringifyRequest({ context: testCase.context }, testCase.request);
+		].forEach(testCase => {
+			it(`${ testCase.test }. should stringify request ${ testCase.request } to ${ testCase.expected } inside context ${ testCase.context }`, () => {
+				const relative = path.relative;
+				if(testCase.os) {
+					// monkey patch path.relative in order to make this test work in every OS
+					path.relative = path[testCase.os].relative;
+				}
+				const actual = loaderUtils.stringifyRequest({ context: testCase.context }, testCase.request);
 				assert.equal(actual, testCase.expected);
+				path.relative = relative;
 			});
 		});
 	});
