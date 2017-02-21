@@ -11,11 +11,21 @@ Recommended way to retrieve the options of a loader invocation:
 const options = loaderUtils.getOptions(this);
 ```
 
+1. If `this.query` is a string:
+	- Tries to parse the query string and returns a new object
+	- Throws if it's not a valid query string
+2. If `this.query` is object-like, it just returns `this.query`
+3. In any other case, it just returns `null`
+
 **Please note:** The returned `options` object is *read-only*. It may be re-used across multiple invocations.
 If you pass it on to another library, make sure to make a *deep copy* of it:
 
 ```javascript
-const options = Object.assign({}, loaderUtils.getOptions(this));
+const options = Object.assign(
+	{},
+	loaderUtils.getOptions(this), // it is safe to pass null to Object.assign()
+	defaultOptions
+);
 // don't forget nested objects or arrays
 options.obj = Object.assign({}, options.obj); 
 options.arr = options.arr.slice();
@@ -29,13 +39,13 @@ someLibrary(options);
 If the loader options have been passed as loader query string (`loader?some&params`), the string is parsed like this:
 
 ``` text
-null                         -> {}
+                             -> null
 ?                            -> {}
 ?flag                        -> { flag: true }
 ?+flag                       -> { flag: true }
 ?-flag                       -> { flag: false }
 ?xyz=test                    -> { xyz: "test" }
-?xyz=1                       -> { xyz: "1" }
+?xyz=1                       -> { xyz: "1" } // numbers are NOT parsed
 ?xyz[]=a                     -> { xyz: ["a"] }
 ?flag1&flag2                 -> { flag1: true, flag2: true }
 ?+flag1,-flag2               -> { flag1: true, flag2: false }
