@@ -22,7 +22,7 @@
     "url": "https://github.com/webpack/loader-utils.git"
   },
   "engines": {
-    "node": "^4.0.0"
+    "node": ">=4.0.0"
   },
   "devDependencies": {
     "coveralls": "^2.11.2",
