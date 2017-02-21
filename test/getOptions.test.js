@@ -4,8 +4,13 @@ const assert = require("assert");
 const loaderUtils = require("../lib");
 
 describe("getOptions()", () => {
-	describe("when loaderContext.query is a string", () => {
+	describe("when loaderContext.query is a query string starting with ?", () => {
 		[{
+			it: "should return an empty object by default",
+			query: "?",
+			expected: {}
+		},
+		{
 			it: "should parse query params",
 			query: "?name=cheesecake&slices=8&delicious&warm=false",
 			expected: {
@@ -66,17 +71,27 @@ describe("getOptions()", () => {
 				);
 			});
 		});
-		describe("and the query string does not start with ?", () => {
-			it("should throw an error", () => {
-				assert.throws(
-					() => loaderUtils.getOptions({ query: "a" }),
-					"A valid query string passed to parseQuery should begin with '?'"
-				);
-			});
+	});
+	describe("when loaderContext.query is an empty string", () => {
+		it("should return null", () => {
+			assert.strictEqual(
+				loaderUtils.getOptions({
+					query: ""
+				}),
+				null
+			);
+		});
+	});
+	describe("when loaderContext.query is any other string not starting with ?", () => {
+		it("should throw an error", () => {
+			assert.throws(
+				() => loaderUtils.getOptions({ query: "a" }),
+				"A valid query string passed to parseQuery should begin with '?'"
+			);
 		});
 	});
 	describe("when loaderContext.query is an object", () => {
-		it("should just return the object", () => {
+		it("should just return it", () => {
 			const query = {};
 			assert.strictEqual(
 				loaderUtils.getOptions({
@@ -86,7 +101,7 @@ describe("getOptions()", () => {
 			);
 		});
 	});
-	describe("when loaderContext.query is anything else", () => {
+	describe("when loaderContext.query is an array", () => {
 		it("should just return it", () => {
 			const query = [];
 			assert.strictEqual(
@@ -95,15 +110,31 @@ describe("getOptions()", () => {
 				}),
 				query
 			);
+		});
+	});
+	describe("when loaderContext.query is anything else", () => {
+		it("should return null", () => {
 			assert.strictEqual(
 				loaderUtils.getOptions({
 					query: undefined
 				}),
-				undefined
+				null
 			);
 			assert.strictEqual(
 				loaderUtils.getOptions({
 					query: null
+				}),
+				null
+			);
+			assert.strictEqual(
+				loaderUtils.getOptions({
+					query: 1
+				}),
+				null
+			);
+			assert.strictEqual(
+				loaderUtils.getOptions({
+					query: 0
 				}),
 				null
 			);
