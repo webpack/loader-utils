@@ -16,7 +16,7 @@
     "cover": "istanbul cover -x *.runtime.js node_modules/mocha/bin/_mocha",
     "publish-patch": "mocha && npm version patch && git push && git push --tags && npm publish"
   },
-  "license": "MIT",
+  "license": "JSF",
   "repository": {
     "type": "git",
     "url": "https://github.com/webpack/loader-utils.git"
@@ -33,8 +33,6 @@
   },
   "main": "lib/index.js",
   "files": [
-    "lib",
-    "README",
-    "LICENSE"
+    "lib"
   ]
 }
