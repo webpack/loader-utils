@@ -28,7 +28,9 @@ describe("interpolateName()", () => {
 		["/app/flash.txt", "[hash]", "test content", "9473fdd0d880a43c21b7778d34872157"],
 		["/app/img/image.png", "[sha512:hash:base64:7].[ext]", "test content", "2BKDTjl.png"],
 		["/app/dir/file.png", "[path][name].[ext]?[hash]", "test content", "/app/dir/file.png?9473fdd0d880a43c21b7778d34872157"],
-		["/vendor/test/images/loading.gif", path => path.replace(/\/?vendor\/?/, ""), "test content", "test/images/loading.gif"]
+		["/vendor/test/images/loading.gif", path => path.replace(/\/?vendor\/?/, ""), "test content", "test/images/loading.gif"],
+		["/pathWith.period/filename.js", "js/[name].[ext]", "test content", "js/filename.js"],
+		["/pathWith.period/filenameWithoutExt", "js/[name].[ext]", "test content", "js/filenameWithoutExt.bin"]
 	].forEach(test => {
 		it("should interpolate " + test[0] + " " + test[1], () => {
 			const interpolatedName = loaderUtils.interpolateName({ resourcePath: test[0] }, test[1], { content: test[2] });
