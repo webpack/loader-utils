@@ -74,7 +74,7 @@ describe("parseQuery()", () => {
 	describe("when passed string is any other string not starting with ?", () => {
 		it("should throw an error", () => {
 			assert.throws(
-				() => loaderUtils.parseQuery({ query: "a" }),
+				() => loaderUtils.parseQuery("a"),
 				"A valid query string passed to parseQuery should begin with '?'"
 			);
 		});
