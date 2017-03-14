@@ -36,10 +36,23 @@ someLibrary(options);
 
 #### Options as query strings
 
-If the loader options have been passed as loader query string (`loader?some&params`), the string is parsed like this:
+If the loader options have been passed as loader query string (`loader?some&params`), the string is parsed by using [`parseQuery`](#parsequery).
+
+### `parseQuery`
+
+Parses a passed string (e.g. `loaderContext.resourceQuery`) as a query string, and returns an object.
+
+``` javascript
+var params = loaderUtils.parseQuery(this.resourceQuery); // resource: `file?param1=foo`
+if (params.param1 === 'foo') {
+	// do something
+}
+```
+
+The string is parsed like this:
 
 ``` text
-                             -> null
+                             -> Error
 ?                            -> {}
 ?flag                        -> { flag: true }
 ?+flag                       -> { flag: true }
