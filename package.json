@@ -29,7 +29,8 @@
     "eslint": "^3.15.0",
     "eslint-plugin-node": "^4.0.1",
     "istanbul": "^0.3.14",
-    "mocha": "^1.21.4"
+    "mocha": "^1.21.4",
+    "standard-version": "^4.0.0"
   },
   "main": "lib/index.js",
   "files": [
