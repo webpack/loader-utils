@@ -4,7 +4,7 @@ const assert = require("assert");
 const loaderUtils = require("../lib");
 
 describe("getOptions()", () => {
-	describe("when loaderContext.query is a string that has length", () => {
+	describe("when loaderContext.query is a string with length > 0", () => {
 		it("should call parseQuery() and return its result", () => {
 			assert.deepEqual(
 				loaderUtils.getOptions({

@@ -43,8 +43,8 @@ If the loader options have been passed as loader query string (`loader?some&para
 Parses a passed string (e.g. `loaderContext.resourceQuery`) as a query string, and returns an object.
 
 ``` javascript
-var params = loaderUtils.parseQuery(this.resourceQuery); // resource: `file?param1=foo`
-if (params.param1 === 'foo') {
+const params = loaderUtils.parseQuery(this.resourceQuery); // resource: `file?param1=foo`
+if (params.param1 === "foo") {
 	// do something
 }
 ```
