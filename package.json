@@ -11,10 +11,10 @@
   "scripts": {
     "test": "mocha",
     "posttest": "npm run lint",
-    "lint": "eslint --fix *.js test",
+    "lint": "eslint lib test",
     "travis": "npm run cover -- --report lcovonly",
     "cover": "istanbul cover -x *.runtime.js node_modules/mocha/bin/_mocha",
-    "publish-patch": "mocha && npm version patch && git push && git push --tags && npm publish"
+    "release": "npm test && standard-version"
   },
   "license": "MIT",
   "repository": {
