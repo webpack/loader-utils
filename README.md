@@ -32,7 +32,7 @@ options.arr = options.arr.slice();
 someLibrary(options);
 ```
 
-[clone-deep](https://www.npmjs.com/package/clone-deep) is a good library to make a deep copy of the options.
+[clone](https://www.npmjs.com/package/clone) is a good library to make a deep copy of the options.
 
 #### Options as query strings
 
