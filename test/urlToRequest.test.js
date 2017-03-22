@@ -13,6 +13,7 @@ ExpectedError.prototype.matches = function(err) {
 describe("urlToRequest()", () => {
 	[
 		// without root
+		[["https://google.com"], "https://google.com", "should handle absolute urls"],
 		[["path/to/thing"], "./path/to/thing", "should handle implicit relative urls"],
 		[["./path/to/thing"], "./path/to/thing", "should handle explicit relative urls"],
 		[["~path/to/thing"], "path/to/thing", "should handle module urls (with ~)"],
