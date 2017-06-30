@@ -67,7 +67,9 @@ describe("interpolateName()", () => {
 	});
 
 	it("should throw error when out of emoji", () => {
-	  assert.throws(function() { loaderUtils.interpolateName.apply(loaderUtils, [{}, "[emoji:5000]", { content: "foo" }]) }, Error, "Ran out of emoji");
+		assert.throws(() => {
+			loaderUtils.interpolateName.apply(loaderUtils, [{}, "[emoji:5000]", { content: "foo" }]);
+		}, Error, "Ran out of emoji");
 	});
 
 	context("no loader context", () => {
