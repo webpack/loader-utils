@@ -38,22 +38,22 @@ describe("interpolateName()", () => {
 		});
 	});
 
-	[ 'sha1fakename',
-		'9dxfakename',
-	  'RSA-SHA256-fakename',
-	  'ecdsa-with-SHA1-fakename',
-		'tls1.1-sha512-fakename',
+	[ "sha1fakename",
+		"9dxfakename",
+		"RSA-SHA256-fakename",
+		"ecdsa-with-SHA1-fakename",
+		"tls1.1-sha512-fakename",
 	].forEach(hashName => {
 		it("should pick hash algorithm by name " + hashName, () => {
 			assert.throws(
 				() => {
 					const interpolatedName = loaderUtils.interpolateName(
-						{}, '[' + hashName + ':hash:base64:10]', {content:'a'}
+						{ }, "[" + hashName + ":hash:base64:10]", {content:"a"}
 					);
 					// if for any reason the system we're running on has a hash
 					// algorithm matching any of our bogus names, at least make sure
 					// the output is not the unmodified name:
-					assert(interpolatedName[0] != '[');
+					assert(interpolatedName[0] !== '[');
 				},
 				/digest method not supported/i
 			);
