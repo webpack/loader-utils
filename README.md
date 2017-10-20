@@ -23,8 +23,8 @@ If you pass it on to another library, make sure to make a *deep copy* of it:
 ```javascript
 const options = Object.assign(
 	{},
-	loaderUtils.getOptions(this), // it is safe to pass null to Object.assign()
-	defaultOptions
+	defaultOptions,
+	loaderUtils.getOptions(this) // it is safe to pass null to Object.assign()
 );
 // don't forget nested objects or arrays
 options.obj = Object.assign({}, options.obj); 
