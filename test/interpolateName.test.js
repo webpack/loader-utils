@@ -48,12 +48,12 @@ describe("interpolateName()", () => {
 			assert.throws(
 				() => {
 					const interpolatedName = loaderUtils.interpolateName(
-						{ }, "[" + hashName + ":hash:base64:10]", {content:"a"}
+						{}, "[" + hashName + ":hash:base64:10]", { content: "a" }
 					);
 					// if for any reason the system we're running on has a hash
 					// algorithm matching any of our bogus names, at least make sure
 					// the output is not the unmodified name:
-					assert(interpolatedName[0] !== '[');
+					assert(interpolatedName[0] !== "[");
 				},
 				/digest method not supported/i
 			);
@@ -87,12 +87,6 @@ describe("interpolateName()", () => {
 		const result1 = loaderUtils.interpolateName.apply(loaderUtils, args);
 		const result2 = loaderUtils.interpolateName.apply(loaderUtils, args);
 		assert.equal(result1, result2);
-	});
-
-	it("should throw error when out of emoji", () => {
-		assert.throws(() => {
-			loaderUtils.interpolateName.apply(loaderUtils, [{}, "[emoji:5000]", { content: "foo" }]);
-		}, Error, "Ran out of emoji");
 	});
 
 	context("no loader context", () => {
