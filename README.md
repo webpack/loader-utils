@@ -221,7 +221,7 @@ const digestString = loaderUtils.getHashDigest(buffer, hashType, digestType, max
 
 * `buffer` the content that should be hashed
 * `hashType` one of `sha1`, `md5`, `sha256`, `sha512` or any other node.js supported hash type
-* `digestType` one of `hex`, `base26`, `base32`, `base36`, `base49`, `base52`, `base58`, `base62`, `base64`
+* `digestType` one of `hex`, `base26`, `base32`, `base36`, `base49`, `base52`, `base58`, `base62`, `base64`, `emoji`
 * `maxLength` the maximum length in chars
 
 ## License
