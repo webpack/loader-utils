@@ -40,7 +40,9 @@ describe("urlToRequest()", () => {
 		// difficult cases
 		[["a:b-not-\\window-path"], "./a:b-not-\\window-path", "should not incorrectly detect windows paths"],
 		// empty url
-		[[""], "", "should do nothing if url is empty"]
+		[[""], "", "should do nothing if url is empty"],
+		// start with alias
+		[["@css/reset.css", "", ["@css"]], "@css/reset.css", "should do nothing if url is start with alias"]
 	].forEach((test) => {
 		it(test[2], () => {
 			const expected = test[1];
