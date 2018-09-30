@@ -118,7 +118,7 @@ describe("interpolateName()", () => {
 	run([
 		[[{
 			resourcePath: "/xyz",
-			options: {
+			query: {
 				customInterpolateName(str, name, options) {
 					return str + "-" + name + "-" + options.special;
 				}
