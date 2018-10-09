@@ -23,11 +23,11 @@ describe("interpolateName()", () => {
 	}
 
 	[
-		["/app/js/javascript.js", "js/[hash].script.[ext]", "test content", "js/9473fdd0d880a43c21b7778d34872157.script.js"],
-		["/app/page.html", "html-[hash:6].html", "test content", "html-9473fd.html"],
-		["/app/flash.txt", "[hash]", "test content", "9473fdd0d880a43c21b7778d34872157"],
+		["/app/js/javascript.js", "js/[hash].script.[ext]", "test content", "js/a69899814931280e2f527219ad6ac754.script.js"],
+		["/app/page.html", "html-[hash:6].html", "test content", "html-a69899.html"],
+		["/app/flash.txt", "[hash]", "test content", "a69899814931280e2f527219ad6ac754"],
 		["/app/img/image.png", "[sha512:hash:base64:7].[ext]", "test content", "2BKDTjl.png"],
-		["/app/dir/file.png", "[path][name].[ext]?[hash]", "test content", "/app/dir/file.png?9473fdd0d880a43c21b7778d34872157"],
+		["/app/dir/file.png", "[path][name].[ext]?[hash]", "test content", "/app/dir/file.png?a69899814931280e2f527219ad6ac754"],
 		["/vendor/test/images/loading.gif", path => path.replace(/\/?vendor\/?/, ""), "test content", "test/images/loading.gif"],
 		["/pathWith.period/filename.js", "js/[name].[ext]", "test content", "js/filename.js"],
 		["/pathWith.period/filenameWithoutExt", "js/[name].[ext]", "test content", "js/filenameWithoutExt.bin"]
@@ -48,12 +48,12 @@ describe("interpolateName()", () => {
 			assert.throws(
 				() => {
 					const interpolatedName = loaderUtils.interpolateName(
-						{ }, "[" + hashName + ":hash:base64:10]", {content:"a"}
+						{ }, "[" + hashName + ":hash:base64:10]", { content: "a" }
 					);
 					// if for any reason the system we're running on has a hash
 					// algorithm matching any of our bogus names, at least make sure
 					// the output is not the unmodified name:
-					assert(interpolatedName[0] !== '[');
+					assert(interpolatedName[0] !== "[");
 				},
 				/digest method not supported/i
 			);
@@ -62,8 +62,8 @@ describe("interpolateName()", () => {
 
 
 	run([
-		[[{}, "", { content: "test string" }], "6f8db599de986fab7a21625b7916589c.bin", "should interpolate default tokens"],
-		[[{}, "[hash:base64]", { content: "test string" }], "2sm1pVmS8xuGJLCdWpJoRL", "should interpolate [hash] token with options"],
+		[[{}, "", { content: "test string" }], "2e06edd4f1623268c5a51730d8a0b2af.bin", "should interpolate default tokens"],
+		[[{}, "[hash:base64]", { content: "test string" }], "2LIG3oc1uBNmwOoL7kXgoK", "should interpolate [hash] token with options"],
 		[[{}, "[unrecognized]", { content: "test string" }], "[unrecognized]", "should not interpolate unrecognized token"],
 		[
 			[{}, "[emoji]", { content: "test" }],
