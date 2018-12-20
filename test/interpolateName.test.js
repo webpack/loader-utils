@@ -31,7 +31,7 @@ describe("interpolateName()", () => {
 			hashFunction: "sha512",
 			hashDigest: "base64",
 			hashDigestLength: 7
-		} } }, "[sha512:hash:base64:7].[ext]", "test content", "2BKDTjl.png"],
+		} } }, "[hash].[ext]", "test content", "2BKDTjl.png"],
 		[{ resourcePath: "/app/dir/file.png" }, "[path][name].[ext]?[hash]", "test content", "/app/dir/file.png?9473fdd0d880a43c21b7778d34872157"],
 		[{ resourcePath: "/vendor/test/images/loading.gif" }, path => path.replace(/\/?vendor\/?/, ""), "test content", "test/images/loading.gif"],
 		[{ resourcePath: "/pathWith.period/filename.js" }, "js/[name].[ext]", "test content", "js/filename.js"],
