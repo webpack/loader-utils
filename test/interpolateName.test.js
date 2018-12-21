@@ -23,17 +23,22 @@ describe("interpolateName()", () => {
 	}
 
 	[
-		["/app/js/javascript.js", "js/[hash].script.[ext]", "test content", "js/9473fdd0d880a43c21b7778d34872157.script.js"],
-		["/app/page.html", "html-[hash:6].html", "test content", "html-9473fd.html"],
-		["/app/flash.txt", "[hash]", "test content", "9473fdd0d880a43c21b7778d34872157"],
-		["/app/img/image.png", "[sha512:hash:base64:7].[ext]", "test content", "2BKDTjl.png"],
-		["/app/dir/file.png", "[path][name].[ext]?[hash]", "test content", "/app/dir/file.png?9473fdd0d880a43c21b7778d34872157"],
-		["/vendor/test/images/loading.gif", path => path.replace(/\/?vendor\/?/, ""), "test content", "test/images/loading.gif"],
-		["/pathWith.period/filename.js", "js/[name].[ext]", "test content", "js/filename.js"],
-		["/pathWith.period/filenameWithoutExt", "js/[name].[ext]", "test content", "js/filenameWithoutExt.bin"]
+		[{ resourcePath: "/app/js/javascript.js" }, "js/[hash].script.[ext]", "test content", "js/9473fdd0d880a43c21b7778d34872157.script.js"],
+		[{ resourcePath: "/app/page.html" }, "html-[hash:6].html", "test content", "html-9473fd.html"],
+		[{ resourcePath: "/app/flash.txt" }, "[hash]", "test content", "9473fdd0d880a43c21b7778d34872157"],
+		[{ resourcePath: "/app/img/image.png" }, "[sha512:hash:base64:7].[ext]", "test content", "2BKDTjl.png"],
+		[{ resourcePath: "/app/img/image.png", _compilation: { outputOptions: {
+			hashFunction: "sha512",
+			hashDigest: "base64",
+			hashDigestLength: 7
+		} } }, "[hash].[ext]", "test content", "2BKDTjl.png"],
+		[{ resourcePath: "/app/dir/file.png" }, "[path][name].[ext]?[hash]", "test content", "/app/dir/file.png?9473fdd0d880a43c21b7778d34872157"],
+		[{ resourcePath: "/vendor/test/images/loading.gif" }, path => path.replace(/\/?vendor\/?/, ""), "test content", "test/images/loading.gif"],
+		[{ resourcePath: "/pathWith.period/filename.js" }, "js/[name].[ext]", "test content", "js/filename.js"],
+		[{ resourcePath: "/pathWith.period/filenameWithoutExt" }, "js/[name].[ext]", "test content", "js/filenameWithoutExt.bin"]
 	].forEach(test => {
-		it("should interpolate " + test[0] + " " + test[1], () => {
-			const interpolatedName = loaderUtils.interpolateName({ resourcePath: test[0] }, test[1], { content: test[2] });
+		it("should interpolate " + test[0].resourcePath + " " + test[1], () => {
+			const interpolatedName = loaderUtils.interpolateName(test[0], test[1], { content: test[2] });
 			assert.equal(interpolatedName, test[3]);
 		});
 	});
