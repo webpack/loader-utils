@@ -75,7 +75,7 @@ describe("parseQuery()", () => {
 		it("should throw an error", () => {
 			assert.throws(
 				() => loaderUtils.parseQuery("a"),
-				"A valid query string passed to parseQuery should begin with '?'"
+				/A valid query string passed to parseQuery should begin with '\?'/
 			);
 		});
 	});
