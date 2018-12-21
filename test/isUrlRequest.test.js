@@ -51,7 +51,10 @@ describe("isUrlRequest()", () => {
 		[["/path/to/thing", 1], new ExpectedError(/unexpected parameters/i), "should throw an error on invalid root"],
 
 		// empty url
-		[[""], true, "should be positive if url is empty"]
+		[[""], true, "should be positive if url is empty"],
+
+		// about url
+		[["about:blank"], false, "should be negative for about:blank"]
 	].forEach((test) => {
 		it(test[2], () => {
 			const expected = test[1];
