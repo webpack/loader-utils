@@ -9,9 +9,9 @@
     "json5": "^0.5.0"
   },
   "scripts": {
-    "test": "mocha",
-    "posttest": "npm run lint",
     "lint": "eslint lib test",
+    "pretest": "npm run lint",
+    "test": "mocha",
     "travis": "npm run cover -- --report lcovonly",
     "cover": "istanbul cover -x *.runtime.js node_modules/mocha/bin/_mocha",
     "release": "npm test && standard-version"
