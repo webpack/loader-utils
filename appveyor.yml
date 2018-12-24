@@ -10,7 +10,7 @@ environment:
 
 clone_depth: 10
 
-version: "{build}"
+version: '{build}'
 build: off
 deploy: off
 
@@ -29,4 +29,4 @@ cache:
 test_script:
   - node --version
   - npm --version
-  - cmd: "yarn travis"
+  - cmd: 'yarn travis'
