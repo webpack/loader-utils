@@ -30,7 +30,7 @@ matrix:
       env: CI=tests 10
     - node_js: '11'
       script: yarn travis
-      env: CI=tests 11
+      env: CI=coverage 11
 
 before_install:
   - yarn install --ignore-engines
