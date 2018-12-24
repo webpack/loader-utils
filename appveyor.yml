@@ -20,12 +20,13 @@ branches:
 
 install:
   - ps: Install-Product node $env:nodejs_version
-  - npm install
+  - yarn install --ignore-engines
 
 cache:
-  - node_modules
+  - node_modules -> appveyor.yml,package.json,yarn.lock
+  - '%LOCALAPPDATA%\Yarn -> appveyor.yml,package.json,yarn.lock'
 
 test_script:
   - node --version
   - npm --version
-  - cmd: "npm run travis"
+  - cmd: "yarn travis"

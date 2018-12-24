@@ -51,6 +51,8 @@
 		"no-var": "error",
 		"prefer-const": "error",
 		"prefer-arrow-callback": "error",
-    "object-shorthand": "error"
+    "object-shorthand": "error",
+    // Allow to use `assert` module
+    "node/no-deprecated-api": "off"
 	}
 }
