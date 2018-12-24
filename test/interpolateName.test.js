@@ -244,5 +244,18 @@ describe('interpolateName()', () => {
       'xyz-[name]-special',
       'should provide a custom interpolateName function in options',
     ],
+    [
+      [
+        {
+          resourcePath: '/foo/xyz.png',
+        },
+        '[1]-[name].[ext]',
+        {
+          regExp: /\/([a-z0-9]+)\/[a-z0-9]+\.png$/,
+        },
+      ],
+      'foo-xyz.png',
+      'should support regExp in options',
+    ],
   ]);
 });
