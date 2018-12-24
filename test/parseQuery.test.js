@@ -1,6 +1,5 @@
 'use strict';
 
-const assert = require('assert');
 const loaderUtils = require('../');
 
 describe('parseQuery()', () => {
@@ -69,15 +68,14 @@ describe('parseQuery()', () => {
       },
     ].forEach((test) => {
       it(test.it, () => {
-        assert.deepEqual(loaderUtils.parseQuery(test.query), test.expected);
+        expect(loaderUtils.parseQuery(test.query)).toEqual(test.expected);
       });
     });
   });
 
   describe('when passed string is any other string not starting with ?', () => {
     it('should throw an error', () => {
-      assert.throws(
-        () => loaderUtils.parseQuery('a'),
+      expect(() => loaderUtils.parseQuery('a')).toThrow(
         /A valid query string passed to parseQuery should begin with '\?'/
       );
     });

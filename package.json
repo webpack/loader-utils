@@ -10,11 +10,10 @@
   },
   "scripts": {
     "lint": "eslint lib test",
-    "pretest": "npm run lint",
-    "test": "mocha",
-    "travis": "npm run cover -- --report lcovonly",
-    "cover": "istanbul cover -x *.runtime.js node_modules/mocha/bin/_mocha",
-    "release": "npm test && standard-version"
+    "pretest": "yarn lint",
+    "test": "jest",
+    "test:ci": "jest --coverage",
+    "release": "yarn test && standard-version"
   },
   "license": "MIT",
   "repository": {
@@ -29,8 +28,7 @@
     "eslint": "^5.11.0",
     "eslint-plugin-node": "^8.0.0",
     "eslint-plugin-prettier": "^3.0.0",
-    "istanbul": "^0.4.5",
-    "mocha": "^5.2.0",
+    "jest": "^21.2.1",
     "prettier": "^1.15.3",
     "standard-version": "^4.0.0"
   },

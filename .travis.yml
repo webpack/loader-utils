@@ -17,19 +17,19 @@ matrix:
       script: yarn pretest
       env: CI=pretest
     - node_js: '4'
-      script: yarn travis
+      script: yarn test:ci
       env: CI=tests 4
     - node_js: '6'
-      script: yarn travis
+      script: yarn test:ci
       env: CI=tests 6
     - node_js: '8'
-      script: yarn travis
+      script: yarn test:ci
       env: CI=tests 8
     - node_js: '10'
-      script: yarn travis
+      script: yarn test:ci
       env: CI=tests 10
     - node_js: '11'
-      script: yarn travis
+      script: yarn test:ci
       env: CI=coverage 11
 
 before_install:

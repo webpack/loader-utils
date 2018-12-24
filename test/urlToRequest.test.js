@@ -1,11 +1,11 @@
 'use strict';
 
-const assert = require('assert');
 const loaderUtils = require('../');
 
 function ExpectedError(regex) {
   this.regex = regex;
 }
+
 ExpectedError.prototype.matches = function(err) {
   return this.regex.test(err.message);
 };
@@ -104,14 +104,16 @@ describe('urlToRequest()', () => {
   ].forEach((test) => {
     it(test[2], () => {
       const expected = test[1];
+
       try {
         const request = loaderUtils.urlToRequest.apply(loaderUtils, test[0]);
-        assert.equal(request, expected);
+
+        expect(request).toBe(expected);
       } catch (e) {
         if (expected instanceof ExpectedError) {
-          assert.ok(expected.matches(e));
+          expect(expected.matches(e)).toBe(true);
         } else {
-          assert.ok(false, 'should not have thrown an error: ' + e.message);
+          throw new Error('should not have thrown an error: ' + e.message);
         }
       }
     });
