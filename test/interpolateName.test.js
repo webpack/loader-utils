@@ -24,10 +24,15 @@ describe("interpolateName()", () => {
 
 	[
 		["/app/js/javascript.js", "js/[hash].script.[ext]", "test content", "js/9473fdd0d880a43c21b7778d34872157.script.js"],
+		["/app/js/javascript.js", "js/[contenthash].script.[ext]", "test content", "js/9473fdd0d880a43c21b7778d34872157.script.js"],
 		["/app/page.html", "html-[hash:6].html", "test content", "html-9473fd.html"],
+		["/app/page.html", "html-[contenthash:6].html", "test content", "html-9473fd.html"],
 		["/app/flash.txt", "[hash]", "test content", "9473fdd0d880a43c21b7778d34872157"],
+		["/app/flash.txt", "[contenthash]", "test content", "9473fdd0d880a43c21b7778d34872157"],
 		["/app/img/image.png", "[sha512:hash:base64:7].[ext]", "test content", "2BKDTjl.png"],
+		["/app/img/image.png", "[sha512:contenthash:base64:7].[ext]", "test content", "2BKDTjl.png"],
 		["/app/dir/file.png", "[path][name].[ext]?[hash]", "test content", "/app/dir/file.png?9473fdd0d880a43c21b7778d34872157"],
+		["/app/dir/file.png", "[path][name].[ext]?[contenthash]", "test content", "/app/dir/file.png?9473fdd0d880a43c21b7778d34872157"],
 		["/vendor/test/images/loading.gif", path => path.replace(/\/?vendor\/?/, ""), "test content", "test/images/loading.gif"],
 		["/pathWith.period/filename.js", "js/[name].[ext]", "test content", "js/filename.js"],
 		["/pathWith.period/filenameWithoutExt", "js/[name].[ext]", "test content", "js/filenameWithoutExt.bin"]

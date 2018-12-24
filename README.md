@@ -164,6 +164,11 @@ The following tokens are replaced in the `name` parameter:
 * `[folder]` the folder of the resource is in.
 * `[emoji]` a random emoji representation of `options.content`
 * `[emoji:<length>]` same as above, but with a customizable number of emojis
+* `[contenthash]` the hash of `options.content` (Buffer) (by default it's the hex digest of the md5 hash)
+* `[<hashType>:contenthash:<digestType>:<length>]` optionally one can configure
+  * other `hashType`s, i. e. `sha1`, `md5`, `sha256`, `sha512`
+  * other `digestType`s, i. e. `hex`, `base26`, `base32`, `base36`, `base49`, `base52`, `base58`, `base62`, `base64`
+  * and `length` the length in chars
 * `[hash]` the hash of `options.content` (Buffer) (by default it's the hex digest of the md5 hash)
 * `[<hashType>:hash:<digestType>:<length>]` optionally one can configure
   * other `hashType`s, i. e. `sha1`, `md5`, `sha256`, `sha512`
@@ -171,11 +176,17 @@ The following tokens are replaced in the `name` parameter:
   * and `length` the length in chars
 * `[N]` the N-th match obtained from matching the current file name against `options.regExp`
 
+In loader context `[hash]` and `[contenthash]` are the same, but we recommend using `[contenthash]` for avoid misleading.
+
 Examples
 
 ``` javascript
 // loaderContext.resourcePath = "/app/js/javascript.js"
 loaderUtils.interpolateName(loaderContext, "js/[hash].script.[ext]", { content: ... });
+// => js/9473fdd0d880a43c21b7778d34872157.script.js
+
+// loaderContext.resourcePath = "/app/js/javascript.js"
+loaderUtils.interpolateName(loaderContext, "js/[contenthash].script.[ext]", { content: ... });
 // => js/9473fdd0d880a43c21b7778d34872157.script.js
 
 // loaderContext.resourcePath = "/app/page.html"
