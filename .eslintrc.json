@@ -20,9 +20,6 @@
     "prefer-arrow-callback": "error",
     "object-shorthand": "error",
 
-    // Allow to use `assert` module
-    "node/no-deprecated-api": "off",
-
     "prettier/prettier": [
       "error",
       {

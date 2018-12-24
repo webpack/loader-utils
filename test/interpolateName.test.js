@@ -1,6 +1,5 @@
 'use strict';
 
-const assert = require('assert');
 const loaderUtils = require('../');
 
 const emojiRegex = /[\uD800-\uDFFF]./;
@@ -16,7 +15,7 @@ describe('interpolateName()', () => {
         if (typeof expected === 'function') {
           expected(result);
         } else {
-          assert.equal(result, expected);
+          expect(result).toBe(expected);
         }
       });
     });
@@ -108,7 +107,8 @@ describe('interpolateName()', () => {
         test[1],
         { content: test[2] }
       );
-      assert.equal(interpolatedName, test[3]);
+
+      expect(interpolatedName).toBe(test[3]);
     });
   });
 
@@ -120,7 +120,7 @@ describe('interpolateName()', () => {
     'tls1.1-sha512-fakename',
   ].forEach((hashName) => {
     it('should pick hash algorithm by name ' + hashName, () => {
-      assert.throws(() => {
+      expect(() => {
         const interpolatedName = loaderUtils.interpolateName(
           {},
           '[' + hashName + ':hash:base64:10]',
@@ -129,8 +129,8 @@ describe('interpolateName()', () => {
         // if for any reason the system we're running on has a hash
         // algorithm matching any of our bogus names, at least make sure
         // the output is not the unmodified name:
-        assert(interpolatedName[0] !== '[');
-      }, /digest method not supported/i);
+        expect(interpolatedName[0]).not.toBe('[');
+      }).toThrow(/digest method not supported/i);
     });
   });
 
@@ -153,15 +153,15 @@ describe('interpolateName()', () => {
     [
       [{}, '[emoji]', { content: 'test' }],
       (result) => {
-        assert.ok(emojiRegex.test(result), result);
+        expect(emojiRegex.test(result)).toBe(true);
       },
       'should interpolate [emoji]',
     ],
     [
       [{}, '[emoji:3]', { content: 'string' }],
       (result) => {
-        assert.ok(emojiRegex.test(result), result);
-        assert.ok(result.length, 6);
+        expect(emojiRegex.test(result)).toBe(true);
+        expect(result.length).toBeDefined();
       },
       'should interpolate [emoji:3]',
     ],
@@ -171,24 +171,21 @@ describe('interpolateName()', () => {
     const args = [{}, '[emoji:5]', { content: 'same_emoji' }];
     const result1 = loaderUtils.interpolateName.apply(loaderUtils, args);
     const result2 = loaderUtils.interpolateName.apply(loaderUtils, args);
-    assert.equal(result1, result2);
+
+    expect(result1).toBe(result2);
   });
 
   it('should throw error when out of emoji', () => {
-    assert.throws(
-      () => {
-        loaderUtils.interpolateName.apply(loaderUtils, [
-          {},
-          '[emoji:5000]',
-          { content: 'foo' },
-        ]);
-      },
-      Error,
-      'Ran out of emoji'
-    );
+    expect(() => {
+      loaderUtils.interpolateName.apply(loaderUtils, [
+        {},
+        '[emoji:5000]',
+        { content: 'foo' },
+      ]);
+    }).toThrow('Ran out of emoji');
   });
 
-  context('no loader context', () => {
+  describe('no loader context', () => {
     const loaderContext = {};
     run([
       [[loaderContext, '[ext]', {}], 'bin', 'should interpolate [ext] token'],
@@ -206,7 +203,7 @@ describe('interpolateName()', () => {
     ]);
   });
 
-  context('with loader context', () => {
+  describe('with loader context', () => {
     const loaderContext = { resourcePath: '/path/to/file.exe' };
     run([
       [[loaderContext, '[ext]', {}], 'exe', 'should interpolate [ext] token'],

@@ -1,6 +1,5 @@
 'use strict';
 
-const assert = require('assert');
 const loaderUtils = require('../');
 
 describe('getHashDigest()', () => {
@@ -47,7 +46,8 @@ describe('getHashDigest()', () => {
           test[2],
           test[3]
         );
-        assert.equal(hashDigest, test[4]);
+
+        expect(hashDigest).toBe(test[4]);
       }
     );
   });

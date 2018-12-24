@@ -1,77 +1,64 @@
 'use strict';
 
-const assert = require('assert');
 const loaderUtils = require('../lib');
 
 describe('getOptions()', () => {
   describe('when loaderContext.query is a string with length > 0', () => {
     it('should call parseQuery() and return its result', () => {
-      assert.deepEqual(
+      expect(
         loaderUtils.getOptions({
           query: '?something=getOptions_cannot_parse',
-        }),
-        { something: 'getOptions_cannot_parse' }
-      );
+        })
+      ).toEqual({ something: 'getOptions_cannot_parse' });
     });
   });
   describe('when loaderContext.query is an empty string', () => {
     it('should return null', () => {
-      assert.strictEqual(
+      expect(
         loaderUtils.getOptions({
           query: '',
-        }),
-        null
-      );
+        })
+      ).toEqual(null);
     });
   });
   describe('when loaderContext.query is an object', () => {
     it('should just return it', () => {
       const query = {};
-      assert.strictEqual(
+      expect(
         loaderUtils.getOptions({
           query,
-        }),
-        query
-      );
+        })
+      ).toEqual(query);
     });
   });
   describe('when loaderContext.query is an array', () => {
     it('should just return it', () => {
       const query = [];
-      assert.strictEqual(
-        loaderUtils.getOptions({
-          query,
-        }),
-        query
-      );
+      expect(loaderUtils.getOptions({ query })).toEqual(query);
     });
   });
   describe('when loaderContext.query is anything else', () => {
     it('should return null', () => {
-      assert.strictEqual(
+      expect(
         loaderUtils.getOptions({
           query: undefined,
-        }),
-        null
-      );
-      assert.strictEqual(
+        })
+      ).toEqual(null);
+      expect(
         loaderUtils.getOptions({
           query: null,
-        }),
-        null
-      );
-      assert.strictEqual(
+        })
+      ).toEqual(null);
+      expect(
         loaderUtils.getOptions({
           query: 1,
-        }),
-        null
-      );
-      assert.strictEqual(
+        })
+      ).toEqual(null);
+      expect(
         loaderUtils.getOptions({
           query: 0,
-        }),
-        null
-      );
+        })
+      ).toEqual(null);
     });
   });
 });

@@ -1,6 +1,5 @@
 'use strict';
 
-const assert = require('assert');
 const loaderUtils = require('../');
 
 describe('parseString()', () => {
@@ -16,7 +15,8 @@ describe('parseString()', () => {
   ].forEach((test) => {
     it('should parse ' + test[0], () => {
       const parsed = loaderUtils.parseString(test[0]);
-      assert.equal(parsed, test[1]);
+
+      expect(parsed).toBe(test[1]);
     });
   });
 });

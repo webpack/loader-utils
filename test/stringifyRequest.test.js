@@ -1,6 +1,5 @@
 'use strict';
 
-const assert = require('assert');
 const path = require('path');
 const loaderUtils = require('../');
 
@@ -175,15 +174,19 @@ describe('stringifyRequest()', () => {
       testCase.expected
     } inside context ${testCase.context}`, () => {
       const relative = path.relative;
+
       if (testCase.os) {
         // monkey patch path.relative in order to make this test work in every OS
         path.relative = path[testCase.os].relative;
       }
+
       const actual = loaderUtils.stringifyRequest(
         { context: testCase.context },
         testCase.request
       );
-      assert.equal(actual, testCase.expected);
+
+      expect(actual).toBe(testCase.expected);
+
       path.relative = relative;
     });
   });
