@@ -14,7 +14,9 @@ describe('isUrlRequest()', () => {
     // without root
     [['//google.com'], false, 'should be negative for scheme-agnostic urls'],
     [['http://google.com'], false, 'should be negative for http urls'],
+    [['HTTP://google.com'], false, 'should be negative for http urls'],
     [['https://google.com'], false, 'should be negative for https urls'],
+    [['HTTPS://google.com'], false, 'should be negative for https urls'],
 
     [['chrome-extension://'], false, 'should be negative for nonstandard urls'],
     [['moz-extension://'], false, 'should be negative for nonstandard urls'],
@@ -26,6 +28,13 @@ describe('isUrlRequest()', () => {
     [['custom-extension://'], false, 'should be negative for nonstandard urls'],
 
     [['path/to/thing'], true, 'should be positive for implicit relative urls'],
+    [['./img.png'], true, 'should be positive for implicit relative urls'],
+    [['../img.png'], true, 'should be positive for implicit relative urls'],
+    [
+      ['./img.png?foo=bar#hash'],
+      true,
+      'should be positive for implicit relative urls',
+    ],
     [
       ['./path/to/thing'],
       true,
@@ -41,6 +50,18 @@ describe('isUrlRequest()', () => {
       ['./some/other/stuff/and/then~path/to/thing'],
       true,
       'should be positive for module urls with relative path prefix',
+    ],
+    [['C:/thing'], true, 'should be positive for linux path with driver'],
+    [['C:\\thing'], true, 'should be positive for windows path with driver'],
+    [
+      ['directory/things'],
+      true,
+      'should be positive for relative path (linux)',
+    ],
+    [
+      ['directory\\things'],
+      true,
+      'should be positive for relative path (windows)',
     ],
 
     // with root (normal path)
@@ -110,6 +131,48 @@ describe('isUrlRequest()', () => {
 
     // about url
     [['about:blank'], false, 'should be negative for about:blank'],
+
+    // hash
+    [['#gradient'], false, 'should be negative for hash url'],
+
+    // url
+    [['//sindresorhus.com'], false, 'should ignore noscheme url'],
+    [
+      ['//at.alicdn.com/t/font_515771_emcns5054x3whfr.eot'],
+      false,
+      'should ignore noscheme url with path',
+    ],
+    [
+      ['https://example.com/././foo'],
+      false,
+      'should ignore absolute url with relative',
+    ],
+
+    // non standard protocols
+    [
+      ['file://sindresorhus.com'],
+      false,
+      'should ignore non standard protocols (file)',
+    ],
+    [
+      ['mailto:someone@example.com'],
+      false,
+      'should ignore non standard protocols (mailto)',
+    ],
+    [
+      ['data:text/plain;base64,SGVsbG8sIFdvcmxkIQ%3D%3D'],
+      false,
+      'should ignore non standard protocols (data)',
+    ],
+    [
+      ['DATA:text/plain;base64,SGVsbG8sIFdvcmxkIQ%3D%3D'],
+      false,
+      'should ignore non standard protocols (data)',
+    ],
+
+    // root-relative url
+    [['/'], false, 'ignore root-relative url'],
+    [['//'], false, 'ignore root-relative url 1'],
   ].forEach((test) => {
     it(test[2], () => {
       const expected = test[1];
