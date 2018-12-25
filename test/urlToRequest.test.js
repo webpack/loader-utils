@@ -13,9 +13,6 @@ ExpectedError.prototype.matches = function(err) {
 describe('urlToRequest()', () => {
   [
     // without root
-    [['//google.com'], '//google.com', 'should handle scheme-agnostic urls'],
-    [['http://google.com'], 'http://google.com', 'should handle http urls'],
-    [['https://google.com'], 'https://google.com', 'should handle https urls'],
     [
       ['path/to/thing'],
       './path/to/thing',
