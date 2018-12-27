@@ -106,6 +106,24 @@ describe('interpolateName()', () => {
       'test content',
       'modal__modalTitle___1eeb',
     ],
+    [
+      '/lib/components/modal/modal.css',
+      '[name]__modalTitle___[sha1:contenthash:hex:4]',
+      'test content',
+      'modal__modalTitle___1eeb',
+    ],
+    [
+      '/lib/components/modal/modal.css',
+      '[name].[md5:hash:base64:20].[ext]',
+      'test content',
+      'modal.1n8osQznuT8jOAwdzg_n.css',
+    ],
+    [
+      '/lib/components/modal/modal.css',
+      '[name].[md5:contenthash:base64:20].[ext]',
+      'test content',
+      'modal.1n8osQznuT8jOAwdzg_n.css',
+    ],
   ].forEach((test) => {
     it('should interpolate ' + test[0] + ' ' + test[1], () => {
       const interpolatedName = loaderUtils.interpolateName(
