@@ -124,6 +124,13 @@ describe('interpolateName()', () => {
       'test content',
       'modal.1n8osQznuT8jOAwdzg_n.css',
     ],
+    // Should not interpret without `hash` or `contenthash`
+    [
+      '/lib/components/modal/modal.css',
+      '[name].[md5::base64:20].[ext]',
+      'test content',
+      'modal.[md5::base64:20].css',
+    ],
   ].forEach((test) => {
     it('should interpolate ' + test[0] + ' ' + test[1], () => {
       const interpolatedName = loaderUtils.interpolateName(
