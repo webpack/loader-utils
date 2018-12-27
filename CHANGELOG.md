@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.2.2"></a>
+## [1.2.2](https://github.com/webpack/loader-utils/compare/v1.2.1...v1.2.2) (2018-12-27)
+
+
+### Bug Fixes
+
+* fixed a hash type extracting in interpolateName ([#137](https://github.com/webpack/loader-utils/issues/137)) ([f8a71f4](https://github.com/webpack/loader-utils/commit/f8a71f4))
+
+
+
 <a name="1.2.1"></a>
 ## [1.2.1](https://github.com/webpack/loader-utils/compare/v1.2.0...v1.2.1) (2018-12-25)
 
