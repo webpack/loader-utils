@@ -100,6 +100,12 @@ describe('interpolateName()', () => {
       'test content',
       'js/filenameWithoutExt.bin',
     ],
+    [
+      '/lib/components/modal/modal.css',
+      '[name]__modalTitle___[sha1:hash:hex:4]',
+      'test content',
+      'modal__modalTitle___1eeb',
+    ],
   ].forEach((test) => {
     it('should interpolate ' + test[0] + ' ' + test[1], () => {
       const interpolatedName = loaderUtils.interpolateName(
