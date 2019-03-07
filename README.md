@@ -176,7 +176,7 @@ The following tokens are replaced in the `name` parameter:
 * `[ext]` the extension of the resource
 * `[name]` the basename of the resource
 * `[path]` the path of the resource relative to the `context` query parameter or option.
-* `[folder]` the folder of the resource is in.
+* `[folder]` the folder the resource is in.
 * `[emoji]` a random emoji representation of `options.content`
 * `[emoji:<length>]` same as above, but with a customizable number of emojis
 * `[contenthash]` the hash of `options.content` (Buffer) (by default it's the hex digest of the md5 hash)
