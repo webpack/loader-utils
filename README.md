@@ -67,6 +67,31 @@ The string is parsed like this:
 ?{data:{a:1},isJSON5:true}   -> { data: { a: 1 }, isJSON5: true }
 ```
 
+### `getCurrentRequest`
+
+Returns request string starting from **current** loader
+
+```javascript
+const request = loaderUtils.getCurrentRequest(this);
+// ./my-awesome-loader!otherLoader!./test.js
+```
+
+### `getRemainingRequest`
+
+Returns request string starting from **next** loader
+
+```javascript
+const request = loaderUtils.getRemainingRequest(this);
+// next-loader!./test.js
+```
+
+**Please note:** If there is not loaders after, then resource still will be returned, e.g.:
+
+```javascript
+const request = loaderUtils.getRemainingRequest(this); // no loaders after
+// ./test.js
+```
+
 ### `stringifyRequest`
 
 Turns a request into a string that can be used inside `require()` or `import` while avoiding absolute paths.
