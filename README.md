@@ -177,6 +177,7 @@ The following tokens are replaced in the `name` parameter:
 * `[name]` the basename of the resource
 * `[path]` the path of the resource relative to the `context` query parameter or option.
 * `[folder]` the folder the resource is in.
+* `[query]` the query parameters string without the leading `?`
 * `[emoji]` a random emoji representation of `options.content`
 * `[emoji:<length>]` same as above, but with a customizable number of emojis
 * `[contenthash]` the hash of `options.content` (Buffer) (by default it's the hex digest of the md5 hash)
@@ -212,6 +213,11 @@ loaderUtils.interpolateName(loaderContext, "html-[hash:6].html", { content: ... 
 loaderUtils.interpolateName(loaderContext, "[hash]", { content: ... });
 // => c31e9820c001c9c4a86bce33ce43b679
 
+// loaderContext.resourcePath = "/app/img/icon.svg"
+// loaderContext.resourceQuery = "?color=red&bgColor=blue"
+loaderUtils.interpolateName(loaderContext, "[name].[ext]?[query]", { content: ... });
+// => /app/img/icon.svg?color=red&bgColor=blue
+
 // loaderContext.resourcePath = "/app/img/image.gif"
 loaderUtils.interpolateName(loaderContext, "[emoji]", { content: ... });
 // => 👍
@@ -233,6 +239,11 @@ loaderUtils.interpolateName(loaderContext, "picture.png");
 // loaderContext.resourcePath = "/app/dir/file.png"
 loaderUtils.interpolateName(loaderContext, "[path][name].[ext]?[hash]", { content: ... });
 // => /app/dir/file.png?9473fdd0d880a43c21b7778d34872157
+
+// loaderContext.resourcePath = "/app/img/icon.png"
+// loaderContext.resourceQuery = "?color=red&bgColor=blue"
+loaderUtils.interpolateName(loaderContext, "[path][name].[ext]?[hash]&[query]", { content: ... });
+// => /app/img/icon.png?9473fdd0d880a43c21b7778d34872157&color=red&bgColor=blue
 
 // loaderContext.resourcePath = "/app/js/page-home.js"
 loaderUtils.interpolateName(loaderContext, "script-[1].[ext]", { regExp: "page-(.*)\\.js", content: ... });
