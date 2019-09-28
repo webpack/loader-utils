@@ -135,13 +135,13 @@ describe('interpolateName()', () => {
       'images/icon.svg?color=#ff0000&bgColor=#0000ff',
       '[name].[ext]?[query]',
       'test content',
-      'icon.svg?color=#ff0000&bgColor=#00ff00',
+      'icon.svg?color=#ff0000&bgColor=#0000ff',
     ],
     [
       'images/icon.svg?color=#ff0000&bgColor=#0000ff',
       '[name].[ext]?[hash]&[query]',
       'test content',
-      'icon.svg?9473fdd0d880a43c21b7778d34872157&color=#ff0000&bgColor=#00ff00',
+      'icon.svg?9473fdd0d880a43c21b7778d34872157&color=#ff0000&bgColor=#0000ff',
     ],
   ].forEach((test) => {
     it('should interpolate ' + test[0] + ' ' + test[1], () => {
