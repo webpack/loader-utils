@@ -16,9 +16,6 @@ matrix:
     - node_js: '11'
       script: yarn pretest
       env: CI=pretest
-    - node_js: '4'
-      script: yarn test:ci
-      env: CI=tests 4
     - node_js: '6'
       script: yarn test:ci
       env: CI=tests 6
