@@ -167,6 +167,50 @@ describe('interpolateName()', () => {
       'test content',
       'js/9473fdd0d880a43c21b7778d34872157.script.js?foo=bar',
     ],
+    [
+      '/app/js/javascript.js?foo=bar#hash',
+      (resourcePath, resourceQuery) => {
+        expect(resourcePath).toBeDefined();
+        expect(resourceQuery).toBeDefined();
+
+        return 'js/[hash].script.[ext][query]';
+      },
+      'test content',
+      'js/9473fdd0d880a43c21b7778d34872157.script.js?foo=bar',
+    ],
+    [
+      '/app/js/javascript.js?a',
+      (resourcePath, resourceQuery) => {
+        expect(resourcePath).toBeDefined();
+        expect(resourceQuery).toBeDefined();
+
+        return 'js/[hash].script.[ext][query]';
+      },
+      'test content',
+      'js/9473fdd0d880a43c21b7778d34872157.script.js?a',
+    ],
+    [
+      '/app/js/javascript.js',
+      (resourcePath, resourceQuery) => {
+        expect(resourcePath).toBeDefined();
+        expect(resourceQuery).not.toBeDefined();
+
+        return 'js/[hash].script.[ext][query]';
+      },
+      'test content',
+      'js/9473fdd0d880a43c21b7778d34872157.script.js',
+    ],
+    [
+      '/app/js/javascript.js?',
+      (resourcePath, resourceQuery) => {
+        expect(resourcePath).toBeDefined();
+        expect(resourceQuery).not.toBeDefined();
+
+        return 'js/[hash].script.[ext][query]';
+      },
+      'test content',
+      'js/9473fdd0d880a43c21b7778d34872157.script.js',
+    ],
   ].forEach((test) => {
     it('should interpolate ' + test[0] + ' ' + test[1], () => {
       let resourcePath = '';
