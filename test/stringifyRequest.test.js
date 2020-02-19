@@ -170,9 +170,7 @@ describe('stringifyRequest()', () => {
       ),
     },
   ].forEach((testCase) => {
-    it(`${testCase.test}. should stringify request ${testCase.request} to ${
-      testCase.expected
-    } inside context ${testCase.context}`, () => {
+    it(`${testCase.test}. should stringify request ${testCase.request} to ${testCase.expected} inside context ${testCase.context}`, () => {
       const relative = path.relative;
 
       if (testCase.os) {
