@@ -131,10 +131,58 @@ describe('interpolateName()', () => {
       'test content',
       'modal.[md5::base64:20].css',
     ],
+    [
+      '/app/js/javascript.js?foo=bar',
+      'js/[hash].script.[ext][query]',
+      'test content',
+      'js/9473fdd0d880a43c21b7778d34872157.script.js?foo=bar',
+    ],
+    [
+      '/app/js/javascript.js?foo=bar&bar=baz',
+      'js/[hash].script.[ext][query]',
+      'test content',
+      'js/9473fdd0d880a43c21b7778d34872157.script.js?foo=bar&bar=baz',
+    ],
+    [
+      '/app/js/javascript.js?foo',
+      'js/[hash].script.[ext][query]',
+      'test content',
+      'js/9473fdd0d880a43c21b7778d34872157.script.js?foo',
+    ],
+    [
+      '/app/js/javascript.js?',
+      'js/[hash].script.[ext][query]',
+      'test content',
+      'js/9473fdd0d880a43c21b7778d34872157.script.js',
+    ],
+    [
+      '/app/js/javascript.js?a',
+      'js/[hash].script.[ext][query]',
+      'test content',
+      'js/9473fdd0d880a43c21b7778d34872157.script.js?a',
+    ],
+    [
+      '/app/js/javascript.js?foo=bar#hash',
+      'js/[hash].script.[ext][query]',
+      'test content',
+      'js/9473fdd0d880a43c21b7778d34872157.script.js?foo=bar',
+    ],
   ].forEach((test) => {
     it('should interpolate ' + test[0] + ' ' + test[1], () => {
+      let resourcePath = '';
+      let resourceQuery = '';
+
+      const queryIdx = test[0].indexOf('?');
+
+      if (queryIdx >= 0) {
+        resourcePath = test[0].substr(0, queryIdx);
+        resourceQuery = test[0].substr(queryIdx);
+      } else {
+        resourcePath = test[0];
+      }
+
       const interpolatedName = loaderUtils.interpolateName(
-        { resourcePath: test[0] },
+        { resourcePath, resourceQuery },
         test[1],
         { content: test[2] }
       );

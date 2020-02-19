@@ -13,9 +13,13 @@ cache: yarn
 
 matrix:
   include:
-    - node_js: '11'
+    - node_js: '12'
       script: yarn pretest
       env: CI=pretest
+    # Yarn doesn't support node@4
+    # - node_js: '4'
+    #   script: yarn test:ci
+    #   env: CI=tests 4
     - node_js: '6'
       script: yarn test:ci
       env: CI=tests 6
@@ -25,9 +29,12 @@ matrix:
     - node_js: '10'
       script: yarn test:ci
       env: CI=tests 10
-    - node_js: '11'
+    - node_js: '12'
       script: yarn test:ci
-      env: CI=coverage 11
+      env: CI=coverage 12
+    - node_js: '13'
+      script: yarn test:ci
+      env: CI=coverage 13
 
 before_install:
   - yarn install --ignore-engines

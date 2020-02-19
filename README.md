@@ -176,7 +176,8 @@ The following tokens are replaced in the `name` parameter:
 * `[ext]` the extension of the resource
 * `[name]` the basename of the resource
 * `[path]` the path of the resource relative to the `context` query parameter or option.
-* `[folder]` the folder the resource is in.
+* `[folder]` the folder the resource is in
+* `[query]` the queryof the resource, i.e. `?foo=bar`
 * `[emoji]` a random emoji representation of `options.content`
 * `[emoji:<length>]` same as above, but with a customizable number of emojis
 * `[contenthash]` the hash of `options.content` (Buffer) (by default it's the hex digest of the md5 hash)
@@ -199,6 +200,11 @@ Examples
 // loaderContext.resourcePath = "/app/js/javascript.js"
 loaderUtils.interpolateName(loaderContext, "js/[hash].script.[ext]", { content: ... });
 // => js/9473fdd0d880a43c21b7778d34872157.script.js
+
+// loaderContext.resourcePath = "/app/js/javascript.js"
+// loaderContext.resourceQuery = "?foo=bar"
+loaderUtils.interpolateName(loaderContext, "js/[hash].script.[ext][query]", { content: ... });
+// => js/9473fdd0d880a43c21b7778d34872157.script.js?foo=bar
 
 // loaderContext.resourcePath = "/app/js/javascript.js"
 loaderUtils.interpolateName(loaderContext, "js/[contenthash].script.[ext]", { content: ... });
