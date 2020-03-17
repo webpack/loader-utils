@@ -180,14 +180,14 @@ The following tokens are replaced in the `name` parameter:
 * `[query]` the queryof the resource, i.e. `?foo=bar`
 * `[emoji]` a random emoji representation of `options.content`
 * `[emoji:<length>]` same as above, but with a customizable number of emojis
-* `[contenthash]` the hash of `options.content` (Buffer) (by default it's the hex digest of the md5 hash)
+* `[contenthash]` the hash of `options.content` (Buffer) (by default it's the hex digest of the md4 hash)
 * `[<hashType>:contenthash:<digestType>:<length>]` optionally one can configure
-  * other `hashType`s, i. e. `sha1`, `md5`, `sha256`, `sha512`
+  * other `hashType`s, i. e. `sha1`, `md4`, `md5`, `sha256`, `sha512`
   * other `digestType`s, i. e. `hex`, `base26`, `base32`, `base36`, `base49`, `base52`, `base58`, `base62`, `base64`
   * and `length` the length in chars
-* `[hash]` the hash of `options.content` (Buffer) (by default it's the hex digest of the md5 hash)
+* `[hash]` the hash of `options.content` (Buffer) (by default it's the hex digest of the md4 hash)
 * `[<hashType>:hash:<digestType>:<length>]` optionally one can configure
-  * other `hashType`s, i. e. `sha1`, `md5`, `sha256`, `sha512`
+  * other `hashType`s, i. e. `sha1`, `md4`, `md5`, `sha256`, `sha512`
   * other `digestType`s, i. e. `hex`, `base26`, `base32`, `base36`, `base49`, `base52`, `base58`, `base62`, `base64`
   * and `length` the length in chars
 * `[N]` the N-th match obtained from matching the current file name against `options.regExp`
@@ -229,7 +229,7 @@ loaderUtils.interpolateName(loaderContext, "[emoji:4]", { content: ... });
 // loaderContext.resourcePath = "/absolute/path/to/app/img/image.png"
 loaderUtils.interpolateName(loaderContext, "[sha512:hash:base64:7].[ext]", { content: ... });
 // => 2BKDTjl.png
-// use sha512 hash instead of md5 and with only 7 chars of base64
+// use sha512 hash instead of md4 and with only 7 chars of base64
 
 // loaderContext.resourcePath = "/absolute/path/to/app/img/myself.png"
 // loaderContext.query.name =
@@ -266,7 +266,7 @@ const digestString = loaderUtils.getHashDigest(buffer, hashType, digestType, max
 ```
 
 * `buffer` the content that should be hashed
-* `hashType` one of `sha1`, `md5`, `sha256`, `sha512` or any other node.js supported hash type
+* `hashType` one of `sha1`, `md4`, `md5`, `sha256`, `sha512` or any other node.js supported hash type
 * `digestType` one of `hex`, `base26`, `base32`, `base36`, `base49`, `base52`, `base58`, `base62`, `base64`
 * `maxLength` the maximum length in chars
 
