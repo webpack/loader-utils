@@ -3,62 +3,80 @@
 const loaderUtils = require('../lib');
 
 describe('getOptions()', () => {
-  describe('when loaderContext.query is a string with length > 0', () => {
-    it('should call parseQuery() and return its result', () => {
-      expect(
-        loaderUtils.getOptions({
-          query: '?something=getOptions_cannot_parse',
-        })
-      ).toEqual({ something: 'getOptions_cannot_parse' });
-    });
-  });
-  describe('when loaderContext.query is an empty string', () => {
-    it('should return null', () => {
-      expect(
-        loaderUtils.getOptions({
-          query: '',
-        })
-      ).toEqual(null);
-    });
-  });
-  describe('when loaderContext.query is an object', () => {
-    it('should just return it', () => {
-      const query = {};
-      expect(
-        loaderUtils.getOptions({
-          query,
-        })
-      ).toEqual(query);
-    });
-  });
-  describe('when loaderContext.query is an array', () => {
-    it('should just return it', () => {
-      const query = [];
-      expect(loaderUtils.getOptions({ query })).toEqual(query);
-    });
-  });
-  describe('when loaderContext.query is anything else', () => {
-    it('should return null', () => {
-      expect(
-        loaderUtils.getOptions({
-          query: undefined,
-        })
-      ).toEqual(null);
-      expect(
-        loaderUtils.getOptions({
-          query: null,
-        })
-      ).toEqual(null);
-      expect(
-        loaderUtils.getOptions({
-          query: 1,
-        })
-      ).toEqual(null);
-      expect(
-        loaderUtils.getOptions({
-          query: 0,
-        })
-      ).toEqual(null);
-    });
+  it('should work', () => {
+    expect(
+      loaderUtils.getOptions({
+        query: true,
+      })
+    ).toEqual({});
+    expect(
+      loaderUtils.getOptions({
+        query: false,
+      })
+    ).toEqual({});
+    expect(
+      loaderUtils.getOptions({
+        query: null,
+      })
+    ).toEqual({});
+    expect(
+      loaderUtils.getOptions({
+        query: undefined,
+      })
+    ).toEqual({});
+    expect(
+      loaderUtils.getOptions({
+        query: 1,
+      })
+    ).toEqual({});
+    expect(
+      loaderUtils.getOptions({
+        query: 0,
+      })
+    ).toEqual({});
+    expect(
+      loaderUtils.getOptions({
+        query: -0,
+      })
+    ).toEqual({});
+    expect(
+      loaderUtils.getOptions({
+        query: -1,
+      })
+    ).toEqual({});
+    expect(
+      loaderUtils.getOptions({
+        query: '',
+      })
+    ).toEqual({});
+    expect(
+      loaderUtils.getOptions({
+        query: '?something=getOptions_cannot_parse',
+      })
+    ).toEqual({ something: 'getOptions_cannot_parse' });
+
+    const query1 = {};
+
+    expect(
+      loaderUtils.getOptions({
+        query: query1,
+      })
+    ).toEqual(query1);
+
+    const query2 = { foo: { bar: 'baz' } };
+
+    expect(
+      loaderUtils.getOptions({
+        query: query2,
+      })
+    ).toEqual(query2);
+
+    const query3 = [];
+
+    expect(loaderUtils.getOptions({ query: query3 })).toEqual(query3);
+
+    const query4 = [1, true, 'foobar'];
+
+    expect(loaderUtils.getOptions({ query: query4 })).toEqual(query4);
   });
 });
