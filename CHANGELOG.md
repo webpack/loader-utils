@@ -1,6 +1,15 @@
-# Change Log
+# Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+## [2.0.0](https://github.com/webpack/loader-utils/compare/v1.4.0...v2.0.0) (2020-03-17)
+
+
+### ⚠ BREAKING CHANGES
+
+* minimum required `Node.js` version is `8.9.0` ([#166](https://github.com/webpack/loader-utils/issues/166)) ([c937e8c](https://github.com/webpack/loader-utils/commit/c937e8c77231b42018be616b784a6b45eac86f8a))
+* the `getOptions` method returns empty object on empty query ([#167](https://github.com/webpack/loader-utils/issues/167)) ([b595cfb](https://github.com/webpack/loader-utils/commit/b595cfba022d3f04f3d310dd570b0253e461605b))
+* Use `md4` by default
 
 <a name="1.4.0"></a>
 # [1.4.0](https://github.com/webpack/loader-utils/compare/v1.3.0...v1.4.0) (2020-02-19)
