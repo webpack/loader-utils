@@ -16,13 +16,6 @@ matrix:
     - node_js: '12'
       script: yarn pretest
       env: CI=pretest
-    # Yarn doesn't support node@4
-    # - node_js: '4'
-    #   script: yarn test:ci
-    #   env: CI=tests 4
-    - node_js: '6'
-      script: yarn test:ci
-      env: CI=tests 6
     - node_js: '8'
       script: yarn test:ci
       env: CI=tests 8
