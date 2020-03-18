@@ -233,7 +233,7 @@ loaderUtils.interpolateName(loaderContext, "[sha512:hash:base64:7].[ext]", { con
 
 // loaderContext.resourcePath = "/absolute/path/to/app/img/myself.png"
 // loaderContext.query.name =
-loaderUtils.interpolateName(loaderContext, "picture.png");
+loaderUtils.interpolateName(loaderContext, "picture.png", {});
 // => picture.png
 
 // loaderContext.resourcePath = "/absolute/path/to/app/dir/file.png"
