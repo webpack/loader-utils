@@ -211,6 +211,24 @@ describe('interpolateName()', () => {
       'test content',
       'js/a69899814931280e2f527219ad6ac754.script.js',
     ],
+    [
+      '/app/LICENSE',
+      '[uglify:word]',
+      'MIT',
+      '0',
+    ],
+    [
+      '/app/images/image.png',
+      '[uglify:file].[ext]',
+      'type:png',
+      'A.png',
+    ],
+    [
+      '/app/css/style.css',
+      '[uglify:css]',
+      'test-class-name',
+      'A',
+    ],
   ].forEach((test) => {
     it('should interpolate ' + test[0] + ' ' + test[1], () => {
       let resourcePath = '';
