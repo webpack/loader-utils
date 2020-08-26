@@ -211,7 +211,9 @@ describe('interpolateName()', () => {
       'test content',
       'js/a69899814931280e2f527219ad6ac754.script.js',
     ],
-    ['/app/LICENSE', '[uglify:word]', 'MIT', '0'],
+    ['/app/test-file', '[uglify:digit]', 'test content', '0'],
+    ['/app/test-file', '[uglify:alphabet]', 'test content', 'A'],
+    ['/app/test-file', '[uglify:word]', 'test content', '0'],
     ['/app/images/image.png', '[uglify:file].[ext]', 'type:png', 'A.png'],
     ['/app/css/style.css', '[uglify:css]', 'test-class-name', 'A'],
   ].forEach((test) => {
