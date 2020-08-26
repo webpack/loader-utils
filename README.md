@@ -191,6 +191,8 @@ The following tokens are replaced in the `name` parameter:
   * other `digestType`s, i. e. `hex`, `base26`, `base32`, `base36`, `base49`, `base52`, `base58`, `base62`, `base64`
   * and `length` the length in chars
 * `[N]` the N-th match obtained from matching the current file name against `options.regExp`
+* `[uglify:<uglifyType>]` optionally one can configure
+  * other `uglifyType`s, i. e. `digit`, `alphabet`, `word`, `file`, `css`
 
 In loader context `[hash]` and `[contenthash]` are the same, but we recommend using `[contenthash]` for avoid misleading.
 
