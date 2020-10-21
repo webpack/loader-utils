@@ -45,7 +45,7 @@ jobs:
         uses: wagoid/commitlint-github-action@v1
 
   test:
-    name: Test - ${{ matrix.os }} - Node v${{ matrix.node-version }}, Webpack ${{ matrix.webpack-version }}
+    name: Test - ${{ matrix.os }} - Node v${{ matrix.node-version }}
 
     strategy:
       matrix:
@@ -69,7 +69,7 @@ jobs:
       - name: Install dependencies
         run: yarn --frozen-lockfile
 
-      - name: Run tests for webpack version ${{ matrix.webpack-version }}
+      - name: Run tests
         run: yarn test:only -- --ci
 
       - name: Submit coverage data to codecov
