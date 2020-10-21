@@ -254,11 +254,7 @@ describe("interpolateName()", () => {
         "should interpolate [name] token",
       ],
       [[loaderContext, "[path]", {}], "", "should interpolate [path] token"],
-      [
-        [loaderContext, "[folder]", {}],
-        "",
-        "should interpolate [folder] token",
-      ],
+      [[loaderContext, "[base]", {}], "", "should interpolate [base] token"],
     ]);
   });
 
@@ -276,11 +272,7 @@ describe("interpolateName()", () => {
         "/path/to/",
         "should interpolate [path] token",
       ],
-      [
-        [loaderContext, "[folder]", {}],
-        "to",
-        "should interpolate [folder] token",
-      ],
+      [[loaderContext, "[base]", {}], "to", "should interpolate [base] token"],
     ]);
   });
 

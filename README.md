@@ -180,7 +180,7 @@ The following tokens are replaced in the `name` parameter:
 - `[ext]` the extension with leading `.` of the resource
 - `[name]` the basename of the resource
 - `[path]` the path of the resource relative to the `context` query parameter or option.
-- `[folder]` the folder the resource is in
+- `[base]` the base the resource is in
 - `[query]` the queryof the resource, i.e. `?foo=bar`
 - `[contenthash]` the hash of `options.content` (Buffer) (by default it's the 20 characters hex digest of the md4 hash)
 - `[<hashType>:contenthash:<digestType>:<length>]` optionally one can configure
