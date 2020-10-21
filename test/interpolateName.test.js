@@ -24,13 +24,13 @@ describe("interpolateName()", () => {
       "/app/js/javascript.js",
       "js/[hash].script.[ext]",
       "test content",
-      "js/a69899814931280e2f527219ad6ac754.script.js",
+      "js/a69899814931280e2f52.script.js",
     ],
     [
       "/app/js/javascript.js",
       "js/[contenthash].script.[ext]",
       "test content",
-      "js/a69899814931280e2f527219ad6ac754.script.js",
+      "js/a69899814931280e2f52.script.js",
     ],
     [
       "/app/page.html",
@@ -44,18 +44,8 @@ describe("interpolateName()", () => {
       "test content",
       "html-a69899.html",
     ],
-    [
-      "/app/flash.txt",
-      "[hash]",
-      "test content",
-      "a69899814931280e2f527219ad6ac754",
-    ],
-    [
-      "/app/flash.txt",
-      "[contenthash]",
-      "test content",
-      "a69899814931280e2f527219ad6ac754",
-    ],
+    ["/app/flash.txt", "[hash]", "test content", "a69899814931280e2f52"],
+    ["/app/flash.txt", "[contenthash]", "test content", "a69899814931280e2f52"],
     [
       "/app/img/image.png",
       "[sha512:hash:base64:7].[ext]",
@@ -72,13 +62,13 @@ describe("interpolateName()", () => {
       "/app/dir/file.png",
       "[path][name].[ext]?[hash]",
       "test content",
-      "/app/dir/file.png?a69899814931280e2f527219ad6ac754",
+      "/app/dir/file.png?a69899814931280e2f52",
     ],
     [
       "/app/dir/file.png",
       "[path][name].[ext]?[contenthash]",
       "test content",
-      "/app/dir/file.png?a69899814931280e2f527219ad6ac754",
+      "/app/dir/file.png?a69899814931280e2f52",
     ],
     [
       "/vendor/test/images/loading.gif",
@@ -133,37 +123,37 @@ describe("interpolateName()", () => {
       "/app/js/javascript.js?foo=bar",
       "js/[hash].script.[ext][query]",
       "test content",
-      "js/a69899814931280e2f527219ad6ac754.script.js?foo=bar",
+      "js/a69899814931280e2f52.script.js?foo=bar",
     ],
     [
       "/app/js/javascript.js?foo=bar&bar=baz",
       "js/[hash].script.[ext][query]",
       "test content",
-      "js/a69899814931280e2f527219ad6ac754.script.js?foo=bar&bar=baz",
+      "js/a69899814931280e2f52.script.js?foo=bar&bar=baz",
     ],
     [
       "/app/js/javascript.js?foo",
       "js/[hash].script.[ext][query]",
       "test content",
-      "js/a69899814931280e2f527219ad6ac754.script.js?foo",
+      "js/a69899814931280e2f52.script.js?foo",
     ],
     [
       "/app/js/javascript.js?",
       "js/[hash].script.[ext][query]",
       "test content",
-      "js/a69899814931280e2f527219ad6ac754.script.js",
+      "js/a69899814931280e2f52.script.js",
     ],
     [
       "/app/js/javascript.js?a",
       "js/[hash].script.[ext][query]",
       "test content",
-      "js/a69899814931280e2f527219ad6ac754.script.js?a",
+      "js/a69899814931280e2f52.script.js?a",
     ],
     [
       "/app/js/javascript.js?foo=bar#hash",
       "js/[hash].script.[ext][query]",
       "test content",
-      "js/a69899814931280e2f527219ad6ac754.script.js?foo=bar",
+      "js/a69899814931280e2f52.script.js?foo=bar",
     ],
     [
       "/app/js/javascript.js?foo=bar#hash",
@@ -174,7 +164,7 @@ describe("interpolateName()", () => {
         return "js/[hash].script.[ext][query]";
       },
       "test content",
-      "js/a69899814931280e2f527219ad6ac754.script.js?foo=bar",
+      "js/a69899814931280e2f52.script.js?foo=bar",
     ],
     [
       "/app/js/javascript.js?a",
@@ -185,7 +175,7 @@ describe("interpolateName()", () => {
         return "js/[hash].script.[ext][query]";
       },
       "test content",
-      "js/a69899814931280e2f527219ad6ac754.script.js?a",
+      "js/a69899814931280e2f52.script.js?a",
     ],
     [
       "/app/js/javascript.js",
@@ -196,7 +186,7 @@ describe("interpolateName()", () => {
         return "js/[hash].script.[ext][query]";
       },
       "test content",
-      "js/a69899814931280e2f527219ad6ac754.script.js",
+      "js/a69899814931280e2f52.script.js",
     ],
     [
       "/app/js/javascript.js?",
@@ -207,7 +197,7 @@ describe("interpolateName()", () => {
         return "js/[hash].script.[ext][query]";
       },
       "test content",
-      "js/a69899814931280e2f527219ad6ac754.script.js",
+      "js/a69899814931280e2f52.script.js",
     ],
   ].forEach((test) => {
     it("should interpolate " + test[0] + " " + test[1], () => {
@@ -258,12 +248,12 @@ describe("interpolateName()", () => {
   run([
     [
       [{}, "", { content: "test string" }],
-      "2e06edd4f1623268c5a51730d8a0b2af.bin",
+      "2e06edd4f1623268c5a5.bin",
       "should interpolate default tokens",
     ],
     [
       [{}, "[hash:base64]", { content: "test string" }],
-      "2LIG3oc1uBNmwOoL7kXgoK",
+      "2LIG3oc1uBNmwOoL7kXg",
       "should interpolate [hash] token with options",
     ],
     [

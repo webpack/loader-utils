@@ -200,28 +200,38 @@ Examples
 
 ```javascript
 // loaderContext.resourcePath = "/absolute/path/to/app/js/javascript.js"
-loaderUtils.interpolateName(loaderContext, "js/[hash].script.[ext]", { content: ... });
+loaderUtils.interpolateName(loaderContext, "js/[contenthash].script.[ext]", {
+  content: "content",
+});
 // => js/9473fdd0d880a43c21b7778d34872157.script.js
 
 // loaderContext.resourcePath = "/absolute/path/to/app/js/javascript.js"
 // loaderContext.resourceQuery = "?foo=bar"
-loaderUtils.interpolateName(loaderContext, "js/[hash].script.[ext][query]", { content: ... });
+loaderUtils.interpolateName(loaderContext, "js/[contenthash].script.[ext][query]", {
+  content: "content",
+});
 // => js/9473fdd0d880a43c21b7778d34872157.script.js?foo=bar
 
 // loaderContext.resourcePath = "/absolute/path/to/app/js/javascript.js"
-loaderUtils.interpolateName(loaderContext, "js/[contenthash].script.[ext]", { content: ... });
+loaderUtils.interpolateName(loaderContext, "js/[contenthash].script.[ext]", {
+  content: "content",
+});
 // => js/9473fdd0d880a43c21b7778d34872157.script.js
 
 // loaderContext.resourcePath = "/absolute/path/to/app/page.html"
-loaderUtils.interpolateName(loaderContext, "html-[hash:6].html", { content: ... });
+loaderUtils.interpolateName(loaderContext, "html-[hash:6].html", {
+  content: "content",
+});
 // => html-9473fd.html
 
 // loaderContext.resourcePath = "/absolute/path/to/app/flash.txt"
-loaderUtils.interpolateName(loaderContext, "[hash]", { content: ... });
+loaderUtils.interpolateName(loaderContext, "[contenthash]", { content: "content" });
 // => c31e9820c001c9c4a86bce33ce43b679
 
 // loaderContext.resourcePath = "/absolute/path/to/app/img/image.png"
-loaderUtils.interpolateName(loaderContext, "[sha512:hash:base64:7].[ext]", { content: ... });
+loaderUtils.interpolateName(loaderContext, "[sha512:hash:base64:7].[ext]", {
+  content: "content",
+});
 // => 2BKDTjl.png
 // use sha512 hash instead of md4 and with only 7 chars of base64
 
@@ -231,11 +241,16 @@ loaderUtils.interpolateName(loaderContext, "picture.png");
 // => picture.png
 
 // loaderContext.resourcePath = "/absolute/path/to/app/dir/file.png"
-loaderUtils.interpolateName(loaderContext, "[path][name].[ext]?[hash]", { content: ... });
+loaderUtils.interpolateName(loaderContext, "[path][name].[ext]?[contenthash]", {
+  content: "content",
+});
 // => /app/dir/file.png?9473fdd0d880a43c21b7778d34872157
 
 // loaderContext.resourcePath = "/absolute/path/to/app/js/page-home.js"
-loaderUtils.interpolateName(loaderContext, "script-[1].[ext]", { regExp: "page-(.*)\\.js", content: ... });
+loaderUtils.interpolateName(loaderContext, "script-[1].[ext]", {
+  regExp: "page-(.*)\\.js",
+  content: "content",
+});
 // => script-home.js
 
 // loaderContext.resourcePath = "/absolute/path/to/app/js/javascript.js"
@@ -246,11 +261,22 @@ loaderUtils.interpolateName(
     // resourcePath - `/app/js/javascript.js`
     // resourceQuery - `?foo=bar`
 
-    return "js/[hash].script.[ext]";
+    return "js/[contenthash].script.[ext]";
   },
-  { content: ... }
+  { content: "content" }
 );
 // => js/9473fdd0d880a43c21b7778d34872157.script.js
+
+// loaderContext.resourcePath = "/absolute/path/to/app/img/image.png"
+loaderUtils.interpolateName(loaderContext, "[contenthash].[ext]", {
+  content: "content",
+  hashFunction: "sha512",
+  hashDigest: "hex",
+  hashDigestLength: "7",
+  hashSalt: "myCustomSalt",
+});
+// => 2BKDTjl.png
+// use sha512 hash instead of md4 and with only 7 chars of hex and apply myCustomSalt
 ```
 
 ### `getHashDigest`
@@ -258,16 +284,18 @@ loaderUtils.interpolateName(
 ```javascript
 const digestString = loaderUtils.getHashDigest(
   buffer,
-  hashType,
-  digestType,
-  maxLength
+  hashFunction,
+  hashDigest,
+  hashDigestLength,
+  hashSalt
 );
 ```
 
 - `buffer` the content that should be hashed
-- `hashType` one of `sha1`, `md4`, `md5`, `sha256`, `sha512` or any other node.js supported hash type
-- `digestType` one of `hex`, `base26`, `base32`, `base36`, `base49`, `base52`, `base58`, `base62`, `base64`
-- `maxLength` the maximum length in chars
+- `hashFunction` - the hashing algorithm to use, one of `sha1`, `md4`, `md5`, `sha256`, `sha512` or any other node.js supported hash type
+- `hashDigest` - the encoding to use when generating the hash, one of `hex`, `base26`, `base32`, `base36`, `base49`, `base52`, `base58`, `base62`, `base64`
+- `hashDigestLength` - the maximum length in chars
+- `hashSalt` - an optional salt to update the hash via Node.JS' hash.update.
 
 ## License
 
