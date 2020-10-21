@@ -207,9 +207,13 @@ loaderUtils.interpolateName(loaderContext, "js/[contenthash].script.[ext]", {
 
 // loaderContext.resourcePath = "/absolute/path/to/app/js/javascript.js"
 // loaderContext.resourceQuery = "?foo=bar"
-loaderUtils.interpolateName(loaderContext, "js/[contenthash].script.[ext][query]", {
-  content: "content",
-});
+loaderUtils.interpolateName(
+  loaderContext,
+  "js/[contenthash].script.[ext][query]",
+  {
+    content: "content",
+  }
+);
 // => js/9473fdd0d880a43c21b7778d34872157.script.js?foo=bar
 
 // loaderContext.resourcePath = "/absolute/path/to/app/js/javascript.js"
@@ -225,7 +229,9 @@ loaderUtils.interpolateName(loaderContext, "html-[hash:6].html", {
 // => html-9473fd.html
 
 // loaderContext.resourcePath = "/absolute/path/to/app/flash.txt"
-loaderUtils.interpolateName(loaderContext, "[contenthash]", { content: "content" });
+loaderUtils.interpolateName(loaderContext, "[contenthash]", {
+  content: "content",
+});
 // => c31e9820c001c9c4a86bce33ce43b679
 
 // loaderContext.resourcePath = "/absolute/path/to/app/img/image.png"
