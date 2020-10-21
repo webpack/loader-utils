@@ -22,7 +22,7 @@ describe("interpolateName()", () => {
   [
     [
       "/app/js/javascript.js",
-      "js/[hash].script.[ext]",
+      "js/[contenthash].script.[ext]",
       "test content",
       "js/a69899814931280e2f52.script.js",
     ],
@@ -34,7 +34,7 @@ describe("interpolateName()", () => {
     ],
     [
       "/app/page.html",
-      "html-[hash:6].html",
+      "html-[contenthash:6].html",
       "test content",
       "html-a69899.html",
     ],
@@ -44,11 +44,10 @@ describe("interpolateName()", () => {
       "test content",
       "html-a69899.html",
     ],
-    ["/app/flash.txt", "[hash]", "test content", "a69899814931280e2f52"],
     ["/app/flash.txt", "[contenthash]", "test content", "a69899814931280e2f52"],
     [
       "/app/img/image.png",
-      "[sha512:hash:base64:7].[ext]",
+      "[sha512:contenthash:base64:7].[ext]",
       "test content",
       "2BKDTjl.png",
     ],
@@ -57,12 +56,6 @@ describe("interpolateName()", () => {
       "[sha512:contenthash:base64:7].[ext]",
       "test content",
       "2BKDTjl.png",
-    ],
-    [
-      "/app/dir/file.png",
-      "[path][name].[ext]?[hash]",
-      "test content",
-      "/app/dir/file.png?a69899814931280e2f52",
     ],
     [
       "/app/dir/file.png",
@@ -90,21 +83,9 @@ describe("interpolateName()", () => {
     ],
     [
       "/lib/components/modal/modal.css",
-      "[name]__modalTitle___[sha1:hash:hex:4]",
-      "test content",
-      "modal__modalTitle___1eeb",
-    ],
-    [
-      "/lib/components/modal/modal.css",
       "[name]__modalTitle___[sha1:contenthash:hex:4]",
       "test content",
       "modal__modalTitle___1eeb",
-    ],
-    [
-      "/lib/components/modal/modal.css",
-      "[name].[md5:hash:base64:20].[ext]",
-      "test content",
-      "modal.1n8osQznuT8jOAwdzg_n.css",
     ],
     [
       "/lib/components/modal/modal.css",
@@ -121,37 +102,37 @@ describe("interpolateName()", () => {
     ],
     [
       "/app/js/javascript.js?foo=bar",
-      "js/[hash].script.[ext][query]",
+      "js/[contenthash].script.[ext][query]",
       "test content",
       "js/a69899814931280e2f52.script.js?foo=bar",
     ],
     [
       "/app/js/javascript.js?foo=bar&bar=baz",
-      "js/[hash].script.[ext][query]",
+      "js/[contenthash].script.[ext][query]",
       "test content",
       "js/a69899814931280e2f52.script.js?foo=bar&bar=baz",
     ],
     [
       "/app/js/javascript.js?foo",
-      "js/[hash].script.[ext][query]",
+      "js/[contenthash].script.[ext][query]",
       "test content",
       "js/a69899814931280e2f52.script.js?foo",
     ],
     [
       "/app/js/javascript.js?",
-      "js/[hash].script.[ext][query]",
+      "js/[contenthash].script.[ext][query]",
       "test content",
       "js/a69899814931280e2f52.script.js",
     ],
     [
       "/app/js/javascript.js?a",
-      "js/[hash].script.[ext][query]",
+      "js/[contenthash].script.[ext][query]",
       "test content",
       "js/a69899814931280e2f52.script.js?a",
     ],
     [
       "/app/js/javascript.js?foo=bar#hash",
-      "js/[hash].script.[ext][query]",
+      "js/[contenthash].script.[ext][query]",
       "test content",
       "js/a69899814931280e2f52.script.js?foo=bar",
     ],
@@ -161,7 +142,7 @@ describe("interpolateName()", () => {
         expect(resourcePath).toBeDefined();
         expect(resourceQuery).toBeDefined();
 
-        return "js/[hash].script.[ext][query]";
+        return "js/[contenthash].script.[ext][query]";
       },
       "test content",
       "js/a69899814931280e2f52.script.js?foo=bar",
@@ -172,7 +153,7 @@ describe("interpolateName()", () => {
         expect(resourcePath).toBeDefined();
         expect(resourceQuery).toBeDefined();
 
-        return "js/[hash].script.[ext][query]";
+        return "js/[contenthash].script.[ext][query]";
       },
       "test content",
       "js/a69899814931280e2f52.script.js?a",
@@ -183,7 +164,7 @@ describe("interpolateName()", () => {
         expect(resourcePath).toBeDefined();
         expect(resourceQuery).not.toBeDefined();
 
-        return "js/[hash].script.[ext][query]";
+        return "js/[contenthash].script.[ext][query]";
       },
       "test content",
       "js/a69899814931280e2f52.script.js",
@@ -194,7 +175,7 @@ describe("interpolateName()", () => {
         expect(resourcePath).toBeDefined();
         expect(resourceQuery).not.toBeDefined();
 
-        return "js/[hash].script.[ext][query]";
+        return "js/[contenthash].script.[ext][query]";
       },
       "test content",
       "js/a69899814931280e2f52.script.js",
@@ -234,7 +215,7 @@ describe("interpolateName()", () => {
       expect(() => {
         const interpolatedName = loaderUtils.interpolateName(
           {},
-          "[" + hashName + ":hash:base64:10]",
+          "[" + hashName + ":contenthash:base64:10]",
           { content: "a" }
         );
         // if for any reason the system we're running on has a hash
@@ -252,9 +233,9 @@ describe("interpolateName()", () => {
       "should interpolate default tokens",
     ],
     [
-      [{}, "[hash:base64]", { content: "test string" }],
+      [{}, "[contenthash:base64]", { content: "test string" }],
       "2LIG3oc1uBNmwOoL7kXg",
-      "should interpolate [hash] token with options",
+      "should interpolate [contenthash] token with options",
     ],
     [
       [{}, "[unrecognized]", { content: "test string" }],

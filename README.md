@@ -182,19 +182,12 @@ The following tokens are replaced in the `name` parameter:
 - `[path]` the path of the resource relative to the `context` query parameter or option.
 - `[folder]` the folder the resource is in
 - `[query]` the queryof the resource, i.e. `?foo=bar`
-- `[contenthash]` the hash of `options.content` (Buffer) (by default it's the hex digest of the md4 hash)
+- `[contenthash]` the hash of `options.content` (Buffer) (by default it's the 20 characters hex digest of the md4 hash)
 - `[<hashType>:contenthash:<digestType>:<length>]` optionally one can configure
   - other `hashType`s, i. e. `sha1`, `md4`, `md5`, `sha256`, `sha512`
   - other `digestType`s, i. e. `hex`, `base26`, `base32`, `base36`, `base49`, `base52`, `base58`, `base62`, `base64`
   - and `length` the length in chars
-- `[hash]` the hash of `options.content` (Buffer) (by default it's the hex digest of the md4 hash)
-- `[<hashType>:hash:<digestType>:<length>]` optionally one can configure
-  - other `hashType`s, i. e. `sha1`, `md4`, `md5`, `sha256`, `sha512`
-  - other `digestType`s, i. e. `hex`, `base26`, `base32`, `base36`, `base49`, `base52`, `base58`, `base62`, `base64`
-  - and `length` the length in chars
 - `[N]` the N-th match obtained from matching the current file name against `options.regExp`
-
-In loader context `[hash]` and `[contenthash]` are the same, but we recommend using `[contenthash]` for avoid misleading.
 
 Examples
 
