@@ -3,12 +3,17 @@
   "version": "2.0.0",
   "author": "Tobias Koppers @sokra",
   "description": "utils for webpack loaders",
+  "funding": {
+    "type": "opencollective",
+    "url": "https://opencollective.com/webpack"
+  },
   "dependencies": {
     "big.js": "^5.2.2",
     "emojis-list": "^3.0.0",
     "json5": "^2.1.2"
   },
   "scripts": {
+    "commitlint": "commitlint --from=master",
     "lint:prettier": "prettier --list-different .",
     "lint:js": "eslint --cache .",
     "lint": "npm-run-all -l -p \"lint:**\"",
@@ -29,6 +34,8 @@
     "node": ">= 10.13.0"
   },
   "devDependencies": {
+    "@commitlint/cli": "^11.0.0",
+    "@commitlint/config-conventional": "^11.0.0",
     "eslint": "^7.11.0",
     "eslint-config-prettier": "^6.13.0",
     "eslint-plugin-import": "^2.22.1",
