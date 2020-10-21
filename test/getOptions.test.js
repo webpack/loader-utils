@@ -1,9 +1,9 @@
-'use strict';
+"use strict";
 
-const loaderUtils = require('../lib');
+const loaderUtils = require("../lib");
 
-describe('getOptions()', () => {
-  it('should work', () => {
+describe("getOptions()", () => {
+  it("should work", () => {
     expect(
       loaderUtils.getOptions({
         query: true,
@@ -46,14 +46,14 @@ describe('getOptions()', () => {
     ).toEqual({});
     expect(
       loaderUtils.getOptions({
-        query: '',
+        query: "",
       })
     ).toEqual({});
     expect(
       loaderUtils.getOptions({
-        query: '?something=getOptions_cannot_parse',
+        query: "?something=getOptions_cannot_parse",
       })
-    ).toEqual({ something: 'getOptions_cannot_parse' });
+    ).toEqual({ something: "getOptions_cannot_parse" });
 
     const query1 = {};
 
@@ -63,7 +63,7 @@ describe('getOptions()', () => {
       })
     ).toEqual(query1);
 
-    const query2 = { foo: { bar: 'baz' } };
+    const query2 = { foo: { bar: "baz" } };
 
     expect(
       loaderUtils.getOptions({
@@ -75,7 +75,7 @@ describe('getOptions()', () => {
 
     expect(loaderUtils.getOptions({ query: query3 })).toEqual(query3);
 
-    const query4 = [1, true, 'foobar'];
+    const query4 = [1, true, "foobar"];
 
     expect(loaderUtils.getOptions({ query: query4 })).toEqual(query4);
   });
