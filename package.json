@@ -9,11 +9,16 @@
     "json5": "^2.1.2"
   },
   "scripts": {
-    "lint": "eslint lib test",
+    "lint:prettier": "prettier --list-different .",
+    "lint:js": "eslint --cache .",
+    "lint": "npm-run-all -l -p \"lint:**\"",
+    "security": "yarn audit",
     "pretest": "yarn lint",
-    "test": "jest",
-    "test:ci": "jest --coverage",
-    "release": "yarn test && standard-version"
+    "test:only": "jest",
+    "test:watch": "yarn test:only --watch",
+    "test:coverage": "yarn test:only --collectCoverageFrom=\"lib/**/*.js\" --coverage",
+    "test": "npm run test:coverage",
+    "release": "standard-version"
   },
   "license": "MIT",
   "repository": {
@@ -21,16 +26,17 @@
     "url": "https://github.com/webpack/loader-utils.git"
   },
   "engines": {
-    "node": ">=8.9.0"
+    "node": ">= 10.13.0"
   },
   "devDependencies": {
-    "coveralls": "^3.0.9",
-    "eslint": "^6.8.0",
-    "eslint-plugin-node": "^11.0.0",
-    "eslint-plugin-prettier": "^3.1.2",
-    "jest": "^25.1.0",
-    "prettier": "^1.19.1",
-    "standard-version": "^7.1.0"
+    "eslint": "^7.11.0",
+    "eslint-config-prettier": "^6.13.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "jest": "^26.6.0",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.1.2",
+    "standard-version": "^9.0.0"
   },
   "main": "lib/index.js",
   "files": [

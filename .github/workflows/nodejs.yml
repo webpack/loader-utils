@@ -1,0 +1,78 @@
+name: loader-utils
+
+on:
+  push:
+    branches:
+      - master
+      - next
+  pull_request:
+    branches:
+      - master
+      - next
+
+jobs:
+  lint:
+    name: Lint - ${{ matrix.os }} - Node v${{ matrix.node-version }}
+
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node-version: [12.x]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ env.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ env.node-version }}
+
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Security audit
+        run: yarn security
+
+      - name: Check commit message
+        uses: wagoid/commitlint-github-action@v1
+
+  test:
+    name: Test - ${{ matrix.os }} - Node v${{ matrix.node-version }}, Webpack ${{ matrix.webpack-version }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node-version: [10.x, 12.x, 14.x]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Setup Git
+        if: matrix.os == 'windows-latest'
+        run: git config --global core.autocrlf input
+
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+
+      - name: Run tests for webpack version ${{ matrix.webpack-version }}
+        run: yarn test:only -- --ci
+
+      - name: Submit coverage data to codecov
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
