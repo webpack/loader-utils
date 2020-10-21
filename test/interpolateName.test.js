@@ -2,8 +2,6 @@
 
 const loaderUtils = require("../");
 
-const emojiRegex = /[\uD800-\uDFFF]./;
-
 describe("interpolateName()", () => {
   function run(tests) {
     tests.forEach((test) => {
@@ -273,40 +271,7 @@ describe("interpolateName()", () => {
       "[unrecognized]",
       "should not interpolate unrecognized token",
     ],
-    [
-      [{}, "[emoji]", { content: "test" }],
-      (result) => {
-        expect(emojiRegex.test(result)).toBe(true);
-      },
-      "should interpolate [emoji]",
-    ],
-    [
-      [{}, "[emoji:3]", { content: "string" }],
-      (result) => {
-        expect(emojiRegex.test(result)).toBe(true);
-        expect(result.length).toBeDefined();
-      },
-      "should interpolate [emoji:3]",
-    ],
   ]);
-
-  it("should return the same emoji for the same string", () => {
-    const args = [{}, "[emoji:5]", { content: "same_emoji" }];
-    const result1 = loaderUtils.interpolateName.apply(loaderUtils, args);
-    const result2 = loaderUtils.interpolateName.apply(loaderUtils, args);
-
-    expect(result1).toBe(result2);
-  });
-
-  it("should throw error when out of emoji", () => {
-    expect(() => {
-      loaderUtils.interpolateName.apply(loaderUtils, [
-        {},
-        "[emoji:5000]",
-        { content: "foo" },
-      ]);
-    }).toThrow("Ran out of emoji");
-  });
 
   describe("no loader context", () => {
     const loaderContext = {};
