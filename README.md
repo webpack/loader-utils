@@ -177,7 +177,7 @@ const interpolatedName = loaderUtils.interpolateName(
 
 The following tokens are replaced in the `name` parameter:
 
-- `[ext]` the extension of the resource
+- `[ext]` the extension with leading `.` of the resource
 - `[name]` the basename of the resource
 - `[path]` the path of the resource relative to the `context` query parameter or option.
 - `[folder]` the folder the resource is in
@@ -193,7 +193,7 @@ Examples
 
 ```javascript
 // loaderContext.resourcePath = "/absolute/path/to/app/js/javascript.js"
-loaderUtils.interpolateName(loaderContext, "js/[contenthash].script.[ext]", {
+loaderUtils.interpolateName(loaderContext, "js/[contenthash].script[ext]", {
   content: "content",
 });
 // => js/9473fdd0d880a43c21b7778d34872157.script.js
@@ -202,7 +202,7 @@ loaderUtils.interpolateName(loaderContext, "js/[contenthash].script.[ext]", {
 // loaderContext.resourceQuery = "?foo=bar"
 loaderUtils.interpolateName(
   loaderContext,
-  "js/[contenthash].script.[ext][query]",
+  "js/[contenthash].script[ext][query]",
   {
     content: "content",
   }
@@ -210,7 +210,7 @@ loaderUtils.interpolateName(
 // => js/9473fdd0d880a43c21b7778d34872157.script.js?foo=bar
 
 // loaderContext.resourcePath = "/absolute/path/to/app/js/javascript.js"
-loaderUtils.interpolateName(loaderContext, "js/[contenthash].script.[ext]", {
+loaderUtils.interpolateName(loaderContext, "js/[contenthash].script[ext]", {
   content: "content",
 });
 // => js/9473fdd0d880a43c21b7778d34872157.script.js
@@ -228,7 +228,7 @@ loaderUtils.interpolateName(loaderContext, "[contenthash]", {
 // => c31e9820c001c9c4a86bce33ce43b679
 
 // loaderContext.resourcePath = "/absolute/path/to/app/img/image.png"
-loaderUtils.interpolateName(loaderContext, "[sha512:hash:base64:7].[ext]", {
+loaderUtils.interpolateName(loaderContext, "[sha512:hash:base64:7][ext]", {
   content: "content",
 });
 // => 2BKDTjl.png
@@ -240,13 +240,13 @@ loaderUtils.interpolateName(loaderContext, "picture.png");
 // => picture.png
 
 // loaderContext.resourcePath = "/absolute/path/to/app/dir/file.png"
-loaderUtils.interpolateName(loaderContext, "[path][name].[ext]?[contenthash]", {
+loaderUtils.interpolateName(loaderContext, "[path][name][ext]?[contenthash]", {
   content: "content",
 });
 // => /app/dir/file.png?9473fdd0d880a43c21b7778d34872157
 
 // loaderContext.resourcePath = "/absolute/path/to/app/js/page-home.js"
-loaderUtils.interpolateName(loaderContext, "script-[1].[ext]", {
+loaderUtils.interpolateName(loaderContext, "script-[1][ext]", {
   regExp: "page-(.*)\\.js",
   content: "content",
 });
@@ -260,14 +260,14 @@ loaderUtils.interpolateName(
     // resourcePath - `/app/js/javascript.js`
     // resourceQuery - `?foo=bar`
 
-    return "js/[contenthash].script.[ext]";
+    return "js/[contenthash].script[ext]";
   },
   { content: "content" }
 );
 // => js/9473fdd0d880a43c21b7778d34872157.script.js
 
 // loaderContext.resourcePath = "/absolute/path/to/app/img/image.png"
-loaderUtils.interpolateName(loaderContext, "[contenthash].[ext]", {
+loaderUtils.interpolateName(loaderContext, "[contenthash][ext]", {
   content: "content",
   hashFunction: "sha512",
   hashDigest: "hex",

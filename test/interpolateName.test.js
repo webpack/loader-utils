@@ -22,13 +22,13 @@ describe("interpolateName()", () => {
   [
     [
       "/app/js/javascript.js",
-      "js/[contenthash].script.[ext]",
+      "js/[contenthash].script[ext]",
       "test content",
       "js/a69899814931280e2f52.script.js",
     ],
     [
       "/app/js/javascript.js",
-      "js/[contenthash].script.[ext]",
+      "js/[contenthash].script[ext]",
       "test content",
       "js/a69899814931280e2f52.script.js",
     ],
@@ -47,19 +47,19 @@ describe("interpolateName()", () => {
     ["/app/flash.txt", "[contenthash]", "test content", "a69899814931280e2f52"],
     [
       "/app/img/image.png",
-      "[sha512:contenthash:base64:7].[ext]",
+      "[sha512:contenthash:base64:7][ext]",
       "test content",
       "2BKDTjl.png",
     ],
     [
       "/app/img/image.png",
-      "[sha512:contenthash:base64:7].[ext]",
+      "[sha512:contenthash:base64:7][ext]",
       "test content",
       "2BKDTjl.png",
     ],
     [
       "/app/dir/file.png",
-      "[path][name].[ext]?[contenthash]",
+      "[path][name][ext]?[contenthash]",
       "test content",
       "/app/dir/file.png?a69899814931280e2f52",
     ],
@@ -71,15 +71,15 @@ describe("interpolateName()", () => {
     ],
     [
       "/pathWith.period/filename.js",
-      "js/[name].[ext]",
+      "js/[name][ext]",
       "test content",
       "js/filename.js",
     ],
     [
       "/pathWith.period/filenameWithoutExt",
-      "js/[name].[ext]",
+      "js/[name][ext]",
       "test content",
-      "js/filenameWithoutExt.bin",
+      "js/filenameWithoutExt",
     ],
     [
       "/lib/components/modal/modal.css",
@@ -89,50 +89,50 @@ describe("interpolateName()", () => {
     ],
     [
       "/lib/components/modal/modal.css",
-      "[name].[md5:contenthash:base64:20].[ext]",
+      "[name].[md5:contenthash:base64:20][ext]",
       "test content",
       "modal.1n8osQznuT8jOAwdzg_n.css",
     ],
     // Should not interpret without `hash` or `contenthash`
     [
       "/lib/components/modal/modal.css",
-      "[name].[md5::base64:20].[ext]",
+      "[name].[md5::base64:20][ext]",
       "test content",
       "modal.[md5::base64:20].css",
     ],
     [
       "/app/js/javascript.js?foo=bar",
-      "js/[contenthash].script.[ext][query]",
+      "js/[contenthash].script[ext][query]",
       "test content",
       "js/a69899814931280e2f52.script.js?foo=bar",
     ],
     [
       "/app/js/javascript.js?foo=bar&bar=baz",
-      "js/[contenthash].script.[ext][query]",
+      "js/[contenthash].script[ext][query]",
       "test content",
       "js/a69899814931280e2f52.script.js?foo=bar&bar=baz",
     ],
     [
       "/app/js/javascript.js?foo",
-      "js/[contenthash].script.[ext][query]",
+      "js/[contenthash].script[ext][query]",
       "test content",
       "js/a69899814931280e2f52.script.js?foo",
     ],
     [
       "/app/js/javascript.js?",
-      "js/[contenthash].script.[ext][query]",
+      "js/[contenthash].script[ext][query]",
       "test content",
       "js/a69899814931280e2f52.script.js",
     ],
     [
       "/app/js/javascript.js?a",
-      "js/[contenthash].script.[ext][query]",
+      "js/[contenthash].script[ext][query]",
       "test content",
       "js/a69899814931280e2f52.script.js?a",
     ],
     [
       "/app/js/javascript.js?foo=bar#hash",
-      "js/[contenthash].script.[ext][query]",
+      "js/[contenthash].script[ext][query]",
       "test content",
       "js/a69899814931280e2f52.script.js?foo=bar",
     ],
@@ -142,7 +142,7 @@ describe("interpolateName()", () => {
         expect(resourcePath).toBeDefined();
         expect(resourceQuery).toBeDefined();
 
-        return "js/[contenthash].script.[ext][query]";
+        return "js/[contenthash].script[ext][query]";
       },
       "test content",
       "js/a69899814931280e2f52.script.js?foo=bar",
@@ -153,7 +153,7 @@ describe("interpolateName()", () => {
         expect(resourcePath).toBeDefined();
         expect(resourceQuery).toBeDefined();
 
-        return "js/[contenthash].script.[ext][query]";
+        return "js/[contenthash].script[ext][query]";
       },
       "test content",
       "js/a69899814931280e2f52.script.js?a",
@@ -164,7 +164,7 @@ describe("interpolateName()", () => {
         expect(resourcePath).toBeDefined();
         expect(resourceQuery).not.toBeDefined();
 
-        return "js/[contenthash].script.[ext][query]";
+        return "js/[contenthash].script[ext][query]";
       },
       "test content",
       "js/a69899814931280e2f52.script.js",
@@ -175,7 +175,7 @@ describe("interpolateName()", () => {
         expect(resourcePath).toBeDefined();
         expect(resourceQuery).not.toBeDefined();
 
-        return "js/[contenthash].script.[ext][query]";
+        return "js/[contenthash].script[ext][query]";
       },
       "test content",
       "js/a69899814931280e2f52.script.js",
@@ -229,7 +229,7 @@ describe("interpolateName()", () => {
   run([
     [
       [{}, "", { content: "test string" }],
-      "2e06edd4f1623268c5a5.bin",
+      "2e06edd4f1623268c5a5",
       "should interpolate default tokens",
     ],
     [
@@ -247,7 +247,7 @@ describe("interpolateName()", () => {
   describe("no loader context", () => {
     const loaderContext = {};
     run([
-      [[loaderContext, "[ext]", {}], "bin", "should interpolate [ext] token"],
+      [[loaderContext, "[ext]", {}], "", "should interpolate [ext] token"],
       [
         [loaderContext, "[name]", {}],
         "file",
@@ -265,7 +265,7 @@ describe("interpolateName()", () => {
   describe("with loader context", () => {
     const loaderContext = { resourcePath: "/path/to/file.exe" };
     run([
-      [[loaderContext, "[ext]", {}], "exe", "should interpolate [ext] token"],
+      [[loaderContext, "[ext]", {}], ".exe", "should interpolate [ext] token"],
       [
         [loaderContext, "[name]", {}],
         "file",
@@ -308,7 +308,7 @@ describe("interpolateName()", () => {
         {
           resourcePath: "/foo/xyz.png",
         },
-        "[1]-[name].[ext]",
+        "[1]-[name][ext]",
         {
           regExp: /\/([a-z0-9]+)\/[a-z0-9]+\.png$/,
         },
