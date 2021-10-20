@@ -263,12 +263,11 @@ describe("interpolateName()", () => {
     ],
   ]);
 
-  it("should return the same emoji for the same string", () => {
-    const args = [{}, "[emoji:5]", { content: "same_emoji" }];
-    const result1 = loaderUtils.interpolateName.apply(loaderUtils, args);
-    const result2 = loaderUtils.interpolateName.apply(loaderUtils, args);
+  it("should work without options", () => {
+    const args = [{}, "foo/bar/[hash]"];
+    const result = loaderUtils.interpolateName.apply(loaderUtils, args);
 
-    expect(result1).toBe(result2);
+    expect(result).toBe("foo/bar/[hash]");
   });
 
   describe("no loader context", () => {
