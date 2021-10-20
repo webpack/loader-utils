@@ -4,8 +4,7 @@
   "author": "Tobias Koppers @sokra",
   "description": "utils for webpack loaders",
   "dependencies": {
-    "big.js": "^6.1.1",
-    "json5": "^2.2.0"
+    "big.js": "^6.1.1"
   },
   "scripts": {
     "lint": "prettier --list-different . && eslint lib test",
