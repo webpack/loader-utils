@@ -6,36 +6,6 @@
 
 If the loader options have been passed as loader query string (`loader?some&params`), the string is parsed by using [`parseQuery`](#parsequery).
 
-### `parseQuery`
-
-Parses a passed string (e.g. `loaderContext.resourceQuery`) as a query string, and returns an object.
-
-```javascript
-const params = loaderUtils.parseQuery(this.resourceQuery); // resource: `file?param1=foo`
-
-if (params.param1 === "foo") {
-  // do something
-}
-```
-
-The string is parsed like this:
-
-```text
-                             -> Error
-?                            -> {}
-?flag                        -> { flag: true }
-?+flag                       -> { flag: true }
-?-flag                       -> { flag: false }
-?xyz=test                    -> { xyz: "test" }
-?xyz=1                       -> { xyz: "1" } // numbers are NOT parsed
-?xyz[]=a                     -> { xyz: ["a"] }
-?flag1&flag2                 -> { flag1: true, flag2: true }
-?+flag1,-flag2               -> { flag1: true, flag2: false }
-?xyz[]=a,xyz[]=b             -> { xyz: ["a", "b"] }
-?a%2C%26b=c%2C%26d           -> { "a,&b": "c,&d" }
-?{data:{a:1},isJSON5:true}   -> { data: { a: 1 }, isJSON5: true }
-```
-
 ### `urlToRequest`
 
 Converts some resource URL to a webpack module request.
