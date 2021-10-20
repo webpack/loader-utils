@@ -77,14 +77,14 @@ The following tokens are replaced in the `name` parameter:
 - `[path]` the path of the resource relative to the `context` query parameter or option.
 - `[folder]` the folder the resource is in
 - `[query]` the queryof the resource, i.e. `?foo=bar`
-- `[contenthash]` the hash of `options.content` (Buffer) (by default it's the hex digest of the md4 hash)
+- `[contenthash]` the hash of `options.content` (Buffer) (by default it's the hex digest of the `xxhash64` hash)
 - `[<hashType>:contenthash:<digestType>:<length>]` optionally one can configure
-  - other `hashType`s, i. e. `sha1`, `md4`, `md5`, `sha256`, `sha512`
+  - other `hashType`s, i. e. `xxhash64`, `sha1`, `md4`, `md5`, `sha256`, `sha512`
   - other `digestType`s, i. e. `hex`, `base26`, `base32`, `base36`, `base49`, `base52`, `base58`, `base62`, `base64`
   - and `length` the length in chars
-- `[hash]` the hash of `options.content` (Buffer) (by default it's the hex digest of the md4 hash)
+- `[hash]` the hash of `options.content` (Buffer) (by default it's the hex digest of the `xxhash64` hash)
 - `[<hashType>:hash:<digestType>:<length>]` optionally one can configure
-  - other `hashType`s, i. e. `sha1`, `md4`, `md5`, `sha256`, `sha512`
+  - other `hashType`s, i. e. `xxhash64`, `sha1`, `md4`, `md5`, `sha256`, `sha512`
   - other `digestType`s, i. e. `hex`, `base26`, `base32`, `base36`, `base49`, `base52`, `base58`, `base62`, `base64`
   - and `length` the length in chars
 - `[N]` the N-th match obtained from matching the current file name against `options.regExp`
@@ -118,7 +118,7 @@ loaderUtils.interpolateName(loaderContext, "[hash]", { content: ... });
 // loaderContext.resourcePath = "/absolute/path/to/app/img/image.png"
 loaderUtils.interpolateName(loaderContext, "[sha512:hash:base64:7].[ext]", { content: ... });
 // => 2BKDTjl.png
-// use sha512 hash instead of md4 and with only 7 chars of base64
+// use sha512 hash instead of xxhash64 and with only 7 chars of base64
 
 // loaderContext.resourcePath = "/absolute/path/to/app/img/myself.png"
 // loaderContext.query.name =
@@ -160,7 +160,7 @@ const digestString = loaderUtils.getHashDigest(
 ```
 
 - `buffer` the content that should be hashed
-- `hashType` one of `sha1`, `md4`, `md5`, `sha256`, `sha512` or any other node.js supported hash type
+- `hashType` one of `xxhash64`, `sha1`, `md4`, `md5`, `sha256`, `sha512` or any other node.js supported hash type
 - `digestType` one of `hex`, `base26`, `base32`, `base36`, `base49`, `base52`, `base58`, `base62`, `base64`
 - `maxLength` the maximum length in chars
 
