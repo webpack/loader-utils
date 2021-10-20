@@ -10,8 +10,17 @@ If the loader options have been passed as loader query string (`loader?some&para
 
 Converts some resource URL to a webpack module request.
 
+> i Before call `urlToRequest` you need call `isUrlRequest` to ensure it is requestable url
+
 ```javascript
-const request = loaderUtils.urlToRequest(url);
+const url = "path/to/module.js";
+
+if (loaderUtils.isUrlRequest(url)) {
+  // Logic for requestable url
+  const request = loaderUtils.urlToRequest(url);
+} else {
+  // Logic for not requestable url
+}
 ```
 
 Simple example:
