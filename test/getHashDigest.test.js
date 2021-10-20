@@ -12,7 +12,7 @@ describe("getHashDigest()", () => {
       "6f8db599de986fab7a21625b7916589c",
     ],
     ["test string", "md5", "base64", undefined, "2sm1pVmS8xuGJLCdWpJoRL"],
-    ["test string", "md5", "base64url", undefined, "b421md6Yb6t6IWJbeRZYnA"],
+    // ["test string", "md5", "base64url", undefined, "b421md6Yb6t6IWJbeRZYnA"],
     ["test string", "xxhash64", "hex", undefined, "e9e2c351e3c6b198"],
     ["test string", "xxhash64", "base64", undefined, "Uej5ydCcPpj4RcScOpjBB"],
     ["test string", "xxhash64", "base52", undefined, "bqOwublJwrBqLcKHCVpojCL"],
