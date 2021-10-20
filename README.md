@@ -12,6 +12,7 @@ Parses a passed string (e.g. `loaderContext.resourceQuery`) as a query string, a
 
 ```javascript
 const params = loaderUtils.parseQuery(this.resourceQuery); // resource: `file?param1=foo`
+
 if (params.param1 === "foo") {
   // do something
 }
@@ -33,50 +34,6 @@ The string is parsed like this:
 ?xyz[]=a,xyz[]=b             -> { xyz: ["a", "b"] }
 ?a%2C%26b=c%2C%26d           -> { "a,&b": "c,&d" }
 ?{data:{a:1},isJSON5:true}   -> { data: { a: 1 }, isJSON5: true }
-```
-
-### `stringifyRequest`
-
-Turns a request into a string that can be used inside `require()` or `import` while avoiding absolute paths.
-Use it instead of `JSON.stringify(...)` if you're generating code inside a loader.
-
-**Why is this necessary?** Since webpack calculates the hash before module paths are translated into module ids, we must avoid absolute paths to ensure
-consistent hashes across different compilations.
-
-This function:
-
-- resolves absolute requests into relative requests if the request and the module are on the same hard drive
-- replaces `\` with `/` if the request and the module are on the same hard drive
-- won't change the path at all if the request and the module are on different hard drives
-- applies `JSON.stringify` to the result
-
-```javascript
-loaderUtils.stringifyRequest(this, "./test.js");
-// "\"./test.js\""
-
-loaderUtils.stringifyRequest(this, ".\\test.js");
-// "\"./test.js\""
-
-loaderUtils.stringifyRequest(this, "test");
-// "\"test\""
-
-loaderUtils.stringifyRequest(this, "test/lib/index.js");
-// "\"test/lib/index.js\""
-
-loaderUtils.stringifyRequest(this, "otherLoader?andConfig!test?someConfig");
-// "\"otherLoader?andConfig!test?someConfig\""
-
-loaderUtils.stringifyRequest(this, require.resolve("test"));
-// "\"../node_modules/some-loader/lib/test.js\""
-
-loaderUtils.stringifyRequest(this, "C:\\module\\test.js");
-// "\"../../test.js\"" (on Windows, in case the module and the request are on the same drive)
-
-loaderUtils.stringifyRequest(this, "C:\\module\\test.js");
-// "\"C:\\module\\test.js\"" (on Windows, in case the module and the request are on different drives)
-
-loaderUtils.stringifyRequest(this, "\\\\network-drive\\test.js");
-// "\"\\\\network-drive\\\\test.js\"" (on Windows, in case the module and the request are on different drives)
 ```
 
 ### `urlToRequest`
