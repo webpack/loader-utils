@@ -2,38 +2,6 @@
 
 ## Methods
 
-### `getOptions`
-
-Recommended way to retrieve the options of a loader invocation:
-
-```javascript
-// inside your loader
-const options = loaderUtils.getOptions(this);
-```
-
-1. If `this.query` is a string:
-   - Tries to parse the query string and returns a new object
-   - Throws if it's not a valid query string
-2. If `this.query` is object-like, it just returns `this.query`
-3. In any other case, it just returns `null`
-
-**Please note:** The returned `options` object is _read-only_. It may be re-used across multiple invocations.
-If you pass it on to another library, make sure to make a _deep copy_ of it:
-
-```javascript
-const options = Object.assign(
-  {},
-  defaultOptions,
-  loaderUtils.getOptions(this) // it is safe to pass null to Object.assign()
-);
-// don't forget nested objects or arrays
-options.obj = Object.assign({}, options.obj);
-options.arr = options.arr.slice();
-someLibrary(options);
-```
-
-[clone](https://www.npmjs.com/package/clone) is a good library to make a deep copy of the options.
-
 #### Options as query strings
 
 If the loader options have been passed as loader query string (`loader?some&params`), the string is parsed by using [`parseQuery`](#parsequery).
