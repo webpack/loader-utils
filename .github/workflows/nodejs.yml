@@ -1,4 +1,4 @@
-name: css-loader
+name: loader-utils
 
 on:
   push:
