@@ -83,17 +83,8 @@ loaderUtils.stringifyRequest(this, "\\\\network-drive\\test.js");
 
 Converts some resource URL to a webpack module request.
 
-> i Before call `urlToRequest` you need call `isUrlRequest` to ensure it is requestable url
-
 ```javascript
-const url = "path/to/module.js";
-
-if (loaderUtils.isUrlRequest(url)) {
-  // Logic for requestable url
-  const request = loaderUtils.urlToRequest(url);
-} else {
-  // Logic for not requestable url
-}
+const request = loaderUtils.urlToRequest(url);
 ```
 
 Simple example:
