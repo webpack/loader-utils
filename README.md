@@ -2,10 +2,6 @@
 
 ## Methods
 
-#### Options as query strings
-
-If the loader options have been passed as loader query string (`loader?some&params`), the string is parsed by using [`parseQuery`](#parsequery).
-
 ### `urlToRequest`
 
 Converts some resource URL to a webpack module request.
