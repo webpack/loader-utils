@@ -16,7 +16,7 @@ describe("getHashDigest()", () => {
     ["test string", "xxhash64", "hex", undefined, "e9e2c351e3c6b198"],
     ["test string", "xxhash64", "base64", undefined, "9yNNKdhM-bF"],
     ["test string", "xxhash64", "base52", undefined, "byfYGDmnmyUr"],
-    ["test string", "xxhash64", "base64url", undefined, "6eLDUePGsZg"],
+    // ["test string", "xxhash64", "base64url", undefined, "6eLDUePGsZg"],
     ["test string", "md4", "hex", 4, "2e06"],
     ["test string", "md5", "hex", 4, "6f8d"],
     ["test string", "md5", "base52", undefined, "dJnldHSAutqUacjgfBQGLQx"],
