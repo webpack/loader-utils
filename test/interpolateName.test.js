@@ -102,6 +102,12 @@ describe("interpolateName()", () => {
     ],
     [
       "/lib/components/modal/modal.css",
+      "[name].[md4:hash:base64:20].[ext]",
+      "test content",
+      "modal.1kNSGJ6n9ibMUEckC1Cp.css",
+    ],
+    [
+      "/lib/components/modal/modal.css",
       "[name].[md5:hash:base64:20].[ext]",
       "test content",
       "modal.1n8osQznuT8jOAwdzg_n.css",
@@ -253,7 +259,7 @@ describe("interpolateName()", () => {
     ],
     [
       [{}, "[hash:base64]", { content: "test string" }],
-      "Uej5ydCcPpj4RcScOpjBB",
+      "9yNNKdhM-bF",
       "should interpolate [hash] token with options",
     ],
     [
