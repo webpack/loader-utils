@@ -74,7 +74,7 @@ jobs:
         run: yarn
 
       - name: Run tests
-        run: yarn test
+        run: yarn test:only
 
       - name: Submit coverage data to codecov
         uses: codecov/codecov-action@v2

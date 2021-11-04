@@ -50,13 +50,13 @@ describe("interpolateName()", () => {
       "/app/img/image.png",
       "[sha512:hash:base64:7].[ext]",
       "test content",
-      "2BKDTjl.png",
+      "DL9MrvO.png",
     ],
     [
       "/app/img/image.png",
       "[sha512:contenthash:base64:7].[ext]",
       "test content",
-      "2BKDTjl.png",
+      "DL9MrvO.png",
     ],
     [
       "/app/dir/file.png",
@@ -104,19 +104,19 @@ describe("interpolateName()", () => {
       "/lib/components/modal/modal.css",
       "[name].[md4:hash:base64:20].[ext]",
       "test content",
-      "modal.1kNSGJ6n9ibMUEckC1Cp.css",
+      "modal.ppiZgUkxKA4vUnIZrWrH.css",
     ],
     [
       "/lib/components/modal/modal.css",
       "[name].[md5:hash:base64:20].[ext]",
       "test content",
-      "modal.1n8osQznuT8jOAwdzg_n.css",
+      "modal.lHP90NiApDwht3eNNIch.css",
     ],
     [
       "/lib/components/modal/modal.css",
       "[name].[md5:contenthash:base64:20].[ext]",
       "test content",
-      "modal.1n8osQznuT8jOAwdzg_n.css",
+      "modal.lHP90NiApDwht3eNNIch.css",
     ],
     // Should not interpret without `hash` or `contenthash`
     [
@@ -259,7 +259,7 @@ describe("interpolateName()", () => {
     ],
     [
       [{}, "[hash:base64]", { content: "test string" }],
-      "9yNNKdhM-bF",
+      "6eLDUePGsZg=",
       "should interpolate [hash] token with options",
     ],
     [

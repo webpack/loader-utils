@@ -7,10 +7,11 @@
     "big.js": "^6.1.1"
   },
   "scripts": {
-    "lint": "prettier --list-different . && eslint lib test",
+    "lint": "prettier --list-different . && eslint .",
     "pretest": "yarn lint",
     "test": "jest",
-    "test:ci": "jest --coverage",
+    "test:only": "jest --coverage",
+    "test:ci": "yarn test:only",
     "release": "yarn test && standard-version"
   },
   "license": "MIT",
