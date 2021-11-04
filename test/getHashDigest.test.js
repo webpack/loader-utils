@@ -12,7 +12,7 @@ describe('getHashDigest()', () => {
       '6f8db599de986fab7a21625b7916589c',
     ],
     ['test string', 'md5', 'hex', 4, '6f8d'],
-    ['test string', 'md5', 'base64', undefined, '2sm1pVmS8xuGJLCdWpJoRL'],
+    ['test string', 'md5', 'base64', undefined, 'b421md6Yb6t6IWJbeRZYnA=='],
     ['test string', 'md5', 'base52', undefined, 'dJnldHSAutqUacjgfBQGLQx'],
     ['test string', 'md5', 'base26', 6, 'bhtsgu'],
     [
@@ -20,7 +20,7 @@ describe('getHashDigest()', () => {
       'sha512',
       'base64',
       undefined,
-      '2IS-kbfIPnVflXb9CzgoNESGCkvkb0urMmucPD9z8q6HuYz8RShY1-tzSUpm5-Ivx_u4H1MEzPgAhyhaZ7RKog',
+      'EObWR69EYkRC84jCwUp4f/ixfmFluD12fsBHdo2MvLcaGjIm58x4Frx5wEJ9lKnaaIxBo5kse/Xk18w+C+XbrA==',
     ],
     [
       'test string',
