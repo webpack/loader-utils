@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.2](https://github.com/webpack/loader-utils/compare/v2.0.1...v2.0.2) (2021-11-04)
+
+
+### Bug Fixes
+
+* base64 generation and unicode characters ([#197](https://github.com/webpack/loader-utils/issues/197)) ([8c2d24e](https://github.com/webpack/loader-utils/commit/8c2d24ee400bc4567335e97ee6004c3baa6ef66f))
+
 ### [2.0.1](https://github.com/webpack/loader-utils/compare/v2.0.0...v2.0.1) (2021-10-29)
 
 
