@@ -79,3 +79,46 @@ describe("getHashDigest()", () => {
     );
   });
 });
+
+function testDistribution(digestType, length, tableSize, iterations) {
+  const lowerBound = Math.round(iterations / 2);
+  const upperBound = Math.round(iterations * 2);
+
+  const stats = [];
+  for (let i = tableSize * iterations; i-- > 0; ) {
+    const generatedString = loaderUtils.getHashDigest(
+      `Some input #${i}`,
+      undefined,
+      digestType,
+      length
+    );
+
+    for (let pos = 0; pos < length; pos++) {
+      const char = generatedString[pos];
+      stats[pos] = stats[pos] || {};
+      stats[pos][char] = (stats[pos][char] || 0) + 1;
+    }
+  }
+
+  for (let pos = 0; pos < length; pos++) {
+    const chars = Object.keys(stats[pos]).sort();
+    test(`distinct chars at position ${pos}`, () => {
+      expect(chars.length).toBe(tableSize);
+    });
+    for (const char of chars) {
+      test(`occurences of char "${char}" at position ${pos} should be around ${iterations}`, () => {
+        expect(stats[pos][char]).toBeLessThanOrEqual(upperBound);
+        expect(stats[pos][char]).toBeGreaterThanOrEqual(lowerBound);
+      });
+    }
+  }
+}
+
+describe("getHashDigest() char distribution", () => {
+  describe("should be uniform for base62", () => {
+    testDistribution("base62", 8, 62, 100);
+  });
+  describe("should be uniform for base26", () => {
+    testDistribution("base26", 8, 26, 100);
+  });
+});
