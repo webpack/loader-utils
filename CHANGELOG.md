@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.2.0](https://github.com/webpack/loader-utils/compare/v3.1.3...v3.2.0) (2021-11-11)
+
+
+### Features
+
+* hash uniformity for base digests ([451858b](https://github.com/webpack/loader-utils/commit/451858b0bb33911d52d2f03a6470fd2b86493b84))
+
 ### [3.1.3](https://github.com/webpack/loader-utils/compare/v3.1.2...v3.1.3) (2021-11-04)
 
 
