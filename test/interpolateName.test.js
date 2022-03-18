@@ -213,8 +213,8 @@ describe("interpolateName()", () => {
       const queryIdx = test[0].indexOf("?");
 
       if (queryIdx >= 0) {
-        resourcePath = test[0].substr(0, queryIdx);
-        resourceQuery = test[0].substr(queryIdx);
+        resourcePath = test[0].slice(0, queryIdx);
+        resourceQuery = test[0].slice(queryIdx);
       } else {
         resourcePath = test[0];
       }
