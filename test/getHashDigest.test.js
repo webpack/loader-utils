@@ -4,6 +4,8 @@ const loaderUtils = require("../");
 
 describe("getHashDigest()", () => {
   [
+    ["test string", "xxhash64", "base64url", undefined, "9yNNKdhM-bF"],
+
     ["test string", "xxhash64", "hex", undefined, "e9e2c351e3c6b198"],
     ["test string", "xxhash64", "base64", undefined, "6eLDUePGsZg="],
     ["test string", "xxhash64", "base52", undefined, "byfYGDmnmyUr"],
