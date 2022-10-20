@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.3](https://github.com/webpack/loader-utils/compare/v2.0.1...v2.0.3) (2022-10-20)
+
+
+### Bug Fixes
+
+* **security:** prototype pollution exploit ([#217](https://github.com/webpack/loader-utils/issues/217)) ([a93cf6f](https://github.com/webpack/loader-utils/commit/a93cf6f4702012030f6b5ee8340d5c95ec1c7d4c))
+
 ### [2.0.2](https://github.com/webpack/loader-utils/compare/v2.0.1...v2.0.2) (2021-11-04)
 
 
