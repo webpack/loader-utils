@@ -1,6 +1,13 @@
-# Change Log
+# Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+### [1.4.1](https://github.com/webpack/loader-utils/compare/v1.4.0...v1.4.1) (2022-11-07)
+
+
+### Bug Fixes
+
+* security problem ([#220](https://github.com/webpack/loader-utils/issues/220)) ([4504e34](https://github.com/webpack/loader-utils/commit/4504e34c4796a5836ef70458327351675aed48a5))
 
 <a name="1.4.0"></a>
 # [1.4.0](https://github.com/webpack/loader-utils/compare/v1.3.0...v1.4.0) (2020-02-19)
