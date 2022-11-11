@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.2](https://github.com/webpack/loader-utils/compare/v1.4.1...v1.4.2) (2022-11-11)
+
+
+### Bug Fixes
+
+* ReDoS problem ([#226](https://github.com/webpack/loader-utils/issues/226)) ([17cbf8f](https://github.com/webpack/loader-utils/commit/17cbf8fa8989c1cb45bdd2997aa524729475f1fa))
+
 ### [1.4.1](https://github.com/webpack/loader-utils/compare/v1.4.0...v1.4.1) (2022-11-07)
 
 
