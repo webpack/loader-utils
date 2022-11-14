@@ -1,6 +1,6 @@
 {
   "root": true,
-  "plugins": ["node", "prettier"],
+  "plugins": ["node"],
   "extends": ["eslint:recommended", "plugin:node/recommended"],
   "env": {
     "node": true
@@ -18,15 +18,6 @@
     "no-var": "error",
     "prefer-const": "error",
     "prefer-arrow-callback": "error",
-    "object-shorthand": "error",
-
-    "prettier/prettier": [
-      "error",
-      {
-        "singleQuote": true,
-        "trailingComma": "es5",
-        "arrowParens": "always"
-      }
-    ]
+    "object-shorthand": "error"
   }
 }
