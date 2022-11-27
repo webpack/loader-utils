@@ -57,7 +57,7 @@ All notable changes to this project will be documented in this file. See [standa
 * removed `getCurrentRequest` in favor `loaderContext.currentRequest` (`loaderContext` is `this` inside loader function)
 * removed `parseString` in favor `JSON.parse`
 * removed `parseQuery` in favor `new URLSearchParams(loaderContext.resourceQuery.slice(1))` where `loaderContext` is `this` in loader function
-* removed `stringifyRequest` in favor `JSON.stringify(loaderContext.utils.contextify(loaderContext.context || loaderContext.rootContext, request))` (`loaderContext` is `this` inside loader function), also it will be cachable and faster
+* removed `stringifyRequest` in favor `JSON.stringify(loaderContext.utils.contextify(this.context, request))` (`loaderContext` is `this` inside loader function), also it will be cachable and faster
 * `isUrlRequest` ignores only absolute URLs and `#hash` requests, `data URI` and root relative request are handled as requestable due webpack v5 support them
 
 ### Bug Fixes
