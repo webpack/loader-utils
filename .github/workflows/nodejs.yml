@@ -10,8 +10,15 @@ on:
       - master
       - next
 
+permissions:
+  contents: read #  to fetch code (actions/checkout)
+
 jobs:
   lint:
+    permissions:
+      contents: read #  to fetch code (actions/checkout)
+      pull-requests: read #  to get commits in PR (wagoid/commitlint-github-action)
+
     name: Lint - ${{ matrix.os }} - Node v${{ matrix.node-version }}
 
     env:
