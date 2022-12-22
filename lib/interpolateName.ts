@@ -2,11 +2,17 @@ import type { LoaderContext } from "webpack";
 import path from "path";
 import getHashDigest from './getHashDigest';
 
-export default function interpolateName(loaderContext: LoaderContext<{}>, name: string, options = {}) {
+interface IInterpolateNameOptions {
+  content?: Buffer;
+  context?: string;
+  regExp?: string;
+}
+
+export default function interpolateName(loaderContext: LoaderContext<{}>, name: string | ((resourcePath: string, resourceQuery?: string) => string), options: IInterpolateNameOptions = {}) {
   let filename;
 
-  const hasQuery =
-    loaderContext.resourceQuery && loaderContext.resourceQuery.length > 1;
+  const hasQuery: boolean =
+    (loaderContext.resourceQuery && loaderContext.resourceQuery.length > 1) as boolean;
 
   if (typeof name === "function") {
     filename = name(
@@ -98,9 +104,12 @@ export default function interpolateName(loaderContext: LoaderContext<{}>, name: 
   }
 
   if (
+    // @ts-ignore
     typeof loaderContext.options === "object" &&
+    // @ts-ignore
     typeof loaderContext.options.customInterpolateName === "function"
   ) {
+    // @ts-ignore
     url = loaderContext.options.customInterpolateName.call(
       loaderContext,
       url,

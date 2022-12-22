@@ -20,7 +20,7 @@ export default function urlToRequest(url: string, root?: string | boolean): stri
       // 1. root is a string: root is prefixed to the url
       case "string":
         // special case: `~` roots convert to module request
-        if (MODULE_REQUEST_REGEX.test(root)) {
+        if (MODULE_REQUEST_REGEXP.test(root)) {
           request = root.replace(/([^~/])$/, "$1/") + url.slice(1);
         } else {
           request = root + url;
@@ -49,8 +49,8 @@ export default function urlToRequest(url: string, root?: string | boolean): stri
   }
 
   // A `~` makes the url an module
-  if (MODULE_REQUEST_REGEX.test(request)) {
-    request = request.replace(MODULE_REQUEST_REGEX, "");
+  if (MODULE_REQUEST_REGEXP.test(request)) {
+    request = request.replace(MODULE_REQUEST_REGEXP, "");
   }
 
   return request;

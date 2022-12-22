@@ -1,6 +1,6 @@
 "use strict";
 
-const loaderUtils = require("../");
+const loaderUtils = require("../dist");
 
 function ExpectedError(regex) {
   this.regex = regex;
