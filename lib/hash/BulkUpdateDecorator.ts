@@ -1,15 +1,24 @@
-const BULK_SIZE = 2000;
+import type { Hash, Encoding, BinaryToTextEncoding } from "crypto";
+type HashOrFactory = Hash | (() => Hash);
+
+const BULK_SIZE: number = 2000;
 
 // We are using an object instead of a Map as this will stay static during the runtime
 // so access to it can be optimized by v8
-const digestCaches = {};
+const digestCaches: {[key: string]: any} = {};
 
-class BulkUpdateDecorator {
+
+export default class BulkUpdateDecorator {
   /**
-   * @param {Hash | function(): Hash} hashOrFactory function to create a hash
+   * @param {HashOrFactory} hashOrFactory function to create a hash
    * @param {string=} hashKey key for caching
    */
-  constructor(hashOrFactory, hashKey) {
+  hash?: Hash;
+  hashFactory?: (() => Hash);
+  hashKey: string;
+  buffer: string;
+
+  constructor(hashOrFactory: HashOrFactory, hashKey: string) {
     this.hashKey = hashKey;
 
     if (typeof hashOrFactory === "function") {
@@ -29,14 +38,14 @@ class BulkUpdateDecorator {
    * @param {string=} inputEncoding data encoding
    * @returns {this} updated hash
    */
-  update(data, inputEncoding) {
+  update(data: string | Buffer, inputEncoding?: Encoding): this {
     if (
       inputEncoding !== undefined ||
       typeof data !== "string" ||
       data.length > BULK_SIZE
     ) {
       if (this.hash === undefined) {
-        this.hash = this.hashFactory();
+        this.hash = this.hashFactory!();
       }
 
       if (this.buffer.length > 0) {
@@ -44,13 +53,17 @@ class BulkUpdateDecorator {
         this.buffer = "";
       }
 
-      this.hash.update(data, inputEncoding);
+      if (inputEncoding === undefined) {
+        this.hash.update(data);
+      } else {
+        this.hash.update(data as string, inputEncoding);
+      }
     } else {
       this.buffer += data;
 
       if (this.buffer.length > BULK_SIZE) {
         if (this.hash === undefined) {
-          this.hash = this.hashFactory();
+          this.hash = this.hashFactory!();
         }
 
         this.hash.update(this.buffer);
@@ -66,8 +79,9 @@ class BulkUpdateDecorator {
    * @param {string=} encoding encoding of the return value
    * @returns {string|Buffer} digest
    */
-  digest(encoding) {
+  digest(encoding?: BinaryToTextEncoding): string | Buffer {
     let digestCache;
+    let digestResult: string | Buffer;
 
     const buffer = this.buffer;
 
@@ -87,14 +101,18 @@ class BulkUpdateDecorator {
         return cacheEntry;
       }
 
-      this.hash = this.hashFactory();
+      this.hash = this.hashFactory!();
     }
 
     if (buffer.length > 0) {
       this.hash.update(buffer);
     }
 
-    const digestResult = this.hash.digest(encoding);
+    if (encoding !== undefined) {
+      digestResult = this.hash.digest(encoding);
+    } else {
+      digestResult = this.hash.digest();
+    }
 
     if (digestCache !== undefined) {
       digestCache.set(buffer, digestResult);
@@ -103,5 +121,3 @@ class BulkUpdateDecorator {
     return digestResult;
   }
 }
-
-module.exports = BulkUpdateDecorator;

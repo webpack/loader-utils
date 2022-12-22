@@ -1,27 +1,26 @@
-"use strict";
-
 // we can't use path.win32.isAbsolute because it also matches paths starting with a forward slash
-const matchNativeWin32Path = /^[A-Z]:[/\\]|^\\\\/i;
+const NATIVE_WIN_32_PATH_REGEXP: RegExp = /^[A-Z]:[/\\]|^\\\\/i;
+const MODULE_REQUEST_REGEXP: RegExp = /^[^?]*~/;
+const ROOT_RELATIVE_URL_REGEXP: RegExp = /^\//;
 
-function urlToRequest(url, root) {
+export default function urlToRequest(url: string, root?: string | boolean): string {
   // Do not rewrite an empty url
   if (url === "") {
     return "";
   }
 
-  const moduleRequestRegex = /^[^?]*~/;
-  let request;
+  let request: string;
 
-  if (matchNativeWin32Path.test(url)) {
+  if (NATIVE_WIN_32_PATH_REGEXP.test(url)) {
     // absolute windows path, keep it
     request = url;
-  } else if (root !== undefined && root !== false && /^\//.test(url)) {
+  } else if (root !== undefined && root !== false && ROOT_RELATIVE_URL_REGEXP.test(url)) {
     // if root is set and the url is root-relative
     switch (typeof root) {
       // 1. root is a string: root is prefixed to the url
       case "string":
         // special case: `~` roots convert to module request
-        if (moduleRequestRegex.test(root)) {
+        if (MODULE_REQUEST_REGEX.test(root)) {
           request = root.replace(/([^~/])$/, "$1/") + url.slice(1);
         } else {
           request = root + url;
@@ -50,11 +49,9 @@ function urlToRequest(url, root) {
   }
 
   // A `~` makes the url an module
-  if (moduleRequestRegex.test(request)) {
-    request = request.replace(moduleRequestRegex, "");
+  if (MODULE_REQUEST_REGEX.test(request)) {
+    request = request.replace(MODULE_REQUEST_REGEX, "");
   }
 
   return request;
 }
-
-module.exports = urlToRequest;

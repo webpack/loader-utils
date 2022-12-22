@@ -1,7 +1,12 @@
-const MAX_SHORT_STRING = require("./wasm-hash").MAX_SHORT_STRING;
+import type { Hash, Encoding, BinaryToTextEncoding } from "crypto";
+import { MAX_SHORT_STRING } from './wasm-hash'
 
-class BatchedHash {
-  constructor(hash) {
+export default class BatchedHash {
+  public string?: string;
+  public encoding?: Encoding;
+  public readonly hash: Hash;
+
+  constructor(hash: Hash) {
     this.string = undefined;
     this.encoding = undefined;
     this.hash = hash;
@@ -13,7 +18,7 @@ class BatchedHash {
    * @param {string=} inputEncoding data encoding
    * @returns {this} updated hash
    */
-  update(data, inputEncoding) {
+  update(data: string | Buffer, inputEncoding?: Encoding): this {
     if (this.string !== undefined) {
       if (
         typeof data === "string" &&
@@ -25,7 +30,12 @@ class BatchedHash {
         return this;
       }
 
-      this.hash.update(this.string, this.encoding);
+      if (this.encoding !== undefined) {
+        this.hash.update(this.string, this.encoding);
+      } else {
+        this.hash.update(this.string)
+      }
+
       this.string = undefined;
     }
 
@@ -38,7 +48,11 @@ class BatchedHash {
         this.string = data;
         this.encoding = inputEncoding;
       } else {
-        this.hash.update(data, inputEncoding);
+        if (inputEncoding !== undefined) {
+          this.hash.update(data, inputEncoding);
+        } else {
+          this.hash.update(data);
+        }
       }
     } else {
       this.hash.update(data);
@@ -52,13 +66,19 @@ class BatchedHash {
    * @param {string=} encoding encoding of the return value
    * @returns {string|Buffer} digest
    */
-  digest(encoding) {
+  digest(encoding?: BinaryToTextEncoding): string | Buffer {
     if (this.string !== undefined) {
-      this.hash.update(this.string, this.encoding);
-    }
+      if (this.encoding !== undefined) {
+        this.hash.update(this.string, this.encoding);
+      } else {
+        this.hash.update(this.string);
+      }
 
-    return this.hash.digest(encoding);
+    }
+    if (encoding !== undefined) {
+      return this.hash.digest(encoding);
+    } else {
+      return this.hash.digest();
+    }
   }
 }
-
-module.exports = BatchedHash;

@@ -1,9 +1,8 @@
-"use strict";
+import type { LoaderContext } from "webpack";
+import path from "path";
+import getHashDigest from './getHashDigest';
 
-const path = require("path");
-const getHashDigest = require("./getHashDigest");
-
-function interpolateName(loaderContext, name, options = {}) {
+export default function interpolateName(loaderContext: LoaderContext<{}>, name: string, options = {}) {
   let filename;
 
   const hasQuery =
@@ -112,5 +111,3 @@ function interpolateName(loaderContext, name, options = {}) {
 
   return url;
 }
-
-module.exports = interpolateName;
