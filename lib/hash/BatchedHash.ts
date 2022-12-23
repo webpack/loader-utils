@@ -1,5 +1,5 @@
 import type { Hash, Encoding, BinaryToTextEncoding } from "crypto";
-import { MAX_SHORT_STRING } from './wasm-hash'
+import { MAX_SHORT_STRING } from "./wasm-hash";
 
 export default class BatchedHash {
   public string?: string;
@@ -33,7 +33,7 @@ export default class BatchedHash {
       if (this.encoding !== undefined) {
         this.hash.update(this.string, this.encoding);
       } else {
-        this.hash.update(this.string)
+        this.hash.update(this.string);
       }
 
       this.string = undefined;
@@ -73,7 +73,6 @@ export default class BatchedHash {
       } else {
         this.hash.update(this.string);
       }
-
     }
     if (encoding !== undefined) {
       return this.hash.digest(encoding);

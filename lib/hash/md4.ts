@@ -3,7 +3,7 @@
 	Author Tobias Koppers @sokra
 */
 
-import { create } from './wasm-hash';
+import { create } from "./wasm-hash";
 
 //#region wasm code: md4 (../../../assembly/hash/md4.asm.ts) --initialMemory 1
 const md4 = new WebAssembly.Module(

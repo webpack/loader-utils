@@ -1,6 +1,6 @@
 import type { LoaderContext } from "webpack";
 import path from "path";
-import getHashDigest from './getHashDigest';
+import getHashDigest from "./getHashDigest";
 
 interface IInterpolateNameOptions {
   content?: Buffer;
@@ -8,11 +8,15 @@ interface IInterpolateNameOptions {
   regExp?: string;
 }
 
-export default function interpolateName(loaderContext: LoaderContext<{}>, name: string | ((resourcePath: string, resourceQuery?: string) => string), options: IInterpolateNameOptions = {}) {
+export default function interpolateName(
+  loaderContext: LoaderContext<object>,
+  name: string | ((resourcePath: string, resourceQuery?: string) => string),
+  options: IInterpolateNameOptions = {}
+) {
   let filename;
 
-  const hasQuery: boolean =
-    (loaderContext.resourceQuery && loaderContext.resourceQuery.length > 1) as boolean;
+  const hasQuery: boolean = (loaderContext.resourceQuery &&
+    loaderContext.resourceQuery.length > 1) as boolean;
 
   if (typeof name === "function") {
     filename = name(
@@ -104,13 +108,16 @@ export default function interpolateName(loaderContext: LoaderContext<{}>, name: 
   }
 
   if (
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore LoaderContext doesn't even have options defined on it?
     // If we chagned this to be `loaderContext.getOptions()` it would still not have
     // the customInterpolateName function defined on it.
     typeof loaderContext.options === "object" &&
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     typeof loaderContext.options.customInterpolateName === "function"
   ) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     url = loaderContext.options.customInterpolateName.call(
       loaderContext,

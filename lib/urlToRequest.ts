@@ -1,9 +1,12 @@
 // we can't use path.win32.isAbsolute because it also matches paths starting with a forward slash
-const NATIVE_WIN_32_PATH_REGEXP: RegExp = /^[A-Z]:[/\\]|^\\\\/i;
-const MODULE_REQUEST_REGEXP: RegExp = /^[^?]*~/;
-const ROOT_RELATIVE_URL_REGEXP: RegExp = /^\//;
+const NATIVE_WIN_32_PATH_REGEXP = /^[A-Z]:[/\\]|^\\\\/i;
+const MODULE_REQUEST_REGEXP = /^[^?]*~/;
+const ROOT_RELATIVE_URL_REGEXP = /^\//;
 
-export default function urlToRequest(url: string, root?: string | boolean): string {
+export default function urlToRequest(
+  url: string,
+  root?: string | boolean
+): string {
   // Do not rewrite an empty url
   if (url === "") {
     return "";
@@ -14,7 +17,11 @@ export default function urlToRequest(url: string, root?: string | boolean): stri
   if (NATIVE_WIN_32_PATH_REGEXP.test(url)) {
     // absolute windows path, keep it
     request = url;
-  } else if (root !== undefined && root !== false && ROOT_RELATIVE_URL_REGEXP.test(url)) {
+  } else if (
+    root !== undefined &&
+    root !== false &&
+    ROOT_RELATIVE_URL_REGEXP.test(url)
+  ) {
     // if root is set and the url is root-relative
     switch (typeof root) {
       // 1. root is a string: root is prefixed to the url

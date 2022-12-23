@@ -5,7 +5,8 @@
   "description": "utils for webpack loaders",
   "dependencies": {},
   "scripts": {
-    "lint": "prettier --list-different . && eslint .",
+    "lint": "prettier --list-different . && eslint ./lib",
+    "pretty": "prettier --write .",
     "build": "tsc",
     "pretest": "yarn lint",
     "test": "jest",

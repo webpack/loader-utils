@@ -1,9 +1,9 @@
-import path from 'path';
+import path from "path";
 
-const DATA_URI_REGEXP: RegExp = /^data:/i;
-const ABOSLUTE_URL_NON_WINDOWS_PATHLIKE_REGEXP: RegExp = /^[a-z][a-z0-9+.-]*:/i;
-const POROTCOL_RELATIVE_REGEXP: RegExp = /^\/\//i;
-const URL_FOR_TEMPLATE_REGEXP: RegExp = /^#/i;
+const DATA_URI_REGEXP = /^data:/i;
+const ABOSLUTE_URL_NON_WINDOWS_PATHLIKE_REGEXP = /^[a-z][a-z0-9+.-]*:/i;
+const POROTCOL_RELATIVE_REGEXP = /^\/\//i;
+const URL_FOR_TEMPLATE_REGEXP = /^#/i;
 
 export default function isUrlRequest(url: string): boolean {
   // An URL is not an request if
@@ -14,7 +14,10 @@ export default function isUrlRequest(url: string): boolean {
   }
 
   // 2. It's an absolute url and it is not `windows` path like `C:\dir\file`
-  if (ABOSLUTE_URL_NON_WINDOWS_PATHLIKE_REGEXP.test(url) && !path.win32.isAbsolute(url)) {
+  if (
+    ABOSLUTE_URL_NON_WINDOWS_PATHLIKE_REGEXP.test(url) &&
+    !path.win32.isAbsolute(url)
+  ) {
     return false;
   }
 
@@ -30,5 +33,3 @@ export default function isUrlRequest(url: string): boolean {
 
   return true;
 }
-
-

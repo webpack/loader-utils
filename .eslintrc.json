@@ -1,7 +1,11 @@
 {
   "root": true,
   "plugins": ["node", "@typescript-eslint"],
-  "extends": ["eslint:recommended", "plugin:node/recommended", "plugin:@typescript-eslint/recommended"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:node/recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
   "env": {
     "node": true
   },
@@ -20,6 +24,11 @@
     "prefer-const": "error",
     "prefer-arrow-callback": "error",
     "object-shorthand": "error",
-    "es-syntax": "false"
+    "node/no-unsupported-features/es-syntax": 0,
+    "node/no-missing-require": 0,
+    "node/no-missing-import": 0,
+    "node/no-unpublished-import": 0,
+    "@typescript-eslint/no-var-requires": 0,
+    "@typescript-eslint/no-explicit-any": 0
   }
 }

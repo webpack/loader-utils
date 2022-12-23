@@ -1,12 +1,11 @@
 import type { Hash, Encoding, BinaryToTextEncoding } from "crypto";
 type HashOrFactory = Hash | (() => Hash);
 
-const BULK_SIZE: number = 2000;
+const BULK_SIZE = 2000;
 
 // We are using an object instead of a Map as this will stay static during the runtime
 // so access to it can be optimized by v8
-const digestCaches: {[key: string]: any} = {};
-
+const digestCaches: { [key: string]: any } = {};
 
 export default class BulkUpdateDecorator {
   /**
@@ -14,7 +13,7 @@ export default class BulkUpdateDecorator {
    * @param {string=} hashKey key for caching
    */
   hash?: Hash;
-  hashFactory?: (() => Hash);
+  hashFactory?: () => Hash;
   hashKey: string;
   buffer: string;
 
@@ -45,6 +44,7 @@ export default class BulkUpdateDecorator {
       data.length > BULK_SIZE
     ) {
       if (this.hash === undefined) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.hash = this.hashFactory!();
       }
 
@@ -63,6 +63,7 @@ export default class BulkUpdateDecorator {
 
       if (this.buffer.length > BULK_SIZE) {
         if (this.hash === undefined) {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           this.hash = this.hashFactory!();
         }
 
@@ -101,6 +102,7 @@ export default class BulkUpdateDecorator {
         return cacheEntry;
       }
 
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this.hash = this.hashFactory!();
     }
 

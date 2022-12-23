@@ -2,7 +2,7 @@
 	MIT License http://www.opensource.org/licenses/mit-license.php
 	Author Tobias Koppers @sokra
 */
-import { create } from './wasm-hash';
+import { create } from "./wasm-hash";
 
 //#region wasm code: xxhash64 (../../../assembly/hash/xxhash64.asm.ts) --initialMemory 1
 const xxhash64 = new WebAssembly.Module(

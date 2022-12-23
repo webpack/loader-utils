@@ -1,4 +1,4 @@
-import { Hash, BinaryToTextEncoding } from "crypto";
+import { BinaryToTextEncoding } from "crypto";
 
 /*
 	MIT License http://www.opensource.org/licenses/mit-license.php
@@ -25,7 +25,12 @@ export class WasmHash {
   chunkSize: number;
   digestSize: number;
 
-  constructor(instance: WebAssembly.Instance, instancesPool: WebAssembly.Instance[], chunkSize: number, digestSize: number) {
+  constructor(
+    instance: WebAssembly.Instance,
+    instancesPool: WebAssembly.Instance[],
+    chunkSize: number,
+    digestSize: number
+  ) {
     const exports = instance.exports as any;
 
     exports.init();
@@ -189,7 +194,12 @@ export class WasmHash {
   }
 }
 
-export const create = (wasmModule: WebAssembly.Module, instancesPool: WasmHash[], chunkSize: number, digestSize: number) => {
+export const create = (
+  wasmModule: WebAssembly.Module,
+  instancesPool: WasmHash[],
+  chunkSize: number,
+  digestSize: number
+) => {
   if (instancesPool.length > 0) {
     const old = instancesPool.pop();
 
@@ -207,4 +217,3 @@ export const create = (wasmModule: WebAssembly.Module, instancesPool: WasmHash[]
     );
   }
 };
-

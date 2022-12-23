@@ -1,4 +1,4 @@
-import {Hash} from 'crypto';
+import { Hash } from "crypto";
 
 const baseEncodeTables = {
   26: "abcdefghijklmnopqrstuvwxyz",
@@ -11,7 +11,15 @@ const baseEncodeTables = {
   64: "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_",
 };
 
-type DigestTypes = "base26" | "base32" | "base36" | "base49" | "base52" | "base58" | "base62" | "base64";
+type DigestTypes =
+  | "base26"
+  | "base32"
+  | "base36"
+  | "base49"
+  | "base52"
+  | "base58"
+  | "base62"
+  | "base64";
 type BaseEncodings = 26 | 32 | 36 | 49 | 52 | 58 | 62 | 64;
 
 /**
@@ -29,8 +37,12 @@ function divmod32(uint32Array: Uint32Array, divisor: number): number {
   return carry;
 }
 
-function encodeBufferToBase(buffer: Buffer, base: BaseEncodings | number, length: number) {
-  const encodeTable = baseEncodeTables[(base as keyof typeof baseEncodeTables)];
+function encodeBufferToBase(
+  buffer: Buffer,
+  base: BaseEncodings | number,
+  length: number
+) {
+  const encodeTable = baseEncodeTables[base as keyof typeof baseEncodeTables];
 
   if (!encodeTable) {
     throw new Error("Unknown encoding base" + base);
@@ -57,13 +69,18 @@ function encodeBufferToBase(buffer: Buffer, base: BaseEncodings | number, length
   return output;
 }
 
-let crypto: typeof import('crypto')
-let createXXHash64: typeof import('./hash/xxhash64').default;
-let createMd4: typeof import('./hash/md4').default;
-let BatchedHash: typeof import('./hash/BatchedHash').default;
-let BulkUpdateDecorator: typeof import('./hash/BulkUpdateDecorator').default;
+let crypto: typeof import("crypto");
+let createXXHash64: typeof import("./hash/xxhash64").default;
+let createMd4: typeof import("./hash/md4").default;
+let BatchedHash: typeof import("./hash/BatchedHash").default;
+let BulkUpdateDecorator: typeof import("./hash/BulkUpdateDecorator").default;
 
-export default function getHashDigest(buffer: Buffer, algorithm: string | "xxhash64" | "md4" | "native-md4", digestType: DigestTypes | string, maxLength: number) {
+export default function getHashDigest(
+  buffer: Buffer,
+  algorithm: string | "xxhash64" | "md4" | "native-md4",
+  digestType: DigestTypes | string,
+  maxLength: number
+) {
   algorithm = algorithm || "xxhash64";
   maxLength = maxLength || 9999;
 
@@ -125,10 +142,17 @@ export default function getHashDigest(buffer: Buffer, algorithm: string | "xxhas
     digestType === "base58" ||
     digestType === "base62"
   ) {
-    const digestTypeToDigest: number = digestType.substr(4) as unknown as number;
+    const digestTypeToDigest: number = digestType.substr(
+      4
+    ) as unknown as number;
 
-    return encodeBufferToBase(hash.digest() as Buffer, digestTypeToDigest, maxLength);
+    return encodeBufferToBase(
+      hash.digest() as Buffer,
+      digestTypeToDigest,
+      maxLength
+    );
   } else {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     return hash.digest(digestType || "hex").substr(0, maxLength);
   }
