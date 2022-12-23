@@ -1,4 +1,4 @@
-import { Hash } from "crypto";
+import type { Hash } from "crypto";
 
 const baseEncodeTables = {
   26: "abcdefghijklmnopqrstuvwxyz",
@@ -11,16 +11,8 @@ const baseEncodeTables = {
   64: "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_",
 };
 
-type DigestTypes =
-  | "base26"
-  | "base32"
-  | "base36"
-  | "base49"
-  | "base52"
-  | "base58"
-  | "base62"
-  | "base64";
-type BaseEncodings = 26 | 32 | 36 | 49 | 52 | 58 | 62 | 64;
+type BaseEncoding = keyof typeof baseEncodeTables;
+type DigestType = `base${BaseEncoding}`;
 
 /**
  * @param {Uint32Array} uint32Array Treated as a long base-0x100000000 number, little endian
@@ -39,10 +31,10 @@ function divmod32(uint32Array: Uint32Array, divisor: number): number {
 
 function encodeBufferToBase(
   buffer: Buffer,
-  base: BaseEncodings | number,
+  base: BaseEncoding,
   length: number
 ) {
-  const encodeTable = baseEncodeTables[base as keyof typeof baseEncodeTables];
+  const encodeTable = baseEncodeTables[base];
 
   if (!encodeTable) {
     throw new Error("Unknown encoding base" + base);
@@ -78,7 +70,7 @@ let BulkUpdateDecorator: typeof import("./hash/BulkUpdateDecorator").default;
 export default function getHashDigest(
   buffer: Buffer,
   algorithm: string | "xxhash64" | "md4" | "native-md4",
-  digestType: DigestTypes | string,
+  digestType: DigestType | string,
   maxLength: number
 ) {
   algorithm = algorithm || "xxhash64";
@@ -142,13 +134,11 @@ export default function getHashDigest(
     digestType === "base58" ||
     digestType === "base62"
   ) {
-    const digestTypeToDigest: number = digestType.substr(
-      4
-    ) as unknown as number;
+    const digestTypeToDigest = Number(digestType.substr(4));
 
     return encodeBufferToBase(
       hash.digest() as Buffer,
-      digestTypeToDigest,
+      digestTypeToDigest as BaseEncoding,
       maxLength
     );
   } else {

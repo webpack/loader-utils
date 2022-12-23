@@ -1,6 +1,4 @@
-import isUrlRequest from "./isUrlRequest";
-import urlToRequest from "./urlToRequest";
-import getHashDigest from "./getHashDigest";
-import interpolateName from "./interpolateName";
-
-export { urlToRequest, getHashDigest, interpolateName, isUrlRequest };
+export { default as isUrlRequest } from "./isUrlRequest";
+export { default as urlToRequest } from "./urlToRequest";
+export { default as getHashDigest } from "./getHashDigest";
+export { default as interpolateName } from "./interpolateName";

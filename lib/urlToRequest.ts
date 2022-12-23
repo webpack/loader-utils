@@ -2,6 +2,7 @@
 const NATIVE_WIN_32_PATH_REGEXP = /^[A-Z]:[/\\]|^\\\\/i;
 const MODULE_REQUEST_REGEXP = /^[^?]*~/;
 const ROOT_RELATIVE_URL_REGEXP = /^\//;
+const TILDE_ROOTS_MODULE_REQUEST_REGEXP = /([^~/])$/;
 
 export default function urlToRequest(
   url: string,
@@ -28,7 +29,9 @@ export default function urlToRequest(
       case "string":
         // special case: `~` roots convert to module request
         if (MODULE_REQUEST_REGEXP.test(root)) {
-          request = root.replace(/([^~/])$/, "$1/") + url.slice(1);
+          request =
+            root.replace(TILDE_ROOTS_MODULE_REQUEST_REGEXP, "$1/") +
+            url.slice(1);
         } else {
           request = root + url;
         }
