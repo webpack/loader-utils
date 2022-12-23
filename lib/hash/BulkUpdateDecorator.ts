@@ -5,13 +5,9 @@ const BULK_SIZE = 2000;
 
 // We are using an object instead of a Map as this will stay static during the runtime
 // so access to it can be optimized by v8
-const digestCaches: { [key: string]: any } = {};
+const digestCaches: Record<string, any> = {};
 
-export default class BulkUpdateDecorator {
-  /**
-   * @param {HashOrFactory} hashOrFactory function to create a hash
-   * @param {string=} hashKey key for caching
-   */
+export class BulkUpdateDecorator {
   hash?: Hash;
   hashFactory?: () => Hash;
   hashKey: string;
@@ -31,12 +27,7 @@ export default class BulkUpdateDecorator {
     this.buffer = "";
   }
 
-  /**
-   * Update hash {@link https://nodejs.org/api/crypto.html#crypto_hash_update_data_inputencoding}
-   * @param {string|Buffer} data data
-   * @param {string=} inputEncoding data encoding
-   * @returns {this} updated hash
-   */
+  // Updates the hash https://nodejs.org/api/crypto.html#crypto_hash_update_data_inputencoding
   update(data: string | Buffer, inputEncoding?: Encoding): this {
     if (
       inputEncoding !== undefined ||
@@ -75,11 +66,7 @@ export default class BulkUpdateDecorator {
     return this;
   }
 
-  /**
-   * Calculates the digest {@link https://nodejs.org/api/crypto.html#crypto_hash_digest_encoding}
-   * @param {string=} encoding encoding of the return value
-   * @returns {string|Buffer} digest
-   */
+  // Calculates the digest https://nodejs.org/api/crypto.html#crypto_hash_digest_encoding
   digest(encoding?: BinaryToTextEncoding): string | Buffer {
     let digestCache;
     let digestResult: string | Buffer;

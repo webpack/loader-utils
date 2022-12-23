@@ -62,10 +62,10 @@ function encodeBufferToBase(
 }
 
 let crypto: typeof import("crypto");
-let createXXHash64: typeof import("./hash/xxhash64").default;
-let createMd4: typeof import("./hash/md4").default;
-let BatchedHash: typeof import("./hash/BatchedHash").default;
-let BulkUpdateDecorator: typeof import("./hash/BulkUpdateDecorator").default;
+let createXXHash64: typeof import("./hash/xxhash64").create;
+let createMd4: typeof import("./hash/md4").create;
+let BatchedHash: typeof import("./hash/BatchedHash").BatchedHash;
+let BulkUpdateDecorator: typeof import("./hash/BulkUpdateDecorator").BulkUpdateDecorator;
 
 export default function getHashDigest(
   buffer: Buffer,
@@ -80,20 +80,20 @@ export default function getHashDigest(
 
   if (algorithm === "xxhash64") {
     if (createXXHash64 === undefined) {
-      createXXHash64 = require("./hash/xxhash64").default;
+      createXXHash64 = require("./hash/xxhash64").create;
 
       if (BatchedHash === undefined) {
-        BatchedHash = require("./hash/BatchedHash").default;
+        BatchedHash = require("./hash/BatchedHash").BatchedHash;
       }
     }
 
     hash = new BatchedHash(createXXHash64() as unknown as Hash);
   } else if (algorithm === "md4") {
     if (createMd4 === undefined) {
-      createMd4 = require("./hash/md4").default;
+      createMd4 = require("./hash/md4").create;
 
       if (BatchedHash === undefined) {
-        BatchedHash = require("./hash/BatchedHash").default;
+        BatchedHash = require("./hash/BatchedHash").BatchedHash;
       }
     }
 
@@ -103,7 +103,8 @@ export default function getHashDigest(
       crypto = require("crypto");
 
       if (BulkUpdateDecorator === undefined) {
-        BulkUpdateDecorator = require("./hash/BulkUpdateDecorator").default;
+        BulkUpdateDecorator =
+          require("./hash/BulkUpdateDecorator").BulkUpdateDecorator;
       }
     }
 
@@ -113,7 +114,8 @@ export default function getHashDigest(
       crypto = require("crypto");
 
       if (BulkUpdateDecorator === undefined) {
-        BulkUpdateDecorator = require("./hash/BulkUpdateDecorator").default;
+        BulkUpdateDecorator =
+          require("./hash/BulkUpdateDecorator").BulkUpdateDecorator;
       }
     }
 

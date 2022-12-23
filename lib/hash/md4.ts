@@ -3,7 +3,7 @@
 	Author Tobias Koppers @sokra
 */
 
-import { create } from "./wasm-hash";
+import { create as createFn } from "./wasm-hash";
 
 //#region wasm code: md4 (../../../assembly/hash/md4.asm.ts) --initialMemory 1
 const md4 = new WebAssembly.Module(
@@ -15,4 +15,4 @@ const md4 = new WebAssembly.Module(
 );
 //#endregion
 
-export default create.bind(null, md4, [], 64, 32);
+export const create = createFn.bind(null, md4, [], 64, 32);

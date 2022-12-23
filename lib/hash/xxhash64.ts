@@ -2,7 +2,7 @@
 	MIT License http://www.opensource.org/licenses/mit-license.php
 	Author Tobias Koppers @sokra
 */
-import { create } from "./wasm-hash";
+import { create as createFn } from "./wasm-hash";
 
 //#region wasm code: xxhash64 (../../../assembly/hash/xxhash64.asm.ts) --initialMemory 1
 const xxhash64 = new WebAssembly.Module(
@@ -14,4 +14,4 @@ const xxhash64 = new WebAssembly.Module(
 );
 //#endregion
 
-export default create.bind(null, xxhash64, [], 32, 16);
+export const create = createFn.bind(null, xxhash64, [], 32, 16);

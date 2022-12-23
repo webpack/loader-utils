@@ -1,7 +1,7 @@
 import type { Hash, Encoding, BinaryToTextEncoding } from "crypto";
 import { MAX_SHORT_STRING } from "./wasm-hash";
 
-export default class BatchedHash {
+export class BatchedHash {
   public string?: string;
   public encoding?: Encoding;
   public readonly hash: Hash;
@@ -12,12 +12,7 @@ export default class BatchedHash {
     this.hash = hash;
   }
 
-  /**
-   * Update hash {@link https://nodejs.org/api/crypto.html#crypto_hash_update_data_inputencoding}
-   * @param {string|Buffer} data data
-   * @param {string=} inputEncoding data encoding
-   * @returns {this} updated hash
-   */
+  // Updates the hash https://nodejs.org/api/crypto.html#crypto_hash_update_data_inputencoding
   update(data: string | Buffer, inputEncoding?: Encoding): this {
     if (this.string !== undefined) {
       if (
@@ -61,11 +56,7 @@ export default class BatchedHash {
     return this;
   }
 
-  /**
-   * Calculates the digest {@link https://nodejs.org/api/crypto.html#crypto_hash_digest_encoding}
-   * @param {string=} encoding encoding of the return value
-   * @returns {string|Buffer} digest
-   */
+  // Calculates the digest https://nodejs.org/api/crypto.html#crypto_hash_digest_encoding
   digest(encoding?: BinaryToTextEncoding): string | Buffer {
     if (this.string !== undefined) {
       if (this.encoding !== undefined) {
