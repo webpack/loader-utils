@@ -5,6 +5,24 @@ const ABOSLUTE_URL_NON_WINDOWS_PATHLIKE_REGEXP = /^[a-z][a-z0-9+.-]*:/i;
 const POROTCOL_RELATIVE_REGEXP = /^\/\//i;
 const URL_FOR_TEMPLATE_REGEXP = /^#/i;
 
+/**
+ * Utility method for ensuring if a string is a requestable URL
+ * @remarks
+ * You typically want to call `isUrlRequest()` before using the `urlToRequest()` function
+ * @example
+ * ```js
+ * const url = "path/to/module.js"
+ * if (loaderUtils.isUrlRequest(url)) {
+ * // Logic for requestable url
+ * const request = loaderUtils.urlToRequest(url);
+ * } else {
+ * // Logic for non-requestable url
+ * }
+ * ```
+ *
+ * @param url - The url to check
+ * @public
+ */
 export default function isUrlRequest(url: string): boolean {
   // An URL is not an request if
 

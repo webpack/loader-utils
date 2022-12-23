@@ -19,7 +19,7 @@
     "no-process-exit": "error",
     "no-loop-func": "error",
     "no-console": "off",
-    "valid-jsdoc": "error",
+    "valid-jsdoc": "off",
     "no-var": "error",
     "prefer-const": "error",
     "prefer-arrow-callback": "error",

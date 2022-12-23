@@ -4,6 +4,49 @@ const MODULE_REQUEST_REGEXP = /^[^?]*~/;
 const ROOT_RELATIVE_URL_REGEXP = /^\//;
 const TILDE_ROOTS_MODULE_REQUEST_REGEXP = /([^~/])$/;
 
+/**
+ * Converts some resource URL into a webpack module request
+ *
+ * @example
+ * A simple example:
+ * ```js
+ * const url = "path/to/module.js"
+ * const request = loaderUtils.urlToRequest(url);
+ * // request === "./path/to/module.js"
+ * ```
+ *
+ * @remarks
+ * ### Module URLs
+ *
+ * @example
+ * Any URL containing a `~` will be interpreted as a module request. Anything after the `~` will be considered the request path:
+ * ```js
+ * const url = "~/path/to/module.js"
+ * const request = loaderUtils.urlToRequest(url);
+ * // request === "path/to/module.js"
+ * ```
+ *
+ * @remarks
+ * ### Root-relative URLs
+ *
+ * @example
+ * URLs that are root-relative (start with `/`) can be resolved relative to some arbitrary path by using the root parameter:
+ * ```js
+ * const url = "/path/to/module.js"
+ * const request = loaderUtils.urlToRequest(url, "./root");
+ * // request === "./root/path/to/module.js"
+ * ```
+ *
+ * @example
+ * To convert a root-relative URL into a module URL, specify a root value that starts with `~`:
+ * ```js
+ * const url = "/path/to/module.js"
+ * const request = loaderUtils.urlToRequest(url, "~");
+ * // request === "path/to/module.js"
+ * ```
+ *
+ * @public
+ */
 export default function urlToRequest(
   url: string,
   root?: string | boolean

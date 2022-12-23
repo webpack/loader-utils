@@ -7,7 +7,8 @@
   "scripts": {
     "lint": "prettier --list-different . && eslint ./lib",
     "pretty": "prettier --write .",
-    "build": "tsc",
+    "type-rollup": "api-extractor run --local",
+    "build": "tsc && yarn type-rollup",
     "pretest": "yarn lint",
     "test": "jest",
     "test:only": "jest --coverage",
@@ -23,6 +24,7 @@
     "node": ">= 12.13.0"
   },
   "devDependencies": {
+    "@microsoft/api-extractor": "^7.33.7",
     "@typescript-eslint/eslint-plugin": "^5.47.0",
     "@typescript-eslint/parser": "^5.47.0",
     "coveralls": "^3.1.1",

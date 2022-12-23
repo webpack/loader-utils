@@ -8,6 +8,15 @@ interface IInterpolateNameOptions {
   regExp?: string;
 }
 
+/**
+ * Interpolates a filename template using multiple placeholders and/or regular expressions.
+ * The template and regular expression are set as query params called `name` and `regExp` on the current loader's context.
+ *
+ * @param loaderContext - The loader context from webpack which is provided via `this` inside of a loader.
+ * @param name - The name of the string to transform/interpolate on. This can be a string or a function (providing the loader contexts resourcePath and resourceQuery) that returns a string.
+ * @param options - An object containing the following properties: `context`, `content`, `regExp`.
+ * @public
+ */
 export default function interpolateName(
   loaderContext: LoaderContext<object>,
   name: string | ((resourcePath: string, resourceQuery?: string) => string),

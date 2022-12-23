@@ -67,6 +67,14 @@ let createMd4: typeof import("./hash/md4").create;
 let BatchedHash: typeof import("./hash/BatchedHash").BatchedHash;
 let BulkUpdateDecorator: typeof import("./hash/BulkUpdateDecorator").BulkUpdateDecorator;
 
+/**
+ * @public
+ *
+ * @param buffer - This represents the content that should be hashed
+ * @param hashType - The algorithm to use to hash the content. Can be one of `xxhash64`, `md4`, `native-md4` or any other hash algorithm supported by node.js `crypto` module.
+ * @param digestType - The encoding to use for the hash. Can be one of `base26`, `base32`, `base36`, `base49`, `base52`, `base58`, `base62` or `base64`.
+ * @param maxLength - The maximum length of the resulting hash. Defaults to `9999`.
+ */
 export default function getHashDigest(
   buffer: Buffer,
   algorithm: string | "xxhash64" | "md4" | "native-md4",

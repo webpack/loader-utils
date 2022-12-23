@@ -6,7 +6,9 @@
     "outDir": "dist",
     "strict": true,
     "types": ["node"],
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "declaration": true,
+    "declarationMap": true
   },
   "include": ["lib/**/*.ts"]
 }
