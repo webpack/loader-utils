@@ -1,6 +1,6 @@
 "use strict";
 
-const loaderUtils = require("../dist");
+const loaderUtils = require("../");
 
 describe("getHashDigest()", () => {
   [

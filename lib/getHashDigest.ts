@@ -71,20 +71,20 @@ export default function getHashDigest(buffer: Buffer, algorithm: string | "xxhas
 
   if (algorithm === "xxhash64") {
     if (createXXHash64 === undefined) {
-      createXXHash64 = require("./hash/xxhash64");
+      createXXHash64 = require("./hash/xxhash64").default;
 
       if (BatchedHash === undefined) {
-        BatchedHash = require("./hash/BatchedHash");
+        BatchedHash = require("./hash/BatchedHash").default;
       }
     }
 
     hash = new BatchedHash(createXXHash64() as unknown as Hash);
   } else if (algorithm === "md4") {
     if (createMd4 === undefined) {
-      createMd4 = require("./hash/md4");
+      createMd4 = require("./hash/md4").default;
 
       if (BatchedHash === undefined) {
-        BatchedHash = require("./hash/BatchedHash");
+        BatchedHash = require("./hash/BatchedHash").default;
       }
     }
 
@@ -94,7 +94,7 @@ export default function getHashDigest(buffer: Buffer, algorithm: string | "xxhas
       crypto = require("crypto");
 
       if (BulkUpdateDecorator === undefined) {
-        BulkUpdateDecorator = require("./hash/BulkUpdateDecorator");
+        BulkUpdateDecorator = require("./hash/BulkUpdateDecorator").default;
       }
     }
 
@@ -104,7 +104,7 @@ export default function getHashDigest(buffer: Buffer, algorithm: string | "xxhas
       crypto = require("crypto");
 
       if (BulkUpdateDecorator === undefined) {
-        BulkUpdateDecorator = require("./hash/BulkUpdateDecorator");
+        BulkUpdateDecorator = require("./hash/BulkUpdateDecorator").default;
       }
     }
 

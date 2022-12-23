@@ -104,7 +104,9 @@ export default function interpolateName(loaderContext: LoaderContext<{}>, name: 
   }
 
   if (
-    // @ts-ignore
+    // @ts-ignore LoaderContext doesn't even have options defined on it?
+    // If we chagned this to be `loaderContext.getOptions()` it would still not have
+    // the customInterpolateName function defined on it.
     typeof loaderContext.options === "object" &&
     // @ts-ignore
     typeof loaderContext.options.customInterpolateName === "function"
