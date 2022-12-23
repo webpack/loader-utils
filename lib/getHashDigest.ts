@@ -1,4 +1,4 @@
-import type { Hash } from "crypto";
+import type { Hash, BinaryToTextEncoding } from "crypto";
 
 const baseEncodeTables = {
   26: "abcdefghijklmnopqrstuvwxyz",
@@ -152,8 +152,8 @@ export default function getHashDigest(
       maxLength
     );
   } else {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    return hash.digest(digestType || "hex").substr(0, maxLength);
+    return (
+      hash.digest((digestType as BinaryToTextEncoding) || "hex") as string
+    ).substr(0, maxLength);
   }
 }
