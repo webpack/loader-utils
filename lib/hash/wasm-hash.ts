@@ -206,7 +206,7 @@ export const create = (
   if (instancesPool.length > 0) {
     result = instancesPool.pop();
 
-    // old is possibly undefined
+    // result is possibly undefined
     // protect reset call here
     result?.reset();
   }

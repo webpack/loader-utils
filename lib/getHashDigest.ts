@@ -1,6 +1,6 @@
 import type { BinaryToTextEncoding } from "crypto";
 
-const baseEncodeTables = {
+export const baseEncodeTables = {
   26: "abcdefghijklmnopqrstuvwxyz",
   32: "123456789abcdefghjkmnpqrstuvwxyz", // no 0lio
   36: "0123456789abcdefghijklmnopqrstuvwxyz",
@@ -11,14 +11,9 @@ const baseEncodeTables = {
   64: "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_",
 };
 
-type BaseEncoding = keyof typeof baseEncodeTables;
-type DigestType = `base${BaseEncoding}`;
+export type BaseEncoding = keyof typeof baseEncodeTables;
+export type DigestType = `base${BaseEncoding}`;
 
-/**
- * @param {Uint32Array} uint32Array Treated as a long base-0x100000000 number, little endian
- * @param {number} divisor The divisor
- * @return {number} Modulo (remainder) of the division
- */
 function divmod32(uint32Array: Uint32Array, divisor: number): number {
   let carry = 0;
   for (let i = uint32Array.length - 1; i >= 0; i--) {
