@@ -15,10 +15,10 @@ export const MAX_SHORT_STRING: number = Math.floor((65536 - 64) / 4) & ~3;
 
 export class WasmHash implements IHashLike {
   /**
-   * @param {WebAssembly.Instance} instance wasm instance
-   * @param {WebAssembly.Instance[]} instancesPool pool of instances
-   * @param {number} chunkSize size of data chunks passed to wasm
-   * @param {number} digestSize size of digest returned by wasm
+   * @param instance - wasm instance
+   * @param instancesPool - pool of instances
+   * @param chunkSize - size of data chunks passed to wasm
+   * @param digestSize - size of digest returned by wasm
    */
   exports: any;
   mem: Buffer;
@@ -51,9 +51,9 @@ export class WasmHash implements IHashLike {
   }
 
   /**
-   * @param {Buffer | string} data data
-   * @param {BufferEncoding=} encoding encoding
-   * @returns {this} itself
+   * @param data - data
+   * @param encoding - encoding
+   * @returns itself
    */
   update(data: Buffer | string, encoding: BufferEncoding): this {
     if (typeof data === "string") {
@@ -128,8 +128,7 @@ export class WasmHash implements IHashLike {
   }
 
   /**
-   * @param {Buffer} data data
-   * @returns {void}
+   * @param data - data
    */
   _updateWithBuffer(data: Buffer): void {
     const { exports, buffered, mem } = this;

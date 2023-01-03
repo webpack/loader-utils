@@ -14,6 +14,11 @@ export const baseEncodeTables = {
 export type BaseEncoding = keyof typeof baseEncodeTables;
 export type DigestType = `base${BaseEncoding}`;
 
+/**
+ * @param uint32Array - Treated as a long base-0x100000000 number, little endian
+ * @param divisor - The divisor
+ * @return Modulo (remainder) of the division
+ */
 function divmod32(uint32Array: Uint32Array, divisor: number): number {
   let carry = 0;
   for (let i = uint32Array.length - 1; i >= 0; i--) {
