@@ -1,5 +1,7 @@
 import { BinaryToTextEncoding } from "crypto";
 
+import type { IHashLike } from "./BatchedHash";
+
 /*
 	MIT License http://www.opensource.org/licenses/mit-license.php
 	Author Tobias Koppers @sokra
@@ -11,7 +13,7 @@ import { BinaryToTextEncoding } from "crypto";
 // ~3 makes sure that it's always a block of 4 chars, so avoid partially encoded bytes for base64
 export const MAX_SHORT_STRING: number = Math.floor((65536 - 64) / 4) & ~3;
 
-export class WasmHash {
+export class WasmHash implements IHashLike {
   /**
    * @param {WebAssembly.Instance} instance wasm instance
    * @param {WebAssembly.Instance[]} instancesPool pool of instances
@@ -200,15 +202,16 @@ export const create = (
   chunkSize: number,
   digestSize: number
 ) => {
+  let result: WasmHash | undefined;
   if (instancesPool.length > 0) {
-    const old = instancesPool.pop();
+    result = instancesPool.pop();
 
     // old is possibly undefined
     // protect reset call here
-    old && old.reset();
+    result?.reset();
+  }
 
-    return old;
-  } else {
+  if (result === undefined) {
     return new WasmHash(
       new WebAssembly.Instance(wasmModule),
       instancesPool,
@@ -216,4 +219,6 @@ export const create = (
       digestSize
     );
   }
+
+  return result;
 };
