@@ -116,19 +116,25 @@ export default function interpolateName(
       });
   }
 
+  interface ILoaderContextOptions {
+    customInterpolateName(
+      this: LoaderContext<object>,
+      url: string,
+      name: string | ((resourcePath: string, resourceQuery?: string) => string),
+      options?: IInterpolateNameOptions
+    ): string;
+  }
+  type LegacyLoaderContext = LoaderContext<object> & {
+    options?: ILoaderContextOptions;
+  };
+  const loaderContextOptions: ILoaderContextOptions | undefined = (
+    loaderContext as LegacyLoaderContext
+  ).options;
   if (
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore LoaderContext doesn't even have options defined on it?
-    // If we chagned this to be `loaderContext.getOptions()` it would still not have
-    // the customInterpolateName function defined on it.
-    typeof loaderContext.options === "object" &&
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    typeof loaderContext.options.customInterpolateName === "function"
+    typeof loaderContextOptions === "object" &&
+    typeof loaderContextOptions.customInterpolateName === "function"
   ) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    url = loaderContext.options.customInterpolateName.call(
+    url = loaderContextOptions.customInterpolateName.call(
       loaderContext,
       url,
       name,
