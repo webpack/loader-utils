@@ -1,4 +1,4 @@
-import type { Hash, BinaryToTextEncoding } from "crypto";
+import type { BinaryToTextEncoding } from "crypto";
 
 const baseEncodeTables = {
   26: "abcdefghijklmnopqrstuvwxyz",
@@ -95,7 +95,7 @@ export default function getHashDigest(
       }
     }
 
-    hash = new BatchedHash(createXXHash64() as unknown as Hash);
+    hash = new BatchedHash(createXXHash64());
   } else if (algorithm === "md4") {
     if (createMd4 === undefined) {
       createMd4 = require("./hash/md4").create;
@@ -105,7 +105,7 @@ export default function getHashDigest(
       }
     }
 
-    hash = new BatchedHash(createMd4() as unknown as Hash);
+    hash = new BatchedHash(createMd4());
   } else if (algorithm === "native-md4") {
     if (typeof crypto === "undefined") {
       crypto = require("crypto");

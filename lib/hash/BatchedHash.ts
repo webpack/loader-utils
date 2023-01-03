@@ -1,12 +1,17 @@
-import type { Hash, Encoding, BinaryToTextEncoding } from "crypto";
+import type { Encoding, BinaryToTextEncoding } from "crypto";
 import { MAX_SHORT_STRING } from "./wasm-hash";
+
+export interface IHashLike {
+  update(data: string | Buffer, inputEncoding?: Encoding): this;
+  digest(encoding?: BinaryToTextEncoding): string | Buffer;
+}
 
 export class BatchedHash {
   public string?: string;
   public encoding?: Encoding;
-  public readonly hash: Hash;
+  public readonly hash: IHashLike;
 
-  constructor(hash: Hash) {
+  constructor(hash: IHashLike) {
     this.string = undefined;
     this.encoding = undefined;
     this.hash = hash;
