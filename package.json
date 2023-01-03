@@ -6,7 +6,7 @@
   "dependencies": {
     "big.js": "^5.2.2",
     "emojis-list": "^3.0.0",
-    "json5": "^1.0.1"
+    "json5": "^1.0.2"
   },
   "scripts": {
     "lint": "eslint lib test",
