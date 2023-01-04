@@ -2,6 +2,9 @@ import type { LoaderContext } from "webpack";
 import path from "path";
 import getHashDigest from "./getHashDigest";
 
+/**
+ * @public
+ */
 export interface IInterpolateNameOptions {
   content?: Buffer;
   context?: string;

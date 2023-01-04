@@ -4,4 +4,4 @@ export { default as getHashDigest } from "./getHashDigest";
 export { default as interpolateName } from "./interpolateName";
 
 export type { IInterpolateNameOptions } from "./interpolateName";
-export type { DigestType, BaseEncoding, baseEncodeTables } from "./getHashDigest";
+export type { DigestType } from "./getHashDigest";
