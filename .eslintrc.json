@@ -1,10 +1,15 @@
 {
   "root": true,
-  "plugins": ["node"],
-  "extends": ["eslint:recommended", "plugin:node/recommended"],
+  "plugins": ["node", "@typescript-eslint"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:node/recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
   "env": {
     "node": true
   },
+  "parser": "@typescript-eslint/parser",
   "rules": {
     "no-template-curly-in-string": "error",
     "no-caller": "error",
@@ -14,10 +19,16 @@
     "no-process-exit": "error",
     "no-loop-func": "error",
     "no-console": "off",
-    "valid-jsdoc": "error",
+    "valid-jsdoc": "off",
     "no-var": "error",
     "prefer-const": "error",
     "prefer-arrow-callback": "error",
-    "object-shorthand": "error"
+    "object-shorthand": "error",
+    "node/no-unsupported-features/es-syntax": 0,
+    "node/no-missing-require": 0,
+    "node/no-missing-import": 0,
+    "node/no-unpublished-import": 0,
+    "@typescript-eslint/no-var-requires": 0,
+    "@typescript-eslint/no-explicit-any": 0
   }
 }

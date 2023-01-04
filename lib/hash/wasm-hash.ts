@@ -1,25 +1,39 @@
+import { BinaryToTextEncoding } from "crypto";
+
+import type { IHashLike } from "./BatchedHash";
+
 /*
 	MIT License http://www.opensource.org/licenses/mit-license.php
 	Author Tobias Koppers @sokra
 */
 
-"use strict";
-
 // 65536 is the size of a wasm memory page
 // 64 is the maximum chunk size for every possible wasm hash implementation
 // 4 is the maximum number of bytes per char for string encoding (max is utf-8)
 // ~3 makes sure that it's always a block of 4 chars, so avoid partially encoded bytes for base64
-const MAX_SHORT_STRING = Math.floor((65536 - 64) / 4) & ~3;
+export const MAX_SHORT_STRING: number = Math.floor((65536 - 64) / 4) & ~3;
 
-class WasmHash {
+export class WasmHash implements IHashLike {
   /**
-   * @param {WebAssembly.Instance} instance wasm instance
-   * @param {WebAssembly.Instance[]} instancesPool pool of instances
-   * @param {number} chunkSize size of data chunks passed to wasm
-   * @param {number} digestSize size of digest returned by wasm
+   * @param instance - wasm instance
+   * @param instancesPool - pool of instances
+   * @param chunkSize - size of data chunks passed to wasm
+   * @param digestSize - size of digest returned by wasm
    */
-  constructor(instance, instancesPool, chunkSize, digestSize) {
-    const exports = /** @type {any} */ (instance.exports);
+  exports: any;
+  mem: Buffer;
+  buffered: number;
+  instancesPool: WebAssembly.Instance[];
+  chunkSize: number;
+  digestSize: number;
+
+  constructor(
+    instance: WebAssembly.Instance,
+    instancesPool: WebAssembly.Instance[],
+    chunkSize: number,
+    digestSize: number
+  ) {
+    const exports = instance.exports as any;
 
     exports.init();
 
@@ -31,17 +45,17 @@ class WasmHash {
     this.digestSize = digestSize;
   }
 
-  reset() {
+  reset(): void {
     this.buffered = 0;
     this.exports.init();
   }
 
   /**
-   * @param {Buffer | string} data data
-   * @param {BufferEncoding=} encoding encoding
-   * @returns {this} itself
+   * @param data - data
+   * @param encoding - encoding
+   * @returns itself
    */
-  update(data, encoding) {
+  update(data: Buffer | string, encoding: BufferEncoding): this {
     if (typeof data === "string") {
       while (data.length > MAX_SHORT_STRING) {
         this._updateWithShortString(data.slice(0, MAX_SHORT_STRING), encoding);
@@ -58,15 +72,10 @@ class WasmHash {
     return this;
   }
 
-  /**
-   * @param {string} data data
-   * @param {BufferEncoding=} encoding encoding
-   * @returns {void}
-   */
-  _updateWithShortString(data, encoding) {
+  _updateWithShortString(data: string, encoding: BufferEncoding): void {
     const { exports, buffered, mem, chunkSize } = this;
 
-    let endPos;
+    let endPos: number;
 
     if (data.length < 70) {
       if (!encoding || encoding === "utf-8" || encoding === "utf8") {
@@ -119,10 +128,9 @@ class WasmHash {
   }
 
   /**
-   * @param {Buffer} data data
-   * @returns {void}
+   * @param data - data
    */
-  _updateWithBuffer(data) {
+  _updateWithBuffer(data: Buffer): void {
     const { exports, buffered, mem } = this;
     const length = data.length;
 
@@ -166,7 +174,7 @@ class WasmHash {
     }
   }
 
-  digest(type) {
+  digest(encoding: BinaryToTextEncoding): string | Buffer {
     const { exports, buffered, mem, digestSize } = this;
 
     exports.final(buffered);
@@ -175,26 +183,34 @@ class WasmHash {
 
     const hex = mem.toString("latin1", 0, digestSize);
 
-    if (type === "hex") {
+    if (encoding === "hex") {
       return hex;
     }
 
-    if (type === "binary" || !type) {
+    if (encoding === "binary" || !encoding) {
       return Buffer.from(hex, "hex");
     }
 
-    return Buffer.from(hex, "hex").toString(type);
+    return Buffer.from(hex, "hex").toString(encoding);
   }
 }
 
-const create = (wasmModule, instancesPool, chunkSize, digestSize) => {
+export const create = (
+  wasmModule: WebAssembly.Module,
+  instancesPool: WasmHash[],
+  chunkSize: number,
+  digestSize: number
+) => {
+  let result: WasmHash | undefined;
   if (instancesPool.length > 0) {
-    const old = instancesPool.pop();
+    result = instancesPool.pop();
 
-    old.reset();
+    // result is possibly undefined
+    // protect reset call here
+    result?.reset();
+  }
 
-    return old;
-  } else {
+  if (result === undefined) {
     return new WasmHash(
       new WebAssembly.Instance(wasmModule),
       instancesPool,
@@ -202,7 +218,6 @@ const create = (wasmModule, instancesPool, chunkSize, digestSize) => {
       digestSize
     );
   }
-};
 
-module.exports = create;
-module.exports.MAX_SHORT_STRING = MAX_SHORT_STRING;
+  return result;
+};

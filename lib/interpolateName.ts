@@ -1,13 +1,34 @@
-"use strict";
+import type { LoaderContext } from "webpack";
+import path from "path";
+import getHashDigest from "./getHashDigest";
 
-const path = require("path");
-const getHashDigest = require("./getHashDigest");
+/**
+ * @public
+ */
+export interface IInterpolateNameOptions {
+  content?: Buffer;
+  context?: string;
+  regExp?: string;
+}
 
-function interpolateName(loaderContext, name, options = {}) {
+/**
+ * Interpolates a filename template using multiple placeholders and/or regular expressions.
+ * The template and regular expression are set as query params called `name` and `regExp` on the current loader's context.
+ *
+ * @param loaderContext - The loader context from webpack which is provided via `this` inside of a loader.
+ * @param name - The name of the string to transform/interpolate on. This can be a string or a function (providing the loader contexts resourcePath and resourceQuery) that returns a string.
+ * @param options - An object containing the following properties: `context`, `content`, `regExp`.
+ * @public
+ */
+export default function interpolateName(
+  loaderContext: LoaderContext<object>,
+  name: string | ((resourcePath: string, resourceQuery?: string) => string),
+  options: IInterpolateNameOptions = {}
+) {
   let filename;
 
-  const hasQuery =
-    loaderContext.resourceQuery && loaderContext.resourceQuery.length > 1;
+  const hasQuery: boolean = (loaderContext.resourceQuery &&
+    loaderContext.resourceQuery.length > 1) as boolean;
 
   if (typeof name === "function") {
     filename = name(
@@ -98,11 +119,25 @@ function interpolateName(loaderContext, name, options = {}) {
       });
   }
 
+  interface ILoaderContextOptions {
+    customInterpolateName(
+      this: LoaderContext<object>,
+      url: string,
+      name: string | ((resourcePath: string, resourceQuery?: string) => string),
+      options?: IInterpolateNameOptions
+    ): string;
+  }
+  type LegacyLoaderContext = LoaderContext<object> & {
+    options?: ILoaderContextOptions;
+  };
+  const loaderContextOptions: ILoaderContextOptions | undefined = (
+    loaderContext as LegacyLoaderContext
+  ).options;
   if (
-    typeof loaderContext.options === "object" &&
-    typeof loaderContext.options.customInterpolateName === "function"
+    typeof loaderContextOptions === "object" &&
+    typeof loaderContextOptions.customInterpolateName === "function"
   ) {
-    url = loaderContext.options.customInterpolateName.call(
+    url = loaderContextOptions.customInterpolateName.call(
       loaderContext,
       url,
       name,
@@ -112,5 +147,3 @@ function interpolateName(loaderContext, name, options = {}) {
 
   return url;
 }
-
-module.exports = interpolateName;

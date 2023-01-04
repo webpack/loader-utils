@@ -1,4 +1,4 @@
-"use strict";
+import type { BinaryToTextEncoding } from "crypto";
 
 const baseEncodeTables = {
   26: "abcdefghijklmnopqrstuvwxyz",
@@ -11,12 +11,19 @@ const baseEncodeTables = {
   64: "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_",
 };
 
+type BaseEncoding = keyof typeof baseEncodeTables;
+
+/**
+ * @public
+ */
+export type DigestType = `base${BaseEncoding}`;
+
 /**
  * @param {Uint32Array} uint32Array Treated as a long base-0x100000000 number, little endian
  * @param {number} divisor The divisor
  * @return {number} Modulo (remainder) of the division
  */
-function divmod32(uint32Array, divisor) {
+function divmod32(uint32Array: Uint32Array, divisor: number): number {
   let carry = 0;
   for (let i = uint32Array.length - 1; i >= 0; i--) {
     const value = carry * 0x100000000 + uint32Array[i];
@@ -26,7 +33,11 @@ function divmod32(uint32Array, divisor) {
   return carry;
 }
 
-function encodeBufferToBase(buffer, base, length) {
+function encodeBufferToBase(
+  buffer: Buffer,
+  base: BaseEncoding,
+  length: number
+) {
   const encodeTable = baseEncodeTables[base];
 
   if (!encodeTable) {
@@ -54,13 +65,26 @@ function encodeBufferToBase(buffer, base, length) {
   return output;
 }
 
-let crypto = undefined;
-let createXXHash64 = undefined;
-let createMd4 = undefined;
-let BatchedHash = undefined;
-let BulkUpdateDecorator = undefined;
+let crypto: typeof import("crypto");
+let createXXHash64: typeof import("./hash/xxhash64").create;
+let createMd4: typeof import("./hash/md4").create;
+let BatchedHash: typeof import("./hash/BatchedHash").BatchedHash;
+let BulkUpdateDecorator: typeof import("./hash/BulkUpdateDecorator").BulkUpdateDecorator;
 
-function getHashDigest(buffer, algorithm, digestType, maxLength) {
+/**
+ * @public
+ *
+ * @param buffer - This represents the content that should be hashed
+ * @param hashType - The algorithm to use to hash the content. Can be one of `xxhash64`, `md4`, `native-md4` or any other hash algorithm supported by node.js `crypto` module.
+ * @param digestType - The encoding to use for the hash. Can be one of `base26`, `base32`, `base36`, `base49`, `base52`, `base58`, `base62` or `base64`.
+ * @param maxLength - The maximum length of the resulting hash. Defaults to `9999`.
+ */
+export default function getHashDigest(
+  buffer: Buffer,
+  algorithm: string | "xxhash64" | "md4" | "native-md4",
+  digestType: DigestType | string,
+  maxLength: number
+) {
   algorithm = algorithm || "xxhash64";
   maxLength = maxLength || 9999;
 
@@ -68,20 +92,20 @@ function getHashDigest(buffer, algorithm, digestType, maxLength) {
 
   if (algorithm === "xxhash64") {
     if (createXXHash64 === undefined) {
-      createXXHash64 = require("./hash/xxhash64");
+      createXXHash64 = require("./hash/xxhash64").create;
 
       if (BatchedHash === undefined) {
-        BatchedHash = require("./hash/BatchedHash");
+        BatchedHash = require("./hash/BatchedHash").BatchedHash;
       }
     }
 
     hash = new BatchedHash(createXXHash64());
   } else if (algorithm === "md4") {
     if (createMd4 === undefined) {
-      createMd4 = require("./hash/md4");
+      createMd4 = require("./hash/md4").create;
 
       if (BatchedHash === undefined) {
-        BatchedHash = require("./hash/BatchedHash");
+        BatchedHash = require("./hash/BatchedHash").BatchedHash;
       }
     }
 
@@ -91,7 +115,8 @@ function getHashDigest(buffer, algorithm, digestType, maxLength) {
       crypto = require("crypto");
 
       if (BulkUpdateDecorator === undefined) {
-        BulkUpdateDecorator = require("./hash/BulkUpdateDecorator");
+        BulkUpdateDecorator =
+          require("./hash/BulkUpdateDecorator").BulkUpdateDecorator;
       }
     }
 
@@ -101,7 +126,8 @@ function getHashDigest(buffer, algorithm, digestType, maxLength) {
       crypto = require("crypto");
 
       if (BulkUpdateDecorator === undefined) {
-        BulkUpdateDecorator = require("./hash/BulkUpdateDecorator");
+        BulkUpdateDecorator =
+          require("./hash/BulkUpdateDecorator").BulkUpdateDecorator;
       }
     }
 
@@ -122,10 +148,16 @@ function getHashDigest(buffer, algorithm, digestType, maxLength) {
     digestType === "base58" ||
     digestType === "base62"
   ) {
-    return encodeBufferToBase(hash.digest(), digestType.substr(4), maxLength);
+    const digestTypeToDigest = Number(digestType.substr(4));
+
+    return encodeBufferToBase(
+      hash.digest() as Buffer,
+      digestTypeToDigest as BaseEncoding,
+      maxLength
+    );
   } else {
-    return hash.digest(digestType || "hex").substr(0, maxLength);
+    return (
+      hash.digest((digestType as BinaryToTextEncoding) || "hex") as string
+    ).substr(0, maxLength);
   }
 }
-
-module.exports = getHashDigest;
