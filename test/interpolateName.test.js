@@ -309,9 +309,19 @@ describe("interpolateName()", () => {
         "should interpolate [path] token",
       ],
       [
+        [loaderContext, "[path]", { context: "/path/" }],
+        "to/",
+        "should interpolate [path] token with context",
+      ],
+      [
         [loaderContext, "[folder]", {}],
         "to",
         "should interpolate [folder] token",
+      ],
+      [
+        [{ resourcePath: "." }, "[folder]", {}],
+        "",
+        "should interpolate [folder] token with short resourcePath",
       ],
     ]);
   });
