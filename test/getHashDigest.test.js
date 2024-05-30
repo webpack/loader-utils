@@ -79,13 +79,6 @@ describe("getHashDigest()", () => {
         expect(hashDigest).toBe(test[4]);
       }
     );
-
-    // it('for', () => {
-    //   for(let i = 0; i < 100; i += 1) {
-    //     const result = loaderUtils.getHashDigest(`a-${i}`, "xxhash64", "base64")
-    //     expect(result).toMatch(/^[a-zA-Z_][a-zA-Z\d-_]*$/g);
-    //   }
-    // })
   });
 });
 
