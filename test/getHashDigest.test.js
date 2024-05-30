@@ -21,6 +21,7 @@ describe("getHashDigest()", () => {
     ["abc\\0💩", "md4", "hex", undefined, "45aa5b332f8e562aaf0106ad6fc1d78f"],
     ["abc\\0💩", "md4", "base64", undefined, "RapbMy+OViqvAQatb8HXjw=="],
     ["abc\\0♥", "md4", "base64", undefined, "Rrlif+z0m4Dq8BwB2Grp/Q=="],
+    ["abc\\0♥", "md4", "base64-safe", undefined, "Rrlif-z0m4Dq8BwB2Grp_Q"],
     ["abc\\0💩", "md4", "base52", undefined, "dtXZENFEkYHXGxOkJbevPoD"],
     ["abc\\0♥", "md4", "base52", undefined, "fYFFcfXRGsVweukHKlPayHs"],
 
@@ -78,6 +79,13 @@ describe("getHashDigest()", () => {
         expect(hashDigest).toBe(test[4]);
       }
     );
+
+    // it('for', () => {
+    //   for(let i = 0; i < 100; i += 1) {
+    //     const result = loaderUtils.getHashDigest(`a-${i}`, "xxhash64", "base64")
+    //     expect(result).toMatch(/^[a-zA-Z_][a-zA-Z\d-_]*$/g);
+    //   }
+    // })
   });
 });
 
