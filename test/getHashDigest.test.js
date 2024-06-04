@@ -21,6 +21,7 @@ describe("getHashDigest()", () => {
     ["abc\\0💩", "md4", "hex", undefined, "45aa5b332f8e562aaf0106ad6fc1d78f"],
     ["abc\\0💩", "md4", "base64", undefined, "RapbMy+OViqvAQatb8HXjw=="],
     ["abc\\0♥", "md4", "base64", undefined, "Rrlif+z0m4Dq8BwB2Grp/Q=="],
+    ["abc\\0♥", "md4", "base64safe", undefined, "3ZWmHo0hPMWE2rZeN_oHB6"],
     ["abc\\0💩", "md4", "base52", undefined, "dtXZENFEkYHXGxOkJbevPoD"],
     ["abc\\0♥", "md4", "base52", undefined, "fYFFcfXRGsVweukHKlPayHs"],
 
