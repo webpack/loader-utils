@@ -118,6 +118,12 @@ describe("interpolateName()", () => {
       "test content",
       "modal.lHP90NiApDwht3eNNIch.css",
     ],
+    [
+      "/lib/components/modal/modal.css",
+      "[name].[md5:contenthash:base64safe:20].[ext]",
+      "test content",
+      "modal.8osQznuT8jOAwdzg_nek.css",
+    ],
     // Should not interpret without `hash` or `contenthash`
     [
       "/lib/components/modal/modal.css",
