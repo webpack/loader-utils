@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.3.1](https://github.com/webpack/loader-utils/compare/v3.3.0...v3.3.1) (2024-06-05)
+
+
+### Bug Fixes
+
+* base64safe regex ([3b2d3b1](https://github.com/webpack/loader-utils/commit/3b2d3b1379b644aeefbbe859c0baeadd0b732710))
+
 ## [3.3.0](https://github.com/webpack/loader-utils/compare/v3.2.2...v3.3.0) (2024-06-04)
 
 
